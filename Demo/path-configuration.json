@@ -1,0 +1,43 @@
+{
+  "settings": {
+    "enable-feature-x": true
+  },
+  "rules": [
+    {
+      "patterns": [
+        "/new$",
+        "/edit$",
+        "/signin$",
+        "/strada-form$"
+      ],
+      "properties": {
+        "context": "modal"
+      }
+    },
+    {
+      "patterns": [
+        "/numbers$"
+      ],
+      "properties": {
+        "view-controller": "numbers"
+      }
+    },
+    {
+      "patterns": [
+        "/numbers/[0-9]+$"
+      ],
+      "properties": {
+        "view-controller": "numbersDetail",
+        "context": "modal"
+      }
+    },
+    {
+      "patterns": [
+        "^/$"
+      ],
+      "properties": {
+        "presentation": "replace_root"
+      }
+    },
+  ]
+}
