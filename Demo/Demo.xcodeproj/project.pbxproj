@@ -14,7 +14,6 @@
 		84BACDC22B23B1E000CE57C4 /* BridgeComponent+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDBE2B23B1E000CE57C4 /* BridgeComponent+App.swift */; };
 		84BACDC32B23B1E000CE57C4 /* MenuComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDBF2B23B1E000CE57C4 /* MenuComponent.swift */; };
 		84BACDC42B23B1E000CE57C4 /* OverflowMenuComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDC02B23B1E000CE57C4 /* OverflowMenuComponent.swift */; };
-		84BACDC72B23B28500CE57C4 /* WKWebViewConfiguration+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDC62B23B28500CE57C4 /* WKWebViewConfiguration+App.swift */; };
 		84BACDCF2B23B2D900CE57C4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDC82B23B2D800CE57C4 /* AppDelegate.swift */; };
 		84BACDD02B23B2D900CE57C4 /* Demo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDC92B23B2D900CE57C4 /* Demo.swift */; };
 		84BACDD12B23B2D900CE57C4 /* NumbersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDCA2B23B2D900CE57C4 /* NumbersViewController.swift */; };
@@ -34,7 +33,6 @@
 		84BACDBE2B23B1E000CE57C4 /* BridgeComponent+App.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BridgeComponent+App.swift"; sourceTree = "<group>"; };
 		84BACDBF2B23B1E000CE57C4 /* MenuComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuComponent.swift; sourceTree = "<group>"; };
 		84BACDC02B23B1E000CE57C4 /* OverflowMenuComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverflowMenuComponent.swift; sourceTree = "<group>"; };
-		84BACDC62B23B28500CE57C4 /* WKWebViewConfiguration+App.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "WKWebViewConfiguration+App.swift"; sourceTree = "<group>"; };
 		84BACDC82B23B2D800CE57C4 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = "../../turbo-ios/Demo/AppDelegate.swift"; sourceTree = "<group>"; };
 		84BACDC92B23B2D900CE57C4 /* Demo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Demo.swift; sourceTree = "<group>"; };
 		84BACDCA2B23B2D900CE57C4 /* NumbersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumbersViewController.swift; sourceTree = "<group>"; };
@@ -78,7 +76,6 @@
 			isa = PBXGroup;
 			children = (
 				84BACDBB2B23B1BE00CE57C4 /* Strada */,
-				84BACDBC2B23B1C200CE57C4 /* Web */,
 				84BACDC92B23B2D900CE57C4 /* Demo.swift */,
 				84BACDCD2B23B2D900CE57C4 /* Navigator.swift */,
 				84BACDCC2B23B2D900CE57C4 /* SceneController.swift */,
@@ -117,14 +114,6 @@
 				84BACDC02B23B1E000CE57C4 /* OverflowMenuComponent.swift */,
 			);
 			name = Strada;
-			sourceTree = "<group>";
-		};
-		84BACDBC2B23B1C200CE57C4 /* Web */ = {
-			isa = PBXGroup;
-			children = (
-				84BACDC62B23B28500CE57C4 /* WKWebViewConfiguration+App.swift */,
-			);
-			name = Web;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -205,7 +194,6 @@
 				84BACDD52B23B2D900CE57C4 /* TurboWebViewController.swift in Sources */,
 				84BACDD12B23B2D900CE57C4 /* NumbersViewController.swift in Sources */,
 				84BACDD32B23B2D900CE57C4 /* SceneController.swift in Sources */,
-				84BACDC72B23B28500CE57C4 /* WKWebViewConfiguration+App.swift in Sources */,
 				84BACDD02B23B2D900CE57C4 /* Demo.swift in Sources */,
 				84BACDD42B23B2D900CE57C4 /* Navigator.swift in Sources */,
 				84BACDC22B23B1E000CE57C4 /* BridgeComponent+App.swift in Sources */,

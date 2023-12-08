@@ -14,10 +14,10 @@ final class SceneController: UIResponder {
     private func configureStrada() {
         Turbo.config.userAgent += " \(Strada.userAgentSubstring(for: BridgeComponent.allTypes))"
 
-        Turbo.config.makeCustomWebView = { config in
-            config.defaultWebpagePreferences?.preferredContentMode = .mobile
+        Turbo.config.makeCustomWebView = { configuration in
+            configuration.defaultWebpagePreferences?.preferredContentMode = .mobile
 
-            let webView = WKWebView(frame: .zero, configuration: .appConfiguration)
+            let webView = WKWebView(frame: .zero, configuration: configuration)
             if #available(iOS 16.4, *) {
                 webView.isInspectable = true
             }
