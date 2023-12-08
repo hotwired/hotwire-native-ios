@@ -76,7 +76,7 @@ extension SceneController: TurboNavigatorDelegate {
             return .acceptCustom(alertController)
 
         default:
-            return .acceptCustom(TurboWebViewController(url: proposal.url))
+            return .acceptCustom(WebViewController(url: proposal.url))
         }
     }
 

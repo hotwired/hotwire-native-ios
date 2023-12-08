@@ -2,7 +2,7 @@ import Hotwire
 import UIKit
 import WebKit
 
-final class TurboWebViewController: VisitableViewController, BridgeDestination {
+final class WebViewController: VisitableViewController, BridgeDestination {
     private lazy var bridgeDelegate = BridgeDelegate(
         location: visitableURL.absoluteString,
         destination: self,
