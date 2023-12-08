@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "strada-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/hotwired/strada-ios",
+      "state" : {
+        "branch" : "main",
+        "revision" : "d8c1bcf1d9511c03e7beed07c05d29f33f9b6cde"
+      }
+    },
+    {
+      "identity" : "turbo-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/hotwired/turbo-ios",
+      "state" : {
+        "branch" : "turbo-navigator",
+        "revision" : "cd4f71e0a82bd116bcceebc8aee742d00e1fc2d4"
+      }
+    }
+  ],
+  "version" : 2
+}
