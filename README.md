@@ -47,7 +47,7 @@ First, download and install [Xcode 15+](https://developer.apple.com/xcode/)
 import Hotwire
 import UIKit
 
-let rootURL = URL(string: "http://localhost:3000")!
+let rootURL = URL(string: "https://turbo-native-demo.glitch.me")!
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
