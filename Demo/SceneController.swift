@@ -83,16 +83,4 @@ extension SceneController: TurboNavigatorDelegate {
             return .acceptCustom(WebViewController(url: proposal.url))
         }
     }
-
-    func visitableDidFailRequest(_ visitable: Visitable, error: Error, retry: @escaping RetryBlock) {
-        if let turboError = error as? TurboError, case let .http(statusCode) = turboError, statusCode == 401 {
-            promptForAuthentication()
-        } else if let errorPresenter = visitable as? ErrorPresenter {
-            errorPresenter.presentError(error, handler: retry)
-        } else {
-            let alert = UIAlertController(title: "Visit failed!", message: error.localizedDescription, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            navigator.activeNavigationController.present(alert, animated: true)
-        }
-    }
 }
