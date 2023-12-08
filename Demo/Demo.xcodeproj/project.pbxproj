@@ -11,7 +11,6 @@
 		84BACDB02B23A43100CE57C4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84BACDA62B23A37900CE57C4 /* LaunchScreen.storyboard */; };
 		84BACDBA2B23AEEC00CE57C4 /* Hotwire in Frameworks */ = {isa = PBXBuildFile; productRef = 84BACDB92B23AEEC00CE57C4 /* Hotwire */; };
 		84BACDC12B23B1E000CE57C4 /* FormComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDBD2B23B1DF00CE57C4 /* FormComponent.swift */; };
-		84BACDC22B23B1E000CE57C4 /* BridgeComponent+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDBE2B23B1E000CE57C4 /* BridgeComponent+App.swift */; };
 		84BACDC32B23B1E000CE57C4 /* MenuComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDBF2B23B1E000CE57C4 /* MenuComponent.swift */; };
 		84BACDC42B23B1E000CE57C4 /* OverflowMenuComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDC02B23B1E000CE57C4 /* OverflowMenuComponent.swift */; };
 		84BACDCF2B23B2D900CE57C4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDC82B23B2D800CE57C4 /* AppDelegate.swift */; };
@@ -30,7 +29,6 @@
 		84BACDA92B23A37900CE57C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		84BACDB62B23AEDB00CE57C4 /* hotwire-native-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "hotwire-native-ios"; path = ../..; sourceTree = "<group>"; };
 		84BACDBD2B23B1DF00CE57C4 /* FormComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormComponent.swift; sourceTree = "<group>"; };
-		84BACDBE2B23B1E000CE57C4 /* BridgeComponent+App.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BridgeComponent+App.swift"; sourceTree = "<group>"; };
 		84BACDBF2B23B1E000CE57C4 /* MenuComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuComponent.swift; sourceTree = "<group>"; };
 		84BACDC02B23B1E000CE57C4 /* OverflowMenuComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverflowMenuComponent.swift; sourceTree = "<group>"; };
 		84BACDC82B23B2D800CE57C4 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = "../../turbo-ios/Demo/AppDelegate.swift"; sourceTree = "<group>"; };
@@ -108,7 +106,6 @@
 		84BACDBB2B23B1BE00CE57C4 /* Strada */ = {
 			isa = PBXGroup;
 			children = (
-				84BACDBE2B23B1E000CE57C4 /* BridgeComponent+App.swift */,
 				84BACDBD2B23B1DF00CE57C4 /* FormComponent.swift */,
 				84BACDBF2B23B1E000CE57C4 /* MenuComponent.swift */,
 				84BACDC02B23B1E000CE57C4 /* OverflowMenuComponent.swift */,
@@ -196,7 +193,6 @@
 				84BACDD32B23B2D900CE57C4 /* SceneController.swift in Sources */,
 				84BACDD02B23B2D900CE57C4 /* Demo.swift in Sources */,
 				84BACDD42B23B2D900CE57C4 /* Navigator.swift in Sources */,
-				84BACDC22B23B1E000CE57C4 /* BridgeComponent+App.swift in Sources */,
 				84BACDC32B23B1E000CE57C4 /* MenuComponent.swift in Sources */,
 				84BACDC12B23B1E000CE57C4 /* FormComponent.swift in Sources */,
 				84BACDC42B23B1E000CE57C4 /* OverflowMenuComponent.swift in Sources */,

@@ -12,7 +12,11 @@ final class SceneController: UIResponder {
     // MARK: - Setup
 
     private func configureStrada() {
-        Turbo.config.userAgent += " \(Strada.userAgentSubstring(for: BridgeComponent.allTypes))"
+        Hotwire.registerStradaComponents([
+            FormComponent.self,
+            MenuComponent.self,
+            OverflowMenuComponent.self,
+        ])
 
         Turbo.config.makeCustomWebView = { configuration in
             configuration.defaultWebpagePreferences?.preferredContentMode = .mobile
