@@ -6,6 +6,9 @@
 import WebKit
 
 public enum Hotwire {
+    /// Use this instance to configure Hotwire.
+    public static var config = HotwireConfig()
+
     /// Registers your components with Strada to use with `HotwireWebViewController`.
     ///
     /// Use `Turbo.config.makeCustomWebView` to customize the web view or web view
