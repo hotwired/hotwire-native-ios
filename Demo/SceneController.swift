@@ -80,7 +80,7 @@ extension SceneController: TurboNavigatorDelegate {
             return .acceptCustom(alertController)
 
         default:
-            return .acceptCustom(WebViewController(url: proposal.url))
+            return .acceptCustom(HotwireWebViewController(url: proposal.url))
         }
     }
 }

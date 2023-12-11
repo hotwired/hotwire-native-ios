@@ -14,6 +14,14 @@ open class HotwireWebViewController: VisitableViewController, BridgeDestination 
 
     override open func viewDidLoad() {
         super.viewDidLoad()
+
+        navigationItem.backButtonDisplayMode = .minimal
+        view.backgroundColor = .systemBackground
+
+        if Hotwire.config.showDoneButtonOnModals {
+            addDoneButtonToModals()
+        }
+
         bridgeDelegate.onViewDidLoad()
     }
 
@@ -45,5 +53,16 @@ open class HotwireWebViewController: VisitableViewController, BridgeDestination 
 
     override open func visitableDidDeactivateWebView() {
         bridgeDelegate.webViewDidBecomeDeactivated()
+    }
+
+    // MARK: Private
+
+    private func addDoneButtonToModals() {
+        if presentingViewController != nil {
+            let action = UIAction { [unowned self] _ in
+                dismiss(animated: true)
+            }
+            navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .done, primaryAction: action)
+        }
     }
 }
