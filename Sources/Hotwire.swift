@@ -18,6 +18,8 @@ public enum Hotwire {
         stradaComponentTypes = componentTypes
 
         Turbo.config.makeCustomWebView = { configuration in
+            configuration.defaultWebpagePreferences?.preferredContentMode = .mobile
+
             let webView = WKWebView(frame: .zero, configuration: configuration)
             Bridge.initialize(webView)
             return webView
