@@ -21,10 +21,21 @@ public enum Hotwire {
             configuration.defaultWebpagePreferences?.preferredContentMode = .mobile
 
             let webView = WKWebView(frame: .zero, configuration: configuration)
+            webView.makeInspectableInDebugBuilds()
             Bridge.initialize(webView)
             return webView
         }
     }
 
     static var stradaComponentTypes = [BridgeComponent.Type]()
+}
+
+private extension WKWebView {
+    func makeInspectableInDebugBuilds() {
+        #if DEBUG
+            if #available(iOS 16.4, *) {
+                isInspectable = true
+            }
+        #endif
+    }
 }
