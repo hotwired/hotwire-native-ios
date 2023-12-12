@@ -44,7 +44,6 @@ You can also integrate the framework manually if your prefer, such as by adding 
 
 - [Quick Start](Docs/QuickStartGuide.md)
 - [Overview](Docs/Overview.md)
-- [Advanced](Docs/Advanced.md)
 
 ## Contributing
 
