@@ -17,19 +17,6 @@ final class SceneController: UIResponder {
             MenuComponent.self,
             OverflowMenuComponent.self,
         ])
-
-        Turbo.config.makeCustomWebView = { configuration in
-            configuration.defaultWebpagePreferences?.preferredContentMode = .mobile
-
-            let webView = WKWebView(frame: .zero, configuration: configuration)
-            if #available(iOS 16.4, *) {
-                webView.isInspectable = true
-            }
-            // Initialize Strada bridge.
-            Bridge.initialize(webView)
-
-            return webView
-        }
     }
 
     private func configureRootViewController() {
