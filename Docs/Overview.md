@@ -33,6 +33,16 @@ Registering components automatically sets the user agent, initializes the Strada
 
 By default, a `HotwireWebViewController` is used for all web visits. You're free to subclass this and add additional functionality. Make sure to set `Turbo.config.defaultViewController` so Turbo Navigator knows to use your custom class.
 
+```swift
+class WebViewController: HotwireViewController {
+    // Add your customizations here.
+}
+
+Turbo.config.defaultViewController = { url in
+    WebViewController(url: url)
+}
+```
+
 If you only want to remove the Done button from modals, you can set that via:
 
 ```swift
