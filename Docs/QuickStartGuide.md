@@ -22,6 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private let navigator = TurboNavigator()
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        Hotwire.registerStradaComponents([])
         window?.rootViewController = navigator.rootViewController
         navigator.route(rootURL)
     }
