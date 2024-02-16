@@ -14,15 +14,15 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/hotwired/turbo-ios", branch: "turbo-navigator"),
-        .package(url: "https://github.com/hotwired/strada-ios", branch: "main"),
+        .package(name: "Turbo", path: "Packages/Turbo"),
+        .package(name: "Strada", path: "Packages/Strada"),
     ],
     targets: [
         .target(
             name: "Hotwire",
             dependencies: [
-                .product(name: "Turbo", package: "turbo-ios"),
-                .product(name: "Strada", package: "strada-ios"),
+                .product(name: "Turbo", package: "Turbo"),
+                .product(name: "Strada", package: "Strada"),
             ]
         ),
         .testTarget(
