@@ -3,13 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		84BACDA52B23A37900CE57C4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84BACDA42B23A37900CE57C4 /* Assets.xcassets */; };
 		84BACDB02B23A43100CE57C4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84BACDA62B23A37900CE57C4 /* LaunchScreen.storyboard */; };
-		84BACDBA2B23AEEC00CE57C4 /* Hotwire in Frameworks */ = {isa = PBXBuildFile; productRef = 84BACDB92B23AEEC00CE57C4 /* Hotwire */; };
 		84BACDC12B23B1E000CE57C4 /* FormComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDBD2B23B1DF00CE57C4 /* FormComponent.swift */; };
 		84BACDC32B23B1E000CE57C4 /* MenuComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDBF2B23B1E000CE57C4 /* MenuComponent.swift */; };
 		84BACDC42B23B1E000CE57C4 /* OverflowMenuComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDC02B23B1E000CE57C4 /* OverflowMenuComponent.swift */; };
@@ -18,6 +17,7 @@
 		84BACDD22B23B2D900CE57C4 /* path-configuration.json in Resources */ = {isa = PBXBuildFile; fileRef = 84BACDCB2B23B2D900CE57C4 /* path-configuration.json */; };
 		84BACDD32B23B2D900CE57C4 /* SceneController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDCC2B23B2D900CE57C4 /* SceneController.swift */; };
 		84BACDD42B23B2D900CE57C4 /* Navigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDCD2B23B2D900CE57C4 /* Navigator.swift */; };
+		84BF9A292B8000680099526D /* Hotwire in Frameworks */ = {isa = PBXBuildFile; productRef = 84BF9A282B8000680099526D /* Hotwire */; };
 		84CECEAB2B24BAB3004F8767 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CECEAA2B24BAB3004F8767 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
@@ -26,7 +26,6 @@
 		84BACDA42B23A37900CE57C4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		84BACDA72B23A37900CE57C4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		84BACDA92B23A37900CE57C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		84BACDB62B23AEDB00CE57C4 /* hotwire-native-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "hotwire-native-ios"; path = ../..; sourceTree = "<group>"; };
 		84BACDBD2B23B1DF00CE57C4 /* FormComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormComponent.swift; sourceTree = "<group>"; };
 		84BACDBF2B23B1E000CE57C4 /* MenuComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuComponent.swift; sourceTree = "<group>"; };
 		84BACDC02B23B1E000CE57C4 /* OverflowMenuComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverflowMenuComponent.swift; sourceTree = "<group>"; };
@@ -43,7 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84BACDBA2B23AEEC00CE57C4 /* Hotwire in Frameworks */,
+				84BF9A292B8000680099526D /* Hotwire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -54,7 +53,6 @@
 			isa = PBXGroup;
 			children = (
 				84BACD9A2B23A37800CE57C4 /* Demo */,
-				84BACDB72B23AEDF00CE57C4 /* Packages */,
 				84BACD992B23A37800CE57C4 /* Products */,
 				84BACDB82B23AEEC00CE57C4 /* Frameworks */,
 			);
@@ -83,14 +81,6 @@
 				84BACDA62B23A37900CE57C4 /* LaunchScreen.storyboard */,
 			);
 			name = Demo;
-			sourceTree = "<group>";
-		};
-		84BACDB72B23AEDF00CE57C4 /* Packages */ = {
-			isa = PBXGroup;
-			children = (
-				84BACDB62B23AEDB00CE57C4 /* hotwire-native-ios */,
-			);
-			path = Packages;
 			sourceTree = "<group>";
 		};
 		84BACDB82B23AEEC00CE57C4 /* Frameworks */ = {
@@ -127,7 +117,7 @@
 			);
 			name = Demo;
 			packageProductDependencies = (
-				84BACDB92B23AEEC00CE57C4 /* Hotwire */,
+				84BF9A282B8000680099526D /* Hotwire */,
 			);
 			productName = Demo;
 			productReference = 84BACD982B23A37800CE57C4 /* Demo.app */;
@@ -157,6 +147,9 @@
 				Base,
 			);
 			mainGroup = 84BACD8F2B23A37800CE57C4;
+			packageReferences = (
+				84BF9A272B8000680099526D /* XCLocalSwiftPackageReference ".." */,
+			);
 			productRefGroup = 84BACD992B23A37800CE57C4 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -407,8 +400,15 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		84BF9A272B8000680099526D /* XCLocalSwiftPackageReference ".." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ..;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
-		84BACDB92B23AEEC00CE57C4 /* Hotwire */ = {
+		84BF9A282B8000680099526D /* Hotwire */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Hotwire;
 		};
