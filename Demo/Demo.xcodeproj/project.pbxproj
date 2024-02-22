@@ -3,13 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8443D9052B88003C0077C45A /* Hotwire in Frameworks */ = {isa = PBXBuildFile; productRef = 8443D9042B88003C0077C45A /* Hotwire */; };
 		84BACDA52B23A37900CE57C4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84BACDA42B23A37900CE57C4 /* Assets.xcassets */; };
 		84BACDB02B23A43100CE57C4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84BACDA62B23A37900CE57C4 /* LaunchScreen.storyboard */; };
-		84BACDBA2B23AEEC00CE57C4 /* Hotwire in Frameworks */ = {isa = PBXBuildFile; productRef = 84BACDB92B23AEEC00CE57C4 /* Hotwire */; };
 		84BACDC12B23B1E000CE57C4 /* FormComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDBD2B23B1DF00CE57C4 /* FormComponent.swift */; };
 		84BACDC32B23B1E000CE57C4 /* MenuComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDBF2B23B1E000CE57C4 /* MenuComponent.swift */; };
 		84BACDC42B23B1E000CE57C4 /* OverflowMenuComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BACDC02B23B1E000CE57C4 /* OverflowMenuComponent.swift */; };
@@ -43,7 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84BACDBA2B23AEEC00CE57C4 /* Hotwire in Frameworks */,
+				8443D9052B88003C0077C45A /* Hotwire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,7 +127,7 @@
 			);
 			name = Demo;
 			packageProductDependencies = (
-				84BACDB92B23AEEC00CE57C4 /* Hotwire */,
+				8443D9042B88003C0077C45A /* Hotwire */,
 			);
 			productName = Demo;
 			productReference = 84BACD982B23A37800CE57C4 /* Demo.app */;
@@ -157,6 +157,9 @@
 				Base,
 			);
 			mainGroup = 84BACD8F2B23A37800CE57C4;
+			packageReferences = (
+				8443D9032B88003C0077C45A /* XCLocalSwiftPackageReference ".." */,
+			);
 			productRefGroup = 84BACD992B23A37800CE57C4 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -407,8 +410,15 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		8443D9032B88003C0077C45A /* XCLocalSwiftPackageReference ".." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ..;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
-		84BACDB92B23AEEC00CE57C4 /* Hotwire */ = {
+		8443D9042B88003C0077C45A /* Hotwire */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Hotwire;
 		};
