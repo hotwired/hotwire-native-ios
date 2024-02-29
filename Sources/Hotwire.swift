@@ -11,17 +11,17 @@ public enum Hotwire {
 
     /// Registers your components with Strada to use with `HotwireWebViewController`.
     ///
-    /// Use `Turbo.config.makeCustomWebView` to customize the web view or web view
+    /// Use `Hotwire.config.makeCustomWebView` to customize the web view or web view
     /// configuration further, making sure to call `Bridge.initialize()`.
     public static func registerStradaComponents(_ componentTypes: [BridgeComponent.Type]) {
-        Turbo.config.defaultViewController = { url in
+        Hotwire.config.defaultViewController = { url in
             HotwireWebViewController(url: url)
         }
 
-        Turbo.config.userAgent += " \(Strada.userAgentSubstring(for: componentTypes))"
+        Hotwire.config.userAgent += " \(Strada.userAgentSubstring(for: componentTypes))"
         stradaComponentTypes = componentTypes
 
-        Turbo.config.makeCustomWebView = { configuration in
+        Hotwire.config.makeCustomWebView = { configuration in
             configuration.defaultWebpagePreferences?.preferredContentMode = .mobile
 
             let webView = WKWebView(frame: .zero, configuration: configuration)
