@@ -1,4 +1,5 @@
 import UIKit
+import WebKit
 
 public struct HotwireConfig {
     /// When enabled, adds a `UIBarButtonItem` of type `.done` to the left
@@ -7,6 +8,35 @@ public struct HotwireConfig {
 
     /// Sets the back button display mode of `HotwireWebViewController`.
     public var backButtonDisplayMode = UINavigationItem.BackButtonDisplayMode.default
+
+    // MARK: Turbo
+
+    /// Override to set a custom user agent.
+    /// - Important: Include "Turbo Native" to use `turbo_native_app?` on your Rails server.
+    public var userAgent = "Turbo Native iOS" {
+        didSet { Turbo.config.userAgent = userAgent }
+    }
+
+    /// The view controller used in `TurboNavigator` for web requests. Must be
+    /// a `VisitableViewController` or subclass.
+    public var defaultViewController: (URL) -> VisitableViewController = { url in
+        VisitableViewController(url: url)
+    } {
+        didSet { Turbo.config.defaultViewController = defaultViewController }
+    }
+
+    /// Optionally customize the web views used by each Turbo Session.
+    /// Ensure you return a new instance each time.
+    public var makeCustomWebView: TurboConfig.WebViewBlock = { (configuration: WKWebViewConfiguration) in
+        WKWebView(frame: .zero, configuration: configuration)
+    } {
+        didSet { Turbo.config.makeCustomWebView = makeCustomWebView }
+    }
+
+    /// Enable or disable debug logging for Turbo visits.
+    public var turboDebugLoggingEnabled = false {
+        didSet { Turbo.config.debugLoggingEnabled = turboDebugLoggingEnabled }
+    }
 
     // MARK: Bridge
 
