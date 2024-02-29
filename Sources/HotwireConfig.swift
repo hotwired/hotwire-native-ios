@@ -9,6 +9,15 @@ public struct HotwireConfig {
     /// Sets the back button display mode of `HotwireWebViewController`.
     public var backButtonDisplayMode = UINavigationItem.BackButtonDisplayMode.default
 
+    /// Enable or disable debug logging for Turbo visits and bridge elements
+    /// connecting, disconnecting, receiving/sending messages, and more.
+    public var debugLoggingEnabled = false {
+        didSet {
+            Hotwire.config.turboDebugLoggingEnabled = debugLoggingEnabled
+            Hotwire.config.bridgeDebugLoggingEnabled = debugLoggingEnabled
+        }
+    }
+
     // MARK: Turbo
 
     /// Override to set a custom user agent.
