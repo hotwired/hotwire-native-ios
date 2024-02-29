@@ -15,7 +15,7 @@ open class HotwireWebViewController: VisitableViewController, BridgeDestination 
     override open func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.backButtonDisplayMode = .minimal
+        navigationItem.backButtonDisplayMode = Hotwire.config.backButtonDisplayMode
         view.backgroundColor = .systemBackground
 
         if Hotwire.config.showDoneButtonOnModals {
