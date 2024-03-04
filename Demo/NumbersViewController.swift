@@ -6,14 +6,14 @@ import UIKit
 final class NumbersViewController: UITableViewController, PathConfigurationIdentifiable {
     static var pathConfigurationIdentifier: String { "numbers" }
 
-    convenience init(url: URL, navigator: Navigator) {
+    convenience init(url: URL, navigator: Router) {
         self.init(nibName: nil, bundle: nil)
         self.url = url
         self.navigator = navigator
     }
 
     private var url: URL!
-    private unowned var navigator: Navigator?
+    private unowned var navigator: Router?
 
     override func viewDidLoad() {
         super.viewDidLoad()
