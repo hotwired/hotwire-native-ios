@@ -13,8 +13,8 @@ public struct HotwireConfig {
     /// connecting, disconnecting, receiving/sending messages, and more.
     public var debugLoggingEnabled = false {
         didSet {
-            Hotwire.config.turboDebugLoggingEnabled = debugLoggingEnabled
-            Hotwire.config.bridgeDebugLoggingEnabled = debugLoggingEnabled
+            Turbo.config.debugLoggingEnabled = debugLoggingEnabled
+            Strada.config.debugLoggingEnabled = debugLoggingEnabled
         }
     }
 
