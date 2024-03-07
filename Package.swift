@@ -3,14 +3,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "Hotwire",
+    name: "HotwireNative",
     platforms: [
         .iOS(.v14),
     ],
     products: [
         .library(
-            name: "Hotwire",
-            targets: ["Hotwire"]
+            name: "HotwireNative",
+            targets: ["HotwireNative"]
         ),
     ],
     dependencies: [
@@ -19,15 +19,15 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "Hotwire",
+            name: "HotwireNative",
             dependencies: [
                 .product(name: "Turbo", package: "turbo-ios"),
                 .product(name: "Strada", package: "strada-ios"),
             ]
         ),
         .testTarget(
-            name: "HotwireTests",
-            dependencies: ["Hotwire"]
+            name: "HotwireNativeTests",
+            dependencies: ["HotwireNative"]
         ),
     ]
 )

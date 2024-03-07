@@ -1,4 +1,5 @@
 {
+  "originHash" : "b0e7ee7f8a25bddb5b92ca548e90c518d205f6f80c0d8795eeb22189841998c6",
   "pins" : [
     {
       "identity" : "strada-ios",
@@ -6,7 +7,7 @@
       "location" : "https://github.com/hotwired/strada-ios",
       "state" : {
         "branch" : "main",
-        "revision" : "d8c1bcf1d9511c03e7beed07c05d29f33f9b6cde"
+        "revision" : "a44a86d4bab98d29cbba31446ee4834670613119"
       }
     },
     {
@@ -15,9 +16,9 @@
       "location" : "https://github.com/hotwired/turbo-ios",
       "state" : {
         "branch" : "turbo-navigator",
-        "revision" : "4813e5e924bf3d4af10587f16e5731d99f0f0d87"
+        "revision" : "659041807e0055a66bef3b2f7e2b774eb5672bd7"
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

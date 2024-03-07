@@ -1,4 +1,4 @@
-import Hotwire
+import HotwireNative
 import SafariServices
 import UIKit
 import WebKit
