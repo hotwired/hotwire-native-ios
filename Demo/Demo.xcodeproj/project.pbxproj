@@ -137,7 +137,7 @@
 			);
 			mainGroup = 844BA77E2B9A4843008F48DB;
 			packageReferences = (
-				844BA79E2B9A484C008F48DB /* XCLocalSwiftPackageReference "../../workspace/external/hotwired/hotwire-native-ios" */,
+				844BA79E2B9A484C008F48DB /* XCLocalSwiftPackageReference "../" */,
 			);
 			productRefGroup = 844BA7882B9A4843008F48DB /* Products */;
 			projectDirPath = "";
@@ -385,9 +385,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		844BA79E2B9A484C008F48DB /* XCLocalSwiftPackageReference "../../workspace/external/hotwired/hotwire-native-ios" */ = {
+		844BA79E2B9A484C008F48DB /* XCLocalSwiftPackageReference "../" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../workspace/external/hotwired/hotwire-native-ios";
+			relativePath = ../;
 		};
 /* End XCLocalSwiftPackageReference section */
 
