@@ -9,7 +9,7 @@ Here are the additional changes, features, and configuration that Hotwire Native
 Importing Hotwire imports both Turbo and Strada. You don't need to import each framework individually.
 
 ```swift
-import Hotwire
+import HotwireNative
 
 let navigator = TurboNavigator() // Part of Turbo
 final class FormComponent: BridgeComponent { /* ... */ } // Part of Strada

@@ -1,5 +1,5 @@
 import XCTest
-@testable import Hotwire
+@testable import HotwireNative
 
 final class HotwireTests: XCTestCase {
     func testExample() throws {

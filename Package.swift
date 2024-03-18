@@ -14,20 +14,31 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/hotwired/turbo-ios", branch: "turbo-navigator"),
-        .package(url: "https://github.com/hotwired/strada-ios", branch: "main"),
+        .package(url: "https://github.com/AliSoftware/OHHTTPStubs", .upToNextMajor(from: "9.0.0")),
+        .package(url: "https://github.com/envoy/Embassy.git", .upToNextMajor(from: "4.1.4"))
     ],
     targets: [
         .target(
             name: "HotwireNative",
-            dependencies: [
-                .product(name: "Turbo", package: "turbo-ios"),
-                .product(name: "Strada", package: "strada-ios"),
+            dependencies: [],
+            path: "Source",
+            resources: [
+                .copy("Turbo/WebView/turbo.js"),
+                .copy("Bridge/strada.js")
             ]
         ),
         .testTarget(
             name: "HotwireNativeTests",
-            dependencies: ["HotwireNative"]
+            dependencies: [
+                "HotwireNative",
+                .product(name: "OHHTTPStubsSwift", package: "OHHTTPStubs"),
+                .product(name: "Embassy", package: "Embassy")
+            ],
+            path: "Tests",
+            resources: [
+                .copy("Turbo/Fixtures"),
+                .copy("Turbo/Server")
+            ]
         ),
     ]
 )

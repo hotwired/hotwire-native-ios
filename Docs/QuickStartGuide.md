@@ -11,7 +11,7 @@ This is a quick start guide to creating the most minimal Hotwire Native iOS appl
 4. Open `SceneDelegate`, and replace the entire file with this code:
 
 ```swift
-import Hotwire
+import HotwireNative
 import UIKit
 
 let rootURL = URL(string: "https://turbo-native-demo.glitch.me")!
