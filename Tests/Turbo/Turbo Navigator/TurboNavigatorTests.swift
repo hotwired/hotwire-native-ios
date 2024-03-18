@@ -1,5 +1,5 @@
-import SafariServices
 @testable import HotwireNative
+import SafariServices
 import XCTest
 
 /// Tests are written in the following format:
@@ -255,7 +255,7 @@ final class TurboNavigationHierarchyControllerTests: XCTestCase {
 
         /// No assertions needed. App will crash if we pass a non-http or non-https scheme to SFSafariViewController.
     }
-    
+
     // MARK: Private
 
     private enum Context {

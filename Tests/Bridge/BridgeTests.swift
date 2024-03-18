@@ -1,6 +1,6 @@
-import XCTest
-import WebKit
 @testable import HotwireNative
+import WebKit
+import XCTest
 
 class BridgeTests: XCTestCase {
     func testInitWithANewWebViewAutomaticallyLoadsIntoWebView() {
@@ -73,7 +73,6 @@ class BridgeTests: XCTestCase {
                               metadata: metadata,
                               jsonData: data)
 
-        
         try? await bridge.reply(with: message)
         XCTAssertEqual(webView.lastEvaluatedJavaScript, "window.nativeBridge.replyWith({\"component\":\"page\",\"event\":\"connect\",\"data\":{\"title\":\"Page-title\"},\"id\":\"1\"})")
     }

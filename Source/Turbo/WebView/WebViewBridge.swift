@@ -31,9 +31,9 @@ final class WebViewBridge {
     weak var delegate: WebViewDelegate?
     weak var pageLoadDelegate: WebViewPageLoadDelegate?
     weak var visitDelegate: WebViewVisitDelegate?
-    
+
     let webView: WKWebView
-    
+
     deinit {
         webView.configuration.userContentController.removeScriptMessageHandler(forName: messageHandlerName)
     }
@@ -42,20 +42,20 @@ final class WebViewBridge {
         self.webView = webView
         setup()
     }
-    
+
     private func setup() {
         webView.configuration.userContentController.addUserScript(userScript)
         webView.configuration.userContentController.add(ScriptMessageHandler(delegate: self), name: messageHandlerName)
     }
-    
+
     private var userScript: WKUserScript {
         let url = Bundle.module.url(forResource: "turbo", withExtension: "js")!
         let source = try! String(contentsOf: url, encoding: .utf8)
         return WKUserScript(source: source, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
     }
-    
+
     // MARK: - JS
-    
+
     func visitLocation(_ location: URL, options: VisitOptions, restorationIdentifier: String?) {
         callJavaScript(function: "window.turboNative.visitLocationWithOptionsAndRestorationIdentifier", arguments: [
             location.absoluteString,
@@ -63,7 +63,7 @@ final class WebViewBridge {
             restorationIdentifier
         ])
     }
-    
+
     func clearSnapshotCache() {
         callJavaScript(function: "window.turboNative.clearSnapshotCache")
     }
@@ -76,20 +76,20 @@ final class WebViewBridge {
 
     private func callJavaScript(function: String, arguments: [Any?] = []) {
         let expression = JavaScriptExpression(function: function, arguments: arguments)
-        
+
         guard let script = expression.wrappedString else {
             NSLog("Error formatting JavaScript expression `%@'", function)
             return
         }
-        
+
         debugLog("[Bridge] → \(function) \(arguments)")
 
         webView.evaluateJavaScript(script) { result, error in
             debugLog("[Bridge] = \(function) evaluation complete")
-            
+
             if let result = result as? [String: Any], let error = result["error"] as? String, let stack = result["stack"] as? String {
                 NSLog("Error evaluating JavaScript function `%@': %@\n%@", function, error, stack)
-            } else if let error = error {
+            } else if let error {
                 self.delegate?.webView(self, didFailJavaScriptEvaluationWithError: error)
             }
         }
@@ -99,11 +99,11 @@ final class WebViewBridge {
 extension WebViewBridge: ScriptMessageHandlerDelegate {
     func scriptMessageHandlerDidReceiveMessage(_ scriptMessage: WKScriptMessage) {
         guard let message = ScriptMessage(message: scriptMessage) else { return }
-        
+
         if message.name != .log {
             debugLog("[Bridge] ← \(message.name) \(message.data)")
         }
-        
+
         switch message.name {
         case .pageLoaded:
             pageLoadDelegate?.webView(self, didLoadPageWithRestorationIdentifier: message.restorationIdentifier!)

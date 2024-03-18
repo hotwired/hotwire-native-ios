@@ -1,7 +1,7 @@
 import Foundation
-import XCTest
-import WebKit
 import HotwireNative
+import WebKit
+import XCTest
 
 class BridgeComponentTest: XCTestCase {
     private var delegate: BridgeDelegateSpy!
@@ -12,7 +12,7 @@ class BridgeComponentTest: XCTestCase {
                                   event: "connect",
                                   metadata: .init(url: "https://37signals.com"),
                                   jsonData: "{\"title\":\"Page-title\",\"subtitle\":\"Page-subtitle\"}")
-    
+
     @MainActor
     override func setUp() async throws {
         destination = AppBridgeDestination()
@@ -20,34 +20,34 @@ class BridgeComponentTest: XCTestCase {
         component = OneBridgeComponent(destination: destination, delegate: delegate)
         component.didReceive(message: message)
     }
-    
+
     // MARK: didReceive(:) and caching
-    
+
     @MainActor
     func test_didReceiveCachesTheMessage() {
         let cachedMessage = component.receivedMessage(for: "connect")
         XCTAssertEqual(cachedMessage, message)
     }
-    
+
     @MainActor
     func test_didReceiveCachesOnlyTheLastMessage() {
         let newJsonData = "{\"title\":\"Page-title\"}"
         let newMessage = message.replacing(jsonData: newJsonData)
-        
+
         component.didReceive(message: newMessage)
-        
+
         let cachedMessage = component.receivedMessage(for: "connect")
         XCTAssertEqual(cachedMessage, newMessage)
     }
-    
+
     @MainActor
     func test_retrievingNonCachedMessageForEvent() {
         let cachedMessage = component.receivedMessage(for: "disconnect")
         XCTAssertNil(cachedMessage)
     }
-    
+
     // MARK: reply(to:)
-    
+
     @MainActor
     func test_replyToReceivedMessageSucceeds() async throws {
         let success = try await component.reply(to: "connect")
@@ -56,31 +56,31 @@ class BridgeComponentTest: XCTestCase {
         XCTAssertTrue(delegate.replyWithMessageWasCalled)
         XCTAssertEqual(delegate.replyWithMessageArg, message)
     }
-    
+
     @MainActor
     func test_replyToReceivedMessageWithACodableObjectSucceeds() async throws {
         let messageData = MessageData(title: "hey", subtitle: "", actionName: "tap")
         let newJsonData = "{\"title\":\"hey\",\"subtitle\":\"\",\"actionName\":\"tap\"}"
         let newMessage = message.replacing(jsonData: newJsonData)
-        
+
         let success = try await component.reply(to: "connect", with: messageData)
 
         XCTAssertTrue(success)
         XCTAssertTrue(delegate.replyWithMessageWasCalled)
         XCTAssertEqual(delegate.replyWithMessageArg, newMessage)
     }
-    
+
     @MainActor
     func test_replyToMessageNotReceivedWithACodableObjectIgnoresTheReply() async throws {
         let messageData = MessageData(title: "hey", subtitle: "", actionName: "tap")
-        
+
         let success = try await component.reply(to: "disconnect", with: messageData)
 
         XCTAssertFalse(success)
         XCTAssertFalse(delegate.replyWithMessageWasCalled)
         XCTAssertNil(delegate.replyWithMessageArg)
     }
-    
+
     @MainActor
     func test_replyToMessageNotReceivedIgnoresTheReply() async throws {
         let success = try await component.reply(to: "disconnect")
@@ -89,7 +89,7 @@ class BridgeComponentTest: XCTestCase {
         XCTAssertFalse(delegate.replyWithMessageWasCalled)
         XCTAssertNil(delegate.replyWithMessageArg)
     }
-    
+
     @MainActor
     func test_replyToMessageNotReceivedWithJsonDataIgnoresTheReply() async throws {
         let success = try await component.reply(to: "disconnect", with: "{\"title\":\"Page-title\"}")
@@ -119,7 +119,7 @@ class BridgeComponentTest: XCTestCase {
 
         wait(for: [expectation], timeout: .expectationTimeout)
     }
-    
+
     @MainActor
     func test_replyToReceivedMessageWithACodableObjectSucceeds() {
         let messageData = MessageData(title: "hey", subtitle: "", actionName: "tap")
@@ -141,7 +141,7 @@ class BridgeComponentTest: XCTestCase {
 
         wait(for: [expectation], timeout: .expectationTimeout)
     }
-    
+
     @MainActor
     func test_replyToMessageNotReceivedWithACodableObjectIgnoresTheReply() {
         let messageData = MessageData(title: "hey", subtitle: "", actionName: "tap")
@@ -161,7 +161,7 @@ class BridgeComponentTest: XCTestCase {
 
         wait(for: [expectation], timeout: .expectationTimeout)
     }
-    
+
     @MainActor
     func test_replyToMessageNotReceivedIgnoresTheReply() {
         let expectation = expectation(description: "Wait for completion.")
@@ -180,7 +180,7 @@ class BridgeComponentTest: XCTestCase {
 
         wait(for: [expectation], timeout: .expectationTimeout)
     }
-    
+
     @MainActor
     func test_replyToMessageNotReceivedWithJsonDataIgnoresTheReply() {
         let expectation = expectation(description: "Wait for completion.")
@@ -201,12 +201,12 @@ class BridgeComponentTest: XCTestCase {
     }
 
     // MARK: reply(with:)
-   
+
     @MainActor
     func test_replyWithSucceedsWhenBridgeIsSet() async throws {
         let newJsonData = "{\"title\":\"Page-title\"}"
         let newMessage = message.replacing(jsonData: newJsonData)
-        
+
         let success = try await component.reply(with: newMessage)
 
         XCTAssertTrue(success)

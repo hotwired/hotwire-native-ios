@@ -1,9 +1,9 @@
 import Foundation
-import XCTest
 import HotwireNative
+import XCTest
 
 final class ComposerComponent: BridgeComponent {
-    static override var name: String { "composer" }
+    override static var name: String { "composer" }
     
     override func onReceive(message: Message) {
         guard let event = InboundEvent(rawValue: message.event) else {
@@ -19,7 +19,8 @@ final class ComposerComponent: BridgeComponent {
     
     func selectSender(emailAddress: String) async throws {
         guard let message = receivedMessage(for: InboundEvent.connect.rawValue),
-              let senders: [Sender] = message.data() else {
+              let senders: [Sender] = message.data()
+        else {
             return
         }
         
@@ -34,7 +35,8 @@ final class ComposerComponent: BridgeComponent {
     
     func selectedSender() -> String? {
         guard let message = receivedMessage(for: InboundEvent.connect.rawValue),
-              let senders: [Sender] = message.data() else {
+              let senders: [Sender] = message.data()
+        else {
             return nil
         }
         
@@ -71,4 +73,3 @@ extension ComposerComponent {
         let selectedIndex: Int
     }
 }
-

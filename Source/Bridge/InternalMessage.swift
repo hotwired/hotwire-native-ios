@@ -12,7 +12,8 @@ struct InternalMessage {
     init(id: String,
          component: String,
          event: String,
-         data: InternalMessageData) {
+         data: InternalMessageData)
+    {
         self.id = id
         self.component = component
         self.event = event
@@ -39,7 +40,8 @@ struct InternalMessage {
     init?(jsonObject: [String: AnyHashable]) {
         guard let id = jsonObject[CodingKeys.id.rawValue] as? String,
               let component = jsonObject[CodingKeys.component.rawValue] as? String,
-              let event = jsonObject[CodingKeys.event.rawValue] as? String else {
+              let event = jsonObject[CodingKeys.event.rawValue] as? String
+        else {
             logger.error("Error parsing script message: \(jsonObject)")
             return nil
         }

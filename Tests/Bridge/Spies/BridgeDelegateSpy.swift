@@ -1,6 +1,6 @@
 import Foundation
-import WebKit
 import HotwireNative
+import WebKit
 
 final class BridgeDelegateSpy: BridgingDelegate {
     let location: String = ""
@@ -10,13 +10,9 @@ final class BridgeDelegateSpy: BridgingDelegate {
     var replyWithMessageWasCalled = false
     var replyWithMessageArg: Message?
     
-    func webViewDidBecomeActive(_ webView: WKWebView) {
-        
-    }
+    func webViewDidBecomeActive(_ webView: WKWebView) {}
     
-    func webViewDidBecomeDeactivated() {
-        
-    }
+    func webViewDidBecomeDeactivated() {}
     
     func reply(with message: Message) async throws -> Bool {
         replyWithMessageWasCalled = true
@@ -25,33 +21,21 @@ final class BridgeDelegateSpy: BridgingDelegate {
         return true
     }
     
-    func onViewDidLoad() {
-        
-    }
+    func onViewDidLoad() {}
     
-    func onViewWillAppear() {
-        
-    }
+    func onViewWillAppear() {}
     
-    func onViewDidAppear() {
-        
-    }
+    func onViewDidAppear() {}
     
-    func onViewWillDisappear() {
-        
-    }
+    func onViewWillDisappear() {}
     
-    func onViewDidDisappear() {
-        
-    }
+    func onViewDidDisappear() {}
     
-    func component<C>() -> C? where C : BridgeComponent {
+    func component<C>() -> C? where C: BridgeComponent {
         return nil
     }
     
-    func bridgeDidInitialize() {
-        
-    }
+    func bridgeDidInitialize() {}
     
     func bridgeDidReceiveMessage(_ message: Message) -> Bool {
         return false

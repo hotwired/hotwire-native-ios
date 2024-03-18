@@ -24,7 +24,8 @@ public struct Message: Equatable {
                 component: String,
                 event: String,
                 metadata: Metadata?,
-                jsonData: String) {
+                jsonData: String)
+    {
         self.id = id
         self.component = component
         self.event = event
@@ -33,14 +34,15 @@ public struct Message: Equatable {
     }
 }
 
-extension Message {
+public extension Message {
     /// Replaces the existing `Message`'s data with passed-in data and event.
     /// - Parameters:
     ///   - updatedEvent: The updated event of this message. If omitted, the existing event is used.
     ///   - updatedData: The updated data of this message. If omitted, the existing data is used.
     /// - Returns: A new `Message` with the provided data.
-    public func replacing(event updatedEvent: String? = nil,
-                          jsonData updatedData: String? = nil) -> Message {
+    func replacing(event updatedEvent: String? = nil,
+                   jsonData updatedData: String? = nil) -> Message
+    {
         Message(id: id,
                 component: component,
                 event: updatedEvent ?? event,
@@ -53,8 +55,9 @@ extension Message {
     ///   - updatedEvent: The updated event of this message. If omitted, the existing event is used.
     ///   - data: An instance conforming to `Encodable` to be included as data in the message.
     /// - Returns: A new `Message` with the provided data.
-    public func replacing<T: Encodable>(event updatedEvent: String? = nil,
-                                        data: T) -> Message {
+    func replacing<T: Encodable>(event updatedEvent: String? = nil,
+                                 data: T) -> Message
+    {
         let updatedData: String?
         do {
             let jsonData = try Strada.config.jsonEncoder.encode(data)
@@ -69,7 +72,7 @@ extension Message {
     
     /// Returns a value of the type you specify, decoded from the `jsonData`.
     /// - Returns: A value of the specified type, if the decoder can parse the data, otherwise nil.
-    public func data<T: Decodable>() -> T? {
+    func data<T: Decodable>() -> T? {
         guard let data = jsonData.data(using: .utf8) else {
             logger.error("Error converting json string to data: \(jsonData)")
             return nil
@@ -85,8 +88,8 @@ extension Message {
     }
 }
 
-extension Message {
-    public struct Metadata: Equatable {
+public extension Message {
+    struct Metadata: Equatable {
         public let url: String
         
         public init(url: String) {
@@ -95,7 +98,7 @@ extension Message {
     }
 }
 
-extension Message {
+public extension Message {
     /// Using `Equatable`'s default implementation is bound to give us false positives
     /// since two `Message`s may have semantically equal, but textually different, `jsonData`.
     ///
@@ -111,11 +114,11 @@ extension Message {
     ///   - lhs: a message
     ///   - rhs: another message
     /// - Returns: true if they're semantically equal
-    public static func == (lhs: Self, rhs: Self) -> Bool {
+    static func == (lhs: Self, rhs: Self) -> Bool {
         return lhs.id == rhs.id &&
-        lhs.component == rhs.component &&
-        lhs.event == rhs.event &&
-        lhs.metadata == rhs.metadata &&
-        lhs.jsonData.jsonObject() as? [String: AnyHashable] == rhs.jsonData.jsonObject() as? [String: AnyHashable]
+            lhs.component == rhs.component &&
+            lhs.event == rhs.event &&
+            lhs.metadata == rhs.metadata &&
+            lhs.jsonData.jsonObject() as? [String: AnyHashable] == rhs.jsonData.jsonObject() as? [String: AnyHashable]
     }
 }

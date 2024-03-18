@@ -9,10 +9,10 @@ enum JavaScriptError: Error, Equatable {
 struct JavaScript {
     /// The object to call the function on, nil by default
     var object: String? = nil
-    
+
     /// The function name without parens
     let functionName: String
-    
+
     /// An array representing arguments. Arguments will passed to function like so:
     /// functionName(args[0], args[1], ...)
     var arguments: [Any] = []
@@ -23,12 +23,12 @@ struct JavaScript {
         let function = sanitizedFunctionName(functionName)
         return "\(function)(\(encodedArguments))"
     }
-    
+
     private func encode(arguments: [Any]) throws -> String {
         guard JSONSerialization.isValidJSONObject(arguments) else {
             throw JavaScriptError.invalidArgumentType
         }
-        
+
         let data = try JSONSerialization.data(withJSONObject: arguments, options: [])
         let string = String(data: data, encoding: .utf8)!
         return String(string.dropFirst().dropLast())
@@ -37,7 +37,7 @@ struct JavaScript {
     private func sanitizedFunctionName(_ name: String) -> String {
         // Strip parens if included
         let name = name.hasSuffix("()") ? String(name.dropLast(2)) : name
-        
+
         if let object = object {
             return "\(object).\(name)"
         } else {

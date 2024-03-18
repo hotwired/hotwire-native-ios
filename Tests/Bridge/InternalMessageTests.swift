@@ -1,9 +1,8 @@
-import XCTest
-import WebKit
 @testable import HotwireNative
+import WebKit
+import XCTest
 
 class InternalMessageTests: XCTestCase {
-    
     private let json = """
     {
         "id":"1",
@@ -42,9 +41,9 @@ class InternalMessageTests: XCTestCase {
         let pageData = try? JSONEncoder().encode(page)
         let pageJSON = try? JSONSerialization.jsonObject(with: pageData!) as? [String: AnyHashable]
         let internalMessage = InternalMessage(id: "1",
-                                      component: "page",
-                                      event: "connect",
-                                      data: pageJSON!)
+                                              component: "page",
+                                              event: "connect",
+                                              data: pageJSON!)
         let message = internalMessage.toMessage()
         
         XCTAssertEqual(message.id, "1")
@@ -52,7 +51,7 @@ class InternalMessageTests: XCTestCase {
         XCTAssertEqual(message.event, "connect")
         XCTAssertEqual(message.metadata?.url, "https://37signals.com")
         
-        let originalJSONObject = messageJsonData.jsonObject() as? [String : AnyHashable]
+        let originalJSONObject = messageJsonData.jsonObject() as? [String: AnyHashable]
         let messageJSONObject = message.jsonData.jsonObject() as? [String: AnyHashable]
         XCTAssertEqual(originalJSONObject, messageJSONObject)
     }

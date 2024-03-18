@@ -1,7 +1,7 @@
 import Foundation
-import XCTest
-import WebKit
 @testable import HotwireNative
+import WebKit
+import XCTest
 
 class BridgeDelegateTests: XCTestCase {
     private var delegate: BridgeDelegate!
@@ -243,6 +243,7 @@ private final class RedirectedWebView: WKWebView {
         super.init(frame: .zero, configuration: WKWebViewConfiguration())
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

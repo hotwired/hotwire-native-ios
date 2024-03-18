@@ -2,12 +2,11 @@ import Foundation
 
 extension String {
     func jsonObject() -> Any? {
-        guard let jsonData = self.data(using: .utf8) else {
+        guard let jsonData = data(using: .utf8) else {
             logger.error("Error converting JSON string to data. \nJSON string: \(self)")
             return nil
-            
         }
-        
+
         do {
             let object = try JSONSerialization.jsonObject(with: jsonData)
             return object

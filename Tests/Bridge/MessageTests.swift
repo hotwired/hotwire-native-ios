@@ -1,8 +1,7 @@
-import XCTest
 @testable import HotwireNative
+import XCTest
 
 class MessageTests: XCTestCase {
-    
     private let metadata = Message.Metadata(url: "https://37signals.com")
     
     override func setUp() async throws {
@@ -190,8 +189,8 @@ class MessageTests: XCTestCase {
         Strada.config.jsonEncoder = encoder
         
         let messageData = MessageData(title: "Page-title",
-                                   subtitle: "Page-subtitle",
-                                   actionName: "go")
+                                      subtitle: "Page-subtitle",
+                                      actionName: "go")
 
         let jsonData = """
         {"title":"Page-title","subtitle":"Page-subtitle","action_name":"go"}

@@ -1,5 +1,5 @@
-import SafariServices
 @testable import HotwireNative
+import SafariServices
 import XCTest
 
 final class TurboNavigationDelegateTests: TurboNavigator {

@@ -32,13 +32,13 @@ open class BridgeComponent: BridgingComponent {
     /// Subclasses must provide their own implementation of this property.
     ///
     /// - Note: This property is used for identifying the component.
-    nonisolated open class var name: String {
+    open nonisolated class var name: String {
         fatalError("BridgeComponent subclass must provide a unique 'name'")
     }
     
     public unowned let delegate: BridgingDelegate
     
-    required public init(destination: BridgeDestination, delegate: BridgingDelegate) {
+    public required init(destination: BridgeDestination, delegate: BridgingDelegate) {
         self.delegate = delegate
     }
     
@@ -68,7 +68,7 @@ open class BridgeComponent: BridgingComponent {
         Task {
             do {
                 let result = try await delegate.reply(with: message)
-                completion?(.success((result)))
+                completion?(.success(result))
             } catch {
                 completion?(.failure(error))
             }
@@ -103,7 +103,7 @@ open class BridgeComponent: BridgingComponent {
         Task {
             do {
                 let result = try await reply(to: event)
-                completion?(.success((result)))
+                completion?(.success(result))
             } catch {
                 completion?(.failure(error))
             }
@@ -142,7 +142,7 @@ open class BridgeComponent: BridgingComponent {
         Task {
             do {
                 let result = try await reply(to: event, with: jsonData)
-                completion?(.success((result)))
+                completion?(.success(result))
             } catch {
                 completion?(.failure(error))
             }
@@ -183,7 +183,7 @@ open class BridgeComponent: BridgingComponent {
         Task {
             do {
                 let result = try await reply(to: event, with: data)
-                completion?(.success((result)))
+                completion?(.success(result))
             } catch {
                 completion?(.failure(error))
             }
@@ -277,4 +277,3 @@ open class BridgeComponent: BridgingComponent {
     
     private var receivedMessages = [String: Message]()
 }
-

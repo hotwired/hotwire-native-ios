@@ -1,6 +1,6 @@
 import Foundation
-import WebKit
 @testable import HotwireNative
+import WebKit
 
 final class BridgeSpy: Bridgable {
     var delegate: BridgeDelegate? = nil
@@ -17,6 +17,7 @@ final class BridgeSpy: Bridgable {
             }
         }
     }
+
     var registerComponentsContinuation: CheckedContinuation<Void, Never>?
     var registerComponentsArg: [String]? = nil
     

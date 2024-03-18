@@ -100,8 +100,8 @@ extension PathConfiguration: Equatable {
     }
 }
 
-extension PathConfiguration {
-    public enum Source: Equatable {
+public extension PathConfiguration {
+    enum Source: Equatable {
         case data(Data)
         case file(URL)
         case server(URL)

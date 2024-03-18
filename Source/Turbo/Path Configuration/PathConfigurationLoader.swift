@@ -43,8 +43,8 @@ final class PathConfigurationLoader {
         
         session.dataTask(with: url) { [weak self] data, response, error in
             guard let data = data,
-                let httpResponse = response as? HTTPURLResponse,
-                httpResponse.statusCode == 200
+                  let httpResponse = response as? HTTPURLResponse,
+                  httpResponse.statusCode == 200
             else {
                 debugPrint("[path-configuration] *** error - invalid response or data: \(String(describing: response)), error: \(String(describing: error))")
                 return

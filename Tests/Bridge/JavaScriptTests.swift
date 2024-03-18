@@ -1,5 +1,5 @@
-import XCTest
 @testable import HotwireNative
+import XCTest
 
 class JavaScriptTests: XCTestCase {
     func testToStringWithNoArguments() throws {

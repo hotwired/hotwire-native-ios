@@ -27,7 +27,7 @@ public final class Bridge: Bridgable {
             initialize(Bridge(webView: webView))
         }
     }
-    
+
     init(webView: WKWebView) {
         self.webView = webView
         loadIntoWebView()
@@ -37,21 +37,21 @@ public final class Bridge: Bridgable {
 
     /// Register a single component
     /// - Parameter component: Name of a component to register support for
-    @MainActor 
+    @MainActor
     func register(component: String) async throws {
         try await callBridgeFunction(.register, arguments: [component])
     }
 
     /// Register multiple components
     /// - Parameter components: Array of component names to register
-    @MainActor 
+    @MainActor
     func register(components: [String]) async throws {
         try await callBridgeFunction(.register, arguments: [components])
     }
 
     /// Unregister support for a single component
     /// - Parameter component: Component name
-    @MainActor 
+    @MainActor
     func unregister(component: String) async throws {
         try await callBridgeFunction(.unregister, arguments: [component])
     }

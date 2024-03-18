@@ -33,8 +33,9 @@ struct JavaScriptExpression {
         let arguments = arguments.map { $0 == nil ? NSNull() : $0! }
         
         guard let data = try? JSONSerialization.data(withJSONObject: arguments),
-            let string = String(data: data, encoding: .utf8) else {
-                return nil
+              let string = String(data: data, encoding: .utf8)
+        else {
+            return nil
         }
         
         // Strip leading/trailing [] so we have a list of arguments suitable for inserting between parens

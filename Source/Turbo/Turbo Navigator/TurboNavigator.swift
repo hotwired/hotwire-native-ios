@@ -56,7 +56,7 @@ public class TurboNavigator {
         guard let controller = controller(for: proposal) else { return }
         hierarchyController.route(controller: controller, proposal: proposal)
     }
-    
+
     /// Navigate to an external URL.
     ///
     /// - Parameters:
@@ -64,32 +64,31 @@ public class TurboNavigator {
     ///   - via: navigation action
     public func open(externalURL: URL, _ via: ExternalURLNavigationAction) {
         switch via {
-            
         case .openViaSystem:
             UIApplication.shared.open(externalURL)
-            
+
         case .openViaSafariController:
             /// SFSafariViewController will crash if we pass along a URL that's not valid.
             guard externalURL.scheme == "http" || externalURL.scheme == "https" else { return }
-            
+
             let safariViewController = SFSafariViewController(url: externalURL)
             safariViewController.modalPresentationStyle = .pageSheet
             if #available(iOS 15.0, *) {
                 safariViewController.preferredControlTintColor = .tintColor
             }
-            
+
             activeNavigationController.present(safariViewController, animated: true)
-            
+
         case .reject:
             return
         }
     }
-    
+
     public func appDidBecomeActive() {
         appInBackground = false
         inspectAllSessions()
     }
-    
+
     public func appDidEnterBackground() {
         appInBackground = true
     }
@@ -226,7 +225,7 @@ extension TurboNavigator {
     private func inspectAllSessions() {
         [session, modalSession].forEach { inspect($0) }
     }
-    
+
     private func reloadIfPermitted(_ session: Session) {
         /// If the web view process is terminated, it leaves the web view with a white screen, so we need to reload it.
         /// However, if the web view is no longer onscreen, such as after visiting a page and going back to a native view,
@@ -238,10 +237,11 @@ extension TurboNavigator {
         /// check if the view controller is visible, since it may be further back in the stack of a navigation controller.
         /// Seeing if there is a parent was the best solution I could find.
         guard let viewController = session.activeVisitable?.visitableViewController,
-              viewController.parent != nil else {
+              viewController.parent != nil
+        else {
             return
         }
-        
+
         if appInBackground {
             /// Don't reload the web view if the app is in the background.
             /// Instead, save the session in `backgroundTerminatedWebViewSessions`
@@ -249,19 +249,19 @@ extension TurboNavigator {
             backgroundTerminatedWebViewSessions.append(session)
             return
         }
-        
+
         reload(session)
     }
-    
+
     private func reload(_ session: Session) {
         session.reload()
     }
-    
+
     /// Inspects the provided session to handle terminated web view process and reloads or recreates the web view accordingly.
     ///
     /// - Parameter session: The session to inspect.
     ///
-    /// This method checks if the web view associated with the session has terminated in the background. 
+    /// This method checks if the web view associated with the session has terminated in the background.
     /// If so, it removes the session from the list of background terminated web view processes, reloads the session, and returns.
     /// If the session's topmost visitable URL is not available, the method returns without further action.
     /// If the web view's content process state is non-recoverable/terminated, it recreates the web view for the session.
@@ -271,35 +271,35 @@ extension TurboNavigator {
             reload(session)
             return
         }
-        
+
         guard let _ = session.topmostVisitable?.visitableURL else {
             return
         }
-        
+
         session.webView.queryWebContentProcessState { [weak self] state in
             guard case .terminated = state else { return }
             self?.recreateWebView(for: session)
         }
     }
-    
+
     /// Recreates the web view and session for the given session and performs a `replace` visit.
     ///
     /// - Parameter session: The session to recreate.
     private func recreateWebView(for session: Session) {
         guard let _ = session.activeVisitable?.visitableViewController,
               let url = session.activeVisitable?.visitableURL else { return }
-        
+
         let newSession = Session(webView: Turbo.config.makeWebView())
         newSession.pathConfiguration = session.pathConfiguration
         newSession.delegate = self
         newSession.webView.uiDelegate = webkitUIDelegate
-        
+
         if session == self.session {
             self.session = newSession
         } else {
-            self.modalSession = newSession
+            modalSession = newSession
         }
-        
+
         let options = VisitOptions(action: .replace, response: nil)
         let properties = session.pathConfiguration?.properties(for: url) ?? PathProperties()
         route(VisitProposal(url: url, options: options, properties: properties))

@@ -4,22 +4,22 @@ import Foundation
 final class AppBridgeDestination: BridgeDestination {}
 
 final class OneBridgeComponent: BridgeComponent {
-    static override var name: String { "one" }
-    
+    override static var name: String { "one" }
+
     required init(destination: BridgeDestination, delegate: BridgingDelegate) {
         super.init(destination: destination, delegate: delegate)
     }
-    
+
     override func onReceive(message: Message) {}
 }
 
 final class TwoBridgeComponent: BridgeComponent {
-    static override var name: String { "two" }
-    
+    override static var name: String { "two" }
+
     required init(destination: BridgeDestination, delegate: BridgingDelegate) {
         super.init(destination: destination, delegate: delegate)
     }
-    
+
     override func onReceive(message: Message) {}
 }
 

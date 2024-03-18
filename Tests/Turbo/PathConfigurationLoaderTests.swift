@@ -1,6 +1,6 @@
+@testable import HotwireNative
 import OHHTTPStubs
 import OHHTTPStubsSwift
-@testable import HotwireNative
 import XCTest
 
 class PathConfigurationLoaderTests: XCTestCase {

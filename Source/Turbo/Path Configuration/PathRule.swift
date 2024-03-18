@@ -23,7 +23,7 @@ public struct PathRule: Equatable {
         for pattern in patterns {
             guard let regex = try? NSRegularExpression(pattern: pattern) else { continue }
             
-            let range = NSRange(path.startIndex..<path.endIndex, in: path)
+            let range = NSRange(path.startIndex ..< path.endIndex, in: path)
             if regex.numberOfMatches(in: path, range: range) > 0 {
                 return true
             }
@@ -36,7 +36,7 @@ public struct PathRule: Equatable {
 extension PathRule {
     init(json: [String: Any]) throws {
         guard let patterns = json["patterns"] as? [String],
-            let properties = json["properties"] as? [String: AnyHashable]
+              let properties = json["properties"] as? [String: AnyHashable]
         else {
             throw JSONDecodingError.invalidJSON
         }

@@ -2,12 +2,12 @@ import UIKit
 import WebKit
 
 open class VisitableView: UIView {
-    public override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         setup()
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
+
+    public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setup()
     }
@@ -66,14 +66,14 @@ open class VisitableView: UIView {
 
     private func installRefreshControl() {
         guard let scrollView = webView?.scrollView, allowsPullToRefresh else { return }
-        
+
         #if !targetEnvironment(macCatalyst)
         scrollView.addSubview(refreshControl)
 
         /// Infer refresh control's default height from its frame, if given.
         /// Otherwise fallback to 60 (the default height).
         let refreshControlHeight = refreshControl.frame.height > 0 ? refreshControl.frame.height : 60
-        
+
         NSLayoutConstraint.activate([
             refreshControl.centerXAnchor.constraint(equalTo: centerXAnchor),
             refreshControl.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
@@ -136,7 +136,7 @@ open class VisitableView: UIView {
     }
 
     open func updateScreenshot() {
-        guard !isShowingScreenshot, let webView = self.webView, let screenshot = webView.snapshotView(afterScreenUpdates: false) else { return }
+        guard !isShowingScreenshot, let webView = webView, let screenshot = webView.snapshotView(afterScreenUpdates: false) else { return }
 
         screenshotView?.removeFromSuperview()
         screenshot.translatesAutoresizingMaskIntoConstraints = false
@@ -149,7 +149,7 @@ open class VisitableView: UIView {
             screenshot.heightAnchor.constraint(equalToConstant: screenshot.bounds.size.height)
         ])
 
-        screenshotView = screenshot        
+        screenshotView = screenshot
     }
 
     open func showScreenshot() {
@@ -170,7 +170,7 @@ open class VisitableView: UIView {
     }
 
     // MARK: - Constraints
-    
+
     private func addFillConstraints(for view: UIView) {
         NSLayoutConstraint.activate([
             view.leadingAnchor.constraint(equalTo: leadingAnchor),

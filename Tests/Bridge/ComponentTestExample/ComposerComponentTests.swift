@@ -1,6 +1,6 @@
-import XCTest
-import WebKit
 import HotwireNative
+import WebKit
+import XCTest
 
 final class ComposerComponentTests: XCTestCase {
     private var delegate: BridgeDelegateSpy!

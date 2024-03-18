@@ -2,7 +2,7 @@ import Foundation
 import HotwireNative
 
 final class BridgeComponentSpy: BridgeComponent {
-    static override var name: String { "two" }
+    override static var name: String { "two" }
     
     var onReceiveMessageWasCalled = false
     var onReceiveMessageArg: Message?

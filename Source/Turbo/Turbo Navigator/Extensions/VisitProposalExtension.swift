@@ -45,7 +45,7 @@ public extension VisitProposal {
     /// }
     /// ```
     ///
-    /// A VisitProposal to `https://example.com/recipes/` will have 
+    /// A VisitProposal to `https://example.com/recipes/` will have
     /// ```swift
     /// proposal.viewController == "recipes"
     /// ```
