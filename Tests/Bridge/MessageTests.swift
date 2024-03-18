@@ -5,7 +5,11 @@ class MessageTests: XCTestCase {
     private let metadata = Message.Metadata(url: "https://37signals.com")
     
     override func setUp() async throws {
-        Strada.config.jsonEncoder = JSONEncoder()
+        let encoder = JSONEncoder()
+        // Sort keys for deterministic matching.
+        encoder.outputFormatting = [.sortedKeys]
+        Strada.config.jsonEncoder = encoder
+
         Strada.config.jsonDecoder = JSONDecoder()
     }
     
@@ -106,8 +110,8 @@ class MessageTests: XCTestCase {
                               metadata: metadata,
                               jsonData: "{}")
         let messageData = MessageData(title: "hey", subtitle: "", actionName: "tap")
-        let newJsonData = "{\"title\":\"hey\",\"subtitle\":\"\",\"actionName\":\"tap\"}"
-        
+        let newJsonData = "{\"actionName\":\"tap\",\"subtitle\":\"\",\"title\":\"hey\"}"
+
         let newMessage = message.replacing(event: newEvent, data: messageData)
         
         XCTAssertEqual(newMessage.id, "1")
@@ -125,8 +129,8 @@ class MessageTests: XCTestCase {
                               metadata: metadata,
                               jsonData: "{\"title\":\"Page-title\"}")
         let messageData = MessageData(title: "hey", subtitle: "", actionName: "tap")
-        let newJsonData = "{\"title\":\"hey\",\"subtitle\":\"\",\"actionName\":\"tap\"}"
-        
+        let newJsonData = "{\"actionName\":\"tap\",\"subtitle\":\"\",\"title\":\"hey\"}"
+
         let newMessage = message.replacing(data: messageData)
 
         XCTAssertEqual(newMessage.id, "1")

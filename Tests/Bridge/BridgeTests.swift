@@ -74,7 +74,15 @@ class BridgeTests: XCTestCase {
                               jsonData: data)
 
         try? await bridge.reply(with: message)
-        XCTAssertEqual(webView.lastEvaluatedJavaScript, "window.nativeBridge.replyWith({\"component\":\"page\",\"event\":\"connect\",\"data\":{\"title\":\"Page-title\"},\"id\":\"1\"})")
+
+        // JavaScript serialization is non-deterministic.
+        let javascript = try XCTUnwrap(webView.lastEvaluatedJavaScript)
+        XCTAssert(javascript.hasPrefix("window.nativeBridge.replyWith({"))
+        XCTAssert(javascript.contains("\"component\":\"page\""))
+        XCTAssert(javascript.contains("\"event\":\"connect\""))
+        XCTAssert(javascript.contains("\"id\":\"1\""))
+        XCTAssert(javascript.contains("\"data\":{\"title\":\"Page-title\"}"))
+        XCTAssert(javascript.hasSuffix("})"))
     }
     
     @MainActor
