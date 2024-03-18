@@ -1,13 +1,13 @@
 import UIKit
 import WebKit
 
-/// A base controller to use or subclass that handles Strada lifecycle callbacks.
-/// Use `Hotwire.registerStradaComponents(_:)` to register Strada components.
+/// A base controller to use or subclass that handles bridge lifecycle callbacks.
+/// Use `Hotwire.registerBridgeComponents(_:)` to register bridge components.
 open class HotwireWebViewController: VisitableViewController, BridgeDestination {
     public lazy var bridgeDelegate = BridgeDelegate(
         location: visitableURL.absoluteString,
         destination: self,
-        componentTypes: Hotwire.stradaComponentTypes
+        componentTypes: Hotwire.bridgeComponentTypes
     )
 
     // MARK: View lifecycle

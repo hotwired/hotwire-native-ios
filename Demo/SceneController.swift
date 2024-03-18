@@ -11,8 +11,8 @@ final class SceneController: UIResponder {
 
     // MARK: - Setup
 
-    private func configureStrada() {
-        Hotwire.registerStradaComponents([
+    private func configureBridge() {
+        Hotwire.registerBridgeComponents([
             FormComponent.self,
             MenuComponent.self,
             OverflowMenuComponent.self,
@@ -48,7 +48,7 @@ extension SceneController: UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         window?.makeKeyAndVisible()
 
-        configureStrada()
+        configureBridge()
         configureRootViewController()
 
         navigator.route(rootURL)
