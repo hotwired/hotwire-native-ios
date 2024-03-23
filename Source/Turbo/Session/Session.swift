@@ -37,7 +37,7 @@ public class Session: NSObject {
 
     private var currentVisit: Visit?
     private var topmostVisit: Visit?
-    private var disappearingVisitForSnapshotting: Visit?
+    private var previousVisit: Visit?
 
     /// The topmost visitable is the visitable that has most recently completed a visit
     public var topmostVisitable: Visitable? {
@@ -228,8 +228,10 @@ extension Session: VisitDelegate {
 
 extension Session: VisitableDelegate {
     public func visitableViewWillAppear(_ visitable: Visitable) {
-        let lastDisappearingVisit = disappearingVisitForSnapshotting
-        disappearingVisitForSnapshotting = nil
+        defer {
+            /// Nilling out the previous visit here prevents `double-snapshotting` for web -> web visits.
+            previousVisit = nil
+        }
 
         guard let topmostVisit = topmostVisit, let currentVisit = currentVisit else { return }
 
@@ -251,8 +253,11 @@ extension Session: VisitableDelegate {
         } else if visitable === currentVisit.visitable && currentVisit.state == .started {
             // Navigating forward - complete navigation early
             completeNavigationForCurrentVisit()
-        } else if visitable !== topmostVisit.visitable || visitable === lastDisappearingVisit?.visitable {
-            // Navigating backward
+        } else if visitable !== topmostVisit.visitable {
+            // Navigating backward from a web view screen to a web view screen.
+            visit(visitable, action: .restore)
+        } else if visitable === previousVisit?.visitable {
+            // Navigating backward from a native to a web view screen.
             visit(visitable, action: .restore)
         }
     }
@@ -271,11 +276,11 @@ extension Session: VisitableDelegate {
     }
 
     public func visitableViewWillDisappear(_ visitable: Visitable) {
-        disappearingVisitForSnapshotting = topmostVisit
+        previousVisit = topmostVisit
     }
 
     public func visitableViewDidDisappear(_ visitable: Visitable) {
-        disappearingVisitForSnapshotting?.cacheSnapshot()
+        previousVisit?.cacheSnapshot()
         deactivateVisitable(visitable)
     }
 
