@@ -57,10 +57,16 @@
         }
       }
     }
-      
+
     clearSnapshotCache() {
       if (window.Turbo) {
         Turbo.session.clearCache()
+      }
+    }
+
+    cacheSnapshot() {
+      if (window.Turbo) {
+        Turbo.session.view.cacheSnapshot()
       }
     }
 
@@ -150,7 +156,7 @@
     visitCompleted(visit) {
       this.postMessage("visitCompleted", { identifier: visit.identifier, restorationIdentifier: visit.restorationIdentifier })
     }
-      
+
     formSubmissionStarted(formSubmission) {
       this.postMessage("formSubmissionStarted", { location: formSubmission.location.toString() })
     }
