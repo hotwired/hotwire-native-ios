@@ -4,12 +4,22 @@ public enum Turbo {
     public static var config = TurboConfig()
 }
 
+public extension TurboConfig {
+    class PathConfiguration {
+        /// Enable to match the query string when applying rules in addition to the path.
+        public var matchQueryStrings = false
+    }
+}
+
 public class TurboConfig {
     public typealias WebViewBlock = (_ configuration: WKWebViewConfiguration) -> WKWebView
 
     /// Override to set a custom user agent.
     /// - Important: Include "Turbo Native" to use `turbo_native_app?` on your Rails server.
     public var userAgent = "Turbo Native iOS"
+
+    /// Configure options for matching path rules.
+    public var pathConfiguration = PathConfiguration()
 
     /// The view controller used in `TurboNavigator` for web requests. Must be
     /// a `VisitableViewController` or subclass.
