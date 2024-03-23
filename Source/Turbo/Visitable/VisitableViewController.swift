@@ -28,6 +28,16 @@ open class VisitableViewController: UIViewController, Visitable {
         visitableDelegate?.visitableViewDidAppear(self)
     }
 
+    override open func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        visitableDelegate?.visitableViewWillDisappear(self)
+    }
+
+    override open func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        visitableDelegate?.visitableViewDidDisappear(self)
+    }
+
     // MARK: Visitable
 
     open func visitableDidRender() {
