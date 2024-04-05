@@ -3,14 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		844BA78B2B9A4843008F48DB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844BA78A2B9A4843008F48DB /* AppDelegate.swift */; };
 		844BA7942B9A4844008F48DB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 844BA7932B9A4844008F48DB /* Assets.xcassets */; };
 		844BA7972B9A4844008F48DB /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 844BA7962B9A4844008F48DB /* Base */; };
-		844BA7A02B9A484C008F48DB /* HotwireNative in Frameworks */ = {isa = PBXBuildFile; productRef = 844BA79F2B9A484C008F48DB /* HotwireNative */; };
 		844BA7B02B9A488A008F48DB /* SceneController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844BA7A22B9A4889008F48DB /* SceneController.swift */; };
 		844BA7B12B9A488A008F48DB /* FormComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844BA7A32B9A488A008F48DB /* FormComponent.swift */; };
 		844BA7B52B9A488A008F48DB /* OverflowMenuComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844BA7AA2B9A488A008F48DB /* OverflowMenuComponent.swift */; };
@@ -18,6 +17,7 @@
 		844BA7B72B9A488A008F48DB /* NumbersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844BA7AC2B9A488A008F48DB /* NumbersViewController.swift */; };
 		844BA7B82B9A488A008F48DB /* Demo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844BA7AD2B9A488A008F48DB /* Demo.swift */; };
 		844BA7B92B9A488A008F48DB /* path-configuration.json in Resources */ = {isa = PBXBuildFile; fileRef = 844BA7AE2B9A488A008F48DB /* path-configuration.json */; };
+		84695B6D2BC0B5DF00F7BD7A /* HotwireNative in Frameworks */ = {isa = PBXBuildFile; productRef = 84695B6C2BC0B5DF00F7BD7A /* HotwireNative */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +33,7 @@
 		844BA7AC2B9A488A008F48DB /* NumbersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumbersViewController.swift; sourceTree = "<group>"; };
 		844BA7AD2B9A488A008F48DB /* Demo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Demo.swift; sourceTree = "<group>"; };
 		844BA7AE2B9A488A008F48DB /* path-configuration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "path-configuration.json"; sourceTree = "<group>"; };
+		84695B6B2BC0B5D400F7BD7A /* .. */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,7 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				844BA7A02B9A484C008F48DB /* HotwireNative in Frameworks */,
+				84695B6D2BC0B5DF00F7BD7A /* HotwireNative in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -51,7 +52,9 @@
 			isa = PBXGroup;
 			children = (
 				844BA7892B9A4843008F48DB /* Demo */,
+				84695B662BC0B55600F7BD7A /* Packages */,
 				844BA7882B9A4843008F48DB /* Products */,
+				84695B682BC0B5AD00F7BD7A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -89,6 +92,21 @@
 			path = Strada;
 			sourceTree = "<group>";
 		};
+		84695B662BC0B55600F7BD7A /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				84695B6B2BC0B5D400F7BD7A /* .. */,
+			);
+			path = Packages;
+			sourceTree = "<group>";
+		};
+		84695B682BC0B5AD00F7BD7A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -106,7 +124,7 @@
 			);
 			name = Demo;
 			packageProductDependencies = (
-				844BA79F2B9A484C008F48DB /* HotwireNative */,
+				84695B6C2BC0B5DF00F7BD7A /* HotwireNative */,
 			);
 			productName = Demo;
 			productReference = 844BA7872B9A4843008F48DB /* Demo.app */;
@@ -137,7 +155,6 @@
 			);
 			mainGroup = 844BA77E2B9A4843008F48DB;
 			packageReferences = (
-				844BA79E2B9A484C008F48DB /* XCLocalSwiftPackageReference "../" */,
 			);
 			productRefGroup = 844BA7882B9A4843008F48DB /* Products */;
 			projectDirPath = "";
@@ -384,15 +401,8 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		844BA79E2B9A484C008F48DB /* XCLocalSwiftPackageReference "../" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../;
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		844BA79F2B9A484C008F48DB /* HotwireNative */ = {
+		84695B6C2BC0B5DF00F7BD7A /* HotwireNative */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = HotwireNative;
 		};

@@ -1,24 +1,23 @@
 {
-  "originHash" : "b0e7ee7f8a25bddb5b92ca548e90c518d205f6f80c0d8795eeb22189841998c6",
   "pins" : [
     {
-      "identity" : "strada-ios",
+      "identity" : "embassy",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/hotwired/strada-ios",
+      "location" : "https://github.com/envoy/Embassy.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "a44a86d4bab98d29cbba31446ee4834670613119"
+        "revision" : "8469f2c1b334a7c1c3566e2cb2f97826c7cca898",
+        "version" : "4.1.6"
       }
     },
     {
-      "identity" : "turbo-ios",
+      "identity" : "ohhttpstubs",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/hotwired/turbo-ios",
+      "location" : "https://github.com/AliSoftware/OHHTTPStubs",
       "state" : {
-        "branch" : "turbo-navigator",
-        "revision" : "c4ea6f26e9a55a959778267c26a7a118c7330510"
+        "revision" : "12f19662426d0434d6c330c6974d53e2eb10ecd9",
+        "version" : "9.1.0"
       }
     }
   ],
-  "version" : 3
+  "version" : 2
 }
