@@ -17,7 +17,7 @@
 		844BA7B72B9A488A008F48DB /* NumbersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844BA7AC2B9A488A008F48DB /* NumbersViewController.swift */; };
 		844BA7B82B9A488A008F48DB /* Demo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844BA7AD2B9A488A008F48DB /* Demo.swift */; };
 		844BA7B92B9A488A008F48DB /* path-configuration.json in Resources */ = {isa = PBXBuildFile; fileRef = 844BA7AE2B9A488A008F48DB /* path-configuration.json */; };
-		84695B6D2BC0B5DF00F7BD7A /* HotwireNative in Frameworks */ = {isa = PBXBuildFile; productRef = 84695B6C2BC0B5DF00F7BD7A /* HotwireNative */; };
+		84695B702BC0B7CB00F7BD7A /* HotwireNative in Frameworks */ = {isa = PBXBuildFile; productRef = 84695B6F2BC0B7CB00F7BD7A /* HotwireNative */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,7 +33,7 @@
 		844BA7AC2B9A488A008F48DB /* NumbersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumbersViewController.swift; sourceTree = "<group>"; };
 		844BA7AD2B9A488A008F48DB /* Demo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Demo.swift; sourceTree = "<group>"; };
 		844BA7AE2B9A488A008F48DB /* path-configuration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "path-configuration.json"; sourceTree = "<group>"; };
-		84695B6B2BC0B5D400F7BD7A /* .. */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ..; sourceTree = "<group>"; };
+		84695B6E2BC0B77D00F7BD7A /* HotwireNative */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = HotwireNative; path = ../..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,7 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84695B6D2BC0B5DF00F7BD7A /* HotwireNative in Frameworks */,
+				84695B702BC0B7CB00F7BD7A /* HotwireNative in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,7 +95,7 @@
 		84695B662BC0B55600F7BD7A /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				84695B6B2BC0B5D400F7BD7A /* .. */,
+				84695B6E2BC0B77D00F7BD7A /* HotwireNative */,
 			);
 			path = Packages;
 			sourceTree = "<group>";
@@ -124,7 +124,7 @@
 			);
 			name = Demo;
 			packageProductDependencies = (
-				84695B6C2BC0B5DF00F7BD7A /* HotwireNative */,
+				84695B6F2BC0B7CB00F7BD7A /* HotwireNative */,
 			);
 			productName = Demo;
 			productReference = 844BA7872B9A4843008F48DB /* Demo.app */;
@@ -402,7 +402,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		84695B6C2BC0B5DF00F7BD7A /* HotwireNative */ = {
+		84695B6F2BC0B7CB00F7BD7A /* HotwireNative */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = HotwireNative;
 		};
