@@ -60,7 +60,7 @@ public extension Message {
     {
         let updatedData: String?
         do {
-            let jsonData = try Strada.config.jsonEncoder.encode(data)
+            let jsonData = try Hotwire.config.jsonEncoder.encode(data)
             updatedData = String(data: jsonData, encoding: .utf8)
         } catch {
             logger.error("Error encoding codable object: \(String(describing: data)) -> \(error)")
@@ -79,7 +79,7 @@ public extension Message {
         }
         
         do {
-            let decoder = Strada.config.jsonDecoder
+            let decoder = Hotwire.config.jsonDecoder
             return try decoder.decode(T.self, from: data)
         } catch {
             logger.error("Error decoding json: \(jsonData) -> \(error)")

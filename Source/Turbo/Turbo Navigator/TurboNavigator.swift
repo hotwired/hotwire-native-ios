@@ -29,10 +29,10 @@ public class TurboNavigator {
     ///   - pathConfiguration: _optional:_ remote configuration reference
     ///   - delegate: _optional:_ delegate to handle custom view controllers
     public convenience init(pathConfiguration: PathConfiguration? = nil, delegate: TurboNavigatorDelegate? = nil) {
-        let session = Session(webView: Turbo.config.makeWebView())
+        let session = Session(webView: Hotwire.config.makeWebView())
         session.pathConfiguration = pathConfiguration
 
-        let modalSession = Session(webView: Turbo.config.makeWebView())
+        let modalSession = Session(webView: Hotwire.config.makeWebView())
         modalSession.pathConfiguration = pathConfiguration
 
         self.init(session: session, modalSession: modalSession, delegate: delegate)
@@ -131,7 +131,7 @@ public class TurboNavigator {
     private func controller(for proposal: VisitProposal) -> UIViewController? {
         switch delegate.handle(proposal: proposal) {
         case .accept:
-            Turbo.config.defaultViewController(proposal.url)
+            Hotwire.config.defaultViewController(proposal.url)
         case .acceptCustom(let customViewController):
             customViewController
         case .reject:
@@ -289,7 +289,7 @@ extension TurboNavigator {
         guard let _ = session.activeVisitable?.visitableViewController,
               let url = session.activeVisitable?.visitableURL else { return }
 
-        let newSession = Session(webView: Turbo.config.makeWebView())
+        let newSession = Session(webView: Hotwire.config.makeWebView())
         newSession.pathConfiguration = session.pathConfiguration
         newSession.delegate = self
         newSession.webView.uiDelegate = webkitUIDelegate

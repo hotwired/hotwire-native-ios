@@ -25,8 +25,8 @@ class TurboNavigationHierarchyController {
 
     init(
         delegate: TurboNavigationHierarchyControllerDelegate,
-        navigationController: UINavigationController = Turbo.config.defaultNavigationController(),
-        modalNavigationController: UINavigationController = Turbo.config.defaultNavigationController()
+        navigationController: UINavigationController = Hotwire.config.defaultNavigationController(),
+        modalNavigationController: UINavigationController = Hotwire.config.defaultNavigationController()
     ) {
         self.delegate = delegate
         self.navigationController = navigationController
