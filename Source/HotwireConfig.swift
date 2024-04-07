@@ -20,8 +20,7 @@ public struct HotwireConfig {
     /// connecting, disconnecting, receiving/sending messages, and more.
     public var debugLoggingEnabled = false {
         didSet {
-            TurboLogger.debugLoggingEnabled = debugLoggingEnabled
-            StradaLogger.debugLoggingEnabled = debugLoggingEnabled
+            HotwireLogger.debugLoggingEnabled = debugLoggingEnabled
         }
     }
 
