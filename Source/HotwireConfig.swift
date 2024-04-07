@@ -5,8 +5,9 @@ public struct HotwireConfig {
     public typealias WebViewBlock = (_ configuration: WKWebViewConfiguration) -> WKWebView
 
     /// Override to set a custom user agent.
-    /// - Important: Include "Turbo Native" to use `turbo_native_app?` on your Rails server.
-    public var userAgent = "Turbo Native iOS"
+    /// - Important: Include "Hotwire Native" or "Turbo Native" to use `turbo_native_app?`
+    /// on your Rails server.
+    public var userAgent = "Hotwire Native iOS; Turbo Native iOS"
 
     /// When enabled, adds a `UIBarButtonItem` of type `.done` to the left
     /// navigation bar button item on screens presented modally.
