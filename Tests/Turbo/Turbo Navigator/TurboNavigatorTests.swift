@@ -266,8 +266,8 @@ final class TurboNavigationHierarchyControllerTests: XCTestCase {
     private lazy var oneURL = baseURL.appendingPathComponent("/one")
     private lazy var twoURL = baseURL.appendingPathComponent("/two")
 
-    private let session = Session(webView: Turbo.config.makeWebView())
-    private let modalSession = Session(webView: Turbo.config.makeWebView())
+    private let session = Session(webView: Hotwire.config.makeWebView())
+    private let modalSession = Session(webView: Hotwire.config.makeWebView())
 
     private var navigator: TurboNavigator!
     private let alertControllerDelegate = AlertControllerDelegate()

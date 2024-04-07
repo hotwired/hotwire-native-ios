@@ -8,9 +8,9 @@ class MessageTests: XCTestCase {
         let encoder = JSONEncoder()
         // Sort keys for deterministic matching.
         encoder.outputFormatting = [.sortedKeys]
-        Strada.config.jsonEncoder = encoder
+        Hotwire.config.jsonEncoder = encoder
 
-        Strada.config.jsonDecoder = JSONDecoder()
+        Hotwire.config.jsonDecoder = JSONDecoder()
     }
     
     // MARK: replacing(event:, jsonData:)
@@ -165,8 +165,8 @@ class MessageTests: XCTestCase {
     func test_decodingWithCustomDecoder() {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        Strada.config.jsonDecoder = decoder
-        
+        Hotwire.config.jsonDecoder = decoder
+
         let jsonData = """
         {"title":"Page-title","subtitle":"Page-subtitle", "action_name": "go"}
         """
@@ -190,8 +190,8 @@ class MessageTests: XCTestCase {
     func test_encodingWithCustomEncoder() throws {
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
-        Strada.config.jsonEncoder = encoder
-        
+        Hotwire.config.jsonEncoder = encoder
+
         let messageData = MessageData(title: "Page-title",
                                       subtitle: "Page-subtitle",
                                       actionName: "go")
