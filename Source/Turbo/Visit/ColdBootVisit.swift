@@ -50,7 +50,7 @@ final class ColdBootVisit: Visit {
     }
 
     private func log(_ name: String) {
-        debugLog("[ColdBootVisit] \(name) \(location.absoluteString)")
+        logger.debug("[ColdBootVisit] \(name) \(self.location.absoluteString)")
     }
 }
 

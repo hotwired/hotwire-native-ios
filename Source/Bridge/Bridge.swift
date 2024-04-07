@@ -60,7 +60,7 @@ public final class Bridge: Bridgable {
     /// - Parameter message: Message to send
     @MainActor
     func reply(with message: Message) async throws {
-        logger.debug("bridgeWillReplyWithMessage: \(String(describing: message))")
+        logger.debug("[Bridge] bridgeWillReplyWithMessage: \(String(describing: message))")
         let internalMessage = InternalMessage(from: message)
         try await callBridgeFunction(.replyWith, arguments: [internalMessage.toJSON()])
     }

@@ -86,10 +86,10 @@ final class WebViewBridge {
             return
         }
 
-        debugLog("[Bridge] → \(function) \(arguments)")
+        logger.debug("[Bridge] → \(function) \(arguments)")
 
         webView.evaluateJavaScript(script) { result, error in
-            debugLog("[Bridge] = \(function) evaluation complete")
+            logger.debug("[Bridge] = \(function) evaluation complete")
 
             if let result = result as? [String: Any], let error = result["error"] as? String, let stack = result["stack"] as? String {
                 NSLog("Error evaluating JavaScript function `%@': %@\n%@", function, error, stack)
@@ -105,7 +105,7 @@ extension WebViewBridge: ScriptMessageHandlerDelegate {
         guard let message = ScriptMessage(message: scriptMessage) else { return }
 
         if message.name != .log {
-            debugLog("[Bridge] ← \(message.name) \(message.data)")
+            logger.debug("[Bridge] ← \(message.name.rawValue) \(message.data)")
         }
 
         switch message.name {
@@ -141,10 +141,10 @@ extension WebViewBridge: ScriptMessageHandlerDelegate {
             visitDelegate?.webView(self, didCompleteVisitWithIdentifier: message.identifier!, restorationIdentifier: message.restorationIdentifier!)
         case .errorRaised:
             let error = message.data["error"] as? String
-            debugLog("JavaScript error: \(String(describing: error))")
+            logger.debug("[Bridge] JavaScript error: \(String(describing: error))")
         case .log:
             guard let msg = message.data["message"] as? String else { return }
-            debugLog("[Bridge] ← log: \(msg)")
+            logger.debug("[Bridge] ← log: \(msg)")
         }
     }
 }

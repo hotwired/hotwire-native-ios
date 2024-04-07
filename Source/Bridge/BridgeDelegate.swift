@@ -75,32 +75,32 @@ public final class BridgeDelegate: BridgingDelegate {
     // MARK: - Destination lifecycle
     
     public func onViewDidLoad() {
-        logger.debug("bridgeDestinationViewDidLoad: \(self.resolvedLocation)")
+        logger.debug("[Bridge] bridgeDestinationViewDidLoad: \(self.resolvedLocation)")
         destinationIsActive = true
         activeComponents.forEach { $0.viewDidLoad() }
     }
     
     public func onViewWillAppear() {
-        logger.debug("bridgeDestinationViewWillAppear: \(self.resolvedLocation)")
+        logger.debug("[Bridge] bridgeDestinationViewWillAppear: \(self.resolvedLocation)")
         destinationIsActive = true
         activeComponents.forEach { $0.viewWillAppear() }
     }
     
     public func onViewDidAppear() {
-        logger.debug("bridgeDestinationViewDidAppear: \(self.resolvedLocation)")
+        logger.debug("[Bridge] bridgeDestinationViewDidAppear: \(self.resolvedLocation)")
         destinationIsActive = true
         activeComponents.forEach { $0.viewDidAppear() }
     }
     
     public func onViewWillDisappear() {
         activeComponents.forEach { $0.viewWillDisappear() }
-        logger.debug("bridgeDestinationViewWillDisappear: \(self.resolvedLocation)")
+        logger.debug("[Bridge] bridgeDestinationViewWillDisappear: \(self.resolvedLocation)")
     }
     
     public func onViewDidDisappear() {
         activeComponents.forEach { $0.viewDidDisappear() }
         destinationIsActive = false
-        logger.debug("bridgeDestinationViewDidDisappear: \(self.resolvedLocation)")
+        logger.debug("[Bridge] bridgeDestinationViewDidDisappear: \(self.resolvedLocation)")
     }
     
     // MARK: Retrieve component by type
@@ -130,7 +130,7 @@ public final class BridgeDelegate: BridgingDelegate {
             return false
         }
         
-        logger.debug("bridgeDidReceiveMessage \(String(describing: message))")
+        logger.debug("[Bridge] bridgeDidReceiveMessage \(String(describing: message))")
         getOrCreateComponent(name: message.component)?.didReceive(message: message)
         
         return true

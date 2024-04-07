@@ -88,6 +88,6 @@ extension JavaScriptVisit: WebViewVisitDelegate {
     }
     
     private func log(_ name: String, _ arguments: [String: Any] = [:]) {
-        debugLog("[JavascriptVisit] \(name) \(location.absoluteString)", arguments)
+        logger.debug("[JavascriptVisit] \(name) \(self.location.absoluteString), \(arguments)")
     }
 }
