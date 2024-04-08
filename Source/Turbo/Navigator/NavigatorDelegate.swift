@@ -1,8 +1,8 @@
 import Foundation
 
 /// Contract for handling navigation requests and actions
-/// - Note: Methods  are __optional__ by default implementation in ``TurboNavigatorDelegate`` extension.
-public protocol TurboNavigatorDelegate: AnyObject {
+/// - Note: Methods  are __optional__ by default implementation in `NavigatorDelegate` extension.
+public protocol NavigatorDelegate: AnyObject {
     typealias RetryBlock = () -> Void
 
     /// Accept or reject a visit proposal.
@@ -35,7 +35,7 @@ public protocol TurboNavigatorDelegate: AnyObject {
     func formSubmissionDidFinish(at url: URL)
 }
 
-public extension TurboNavigatorDelegate {
+public extension NavigatorDelegate {
     func handle(proposal: VisitProposal) -> ProposalResult {
         .accept
     }

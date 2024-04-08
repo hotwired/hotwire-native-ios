@@ -7,7 +7,7 @@ final class SceneController: UIResponder {
     var window: UIWindow?
 
     private let rootURL = Demo.current
-    private lazy var navigator = TurboNavigator(pathConfiguration: pathConfiguration, delegate: self)
+    private lazy var navigator = Navigator(pathConfiguration: pathConfiguration, delegate: self)
 
     // MARK: - Setup
 
@@ -55,7 +55,7 @@ extension SceneController: UIWindowSceneDelegate {
     }
 }
 
-extension SceneController: TurboNavigatorDelegate {
+extension SceneController: NavigatorDelegate {
     func handle(proposal: VisitProposal) -> ProposalResult {
         switch proposal.viewController {
         case NumbersViewController.pathConfigurationIdentifier:

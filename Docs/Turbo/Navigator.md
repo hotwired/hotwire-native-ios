@@ -1,10 +1,10 @@
-# Turbo Navigator
+# Navigator
 
-Turbo Navigator abstracts routing boilerplate a single class. Use this level of abstraction for default handling of the following navigation flows.
+Navigator abstracts routing boilerplate a single class. Use this level of abstraction for default handling of the following navigation flows.
 
 ## Handled navigation flows
 
-When a link is tapped, turbo-ios sends a `VisitProposal` to your application code. Based on the [Path Configuration](PathConfiguration.md), different `PathProperties` will be set.
+When a link is tapped, Hotwire Native sends a `VisitProposal` to your application code. Based on the [Path Configuration](PathConfiguration.md), different `PathProperties` will be set.
 
 * **Current context** - What state the app is in.
     * `modal` - a modal is currently presented
@@ -150,7 +150,7 @@ To present forms (URLs ending in `/new` or `/edit`) as a modal, add the followin
 }
 ```
 
-To hook into the "refresh" turbo-rails native route, add the following to the `rules` key of your Path Configuration. You can then call `refresh_or_redirect_to` in your controller to handle Turbo Native and web-based navigation.
+To hook into the "refresh" turbo-rails native route, add the following to the `rules` key of your Path Configuration. You can then call `refresh_or_redirect_to` in your controller to handle Hotwire Native and web-based navigation.
 
 ```json
 {

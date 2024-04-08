@@ -19,7 +19,7 @@ let rootURL = URL(string: "https://turbo-native-demo.glitch.me")!
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
-    private let navigator = TurboNavigator()
+    private let navigator = Navigator()
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         Hotwire.registerStradaComponents([])
@@ -29,6 +29,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 }
 ```
 
-5. Hit run, and you have a basic working app. You can now tap links and navigate the demo back and forth in the simulator. We've only touched the very core requirements here of creating a `TurboNavigator` and routing the root URL.
+5. Hit run, and you have a basic working app. You can now tap links and navigate the demo back and forth in the simulator. We've only touched the very core requirements here of creating a `Navigator` and routing the root URL.
 
 Feel free to can change the URL we use for the initial visit to your web app. A real application will want to customize the view controller, respond to different visit actions, gracefully handle errors, and build a more powerful routing system. Read the rest of the documentation to learn more.

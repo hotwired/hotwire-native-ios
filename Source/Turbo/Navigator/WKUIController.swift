@@ -1,14 +1,14 @@
 import Foundation
 import WebKit
 
-public protocol TurboWKUIDelegate: AnyObject {
+public protocol WKUIControllerDelegate: AnyObject {
     func present(_ alert: UIAlertController, animated: Bool)
 }
 
-open class TurboWKUIController: NSObject, WKUIDelegate {
-    private unowned var delegate: TurboWKUIDelegate
+open class WKUIController: NSObject, WKUIDelegate {
+    private unowned var delegate: WKUIControllerDelegate
 
-    public init(delegate: TurboWKUIDelegate!) {
+    public init(delegate: WKUIControllerDelegate!) {
         self.delegate = delegate
     }
 

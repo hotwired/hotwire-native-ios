@@ -1,8 +1,8 @@
 import Foundation
 import WebKit
 
-/// A "Cold Boot" visit is the initial visit to load the page, including all resources
-/// Subsequent visits go through Turbo and use `JavaScriptVisit`
+/// A "Cold Boot" visit is the initial visit to load the page, including all resources.
+/// Subsequent visits go through Turbo and use `JavaScriptVisit`.
 final class ColdBootVisit: Visit {
     private(set) var navigation: WKNavigation?
 

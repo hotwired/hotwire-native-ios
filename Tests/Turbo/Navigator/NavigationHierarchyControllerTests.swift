@@ -5,13 +5,13 @@ import XCTest
 /// Tests are written in the following format:
 /// `test_currentContext_givenContext_givenPresentation_modifiers_result()`
 /// See the README for a more visually pleasing table.
-final class TurboNavigationHierarchyControllerTests: XCTestCase {
+final class NavigationHierarchyControllerTests: XCTestCase {
     override func setUp() {
         navigationController = TestableNavigationController()
         modalNavigationController = TestableNavigationController()
 
-        navigator = TurboNavigator(session: session, modalSession: modalSession)
-        hierarchyController = TurboNavigationHierarchyController(delegate: navigator, navigationController: navigationController, modalNavigationController: modalNavigationController)
+        navigator = Navigator(session: session, modalSession: modalSession)
+        hierarchyController = NavigationHierarchyController(delegate: navigator, navigationController: navigationController, modalNavigationController: modalNavigationController)
         navigator.hierarchyController = hierarchyController
 
         loadNavigationControllerInWindow()
@@ -269,9 +269,9 @@ final class TurboNavigationHierarchyControllerTests: XCTestCase {
     private let session = Session(webView: Hotwire.config.makeWebView())
     private let modalSession = Session(webView: Hotwire.config.makeWebView())
 
-    private var navigator: TurboNavigator!
+    private var navigator: Navigator!
     private let alertControllerDelegate = AlertControllerDelegate()
-    private var hierarchyController: TurboNavigationHierarchyController!
+    private var hierarchyController: NavigationHierarchyController!
     private var navigationController: TestableNavigationController!
     private var modalNavigationController: TestableNavigationController!
 
@@ -296,15 +296,15 @@ final class TurboNavigationHierarchyControllerTests: XCTestCase {
 
 // MARK: - EmptyNavigationDelegate
 
-private class EmptyNavigationDelegate: TurboNavigationHierarchyControllerDelegate {
-    func visit(_: Visitable, on: TurboNavigationHierarchyController.NavigationStackType, with: VisitOptions) {}
-    func refresh(navigationStack: TurboNavigationHierarchyController.NavigationStackType) {}
+private class EmptyNavigationDelegate: NavigationHierarchyControllerDelegate {
+    func visit(_: Visitable, on: NavigationHierarchyController.NavigationStackType, with: VisitOptions) {}
+    func refresh(navigationStack: NavigationHierarchyController.NavigationStackType) {}
 }
 
 // MARK: - VisitProposal extension
 
 private extension VisitProposal {
-    init(path: String = "", action: VisitAction = .advance, context: TurboNavigation.Context = .default, presentation: TurboNavigation.Presentation = .default) {
+    init(path: String = "", action: VisitAction = .advance, context: Navigation.Context = .default, presentation: Navigation.Presentation = .default) {
         let url = URL(string: "https://example.com")!.appendingPathComponent(path)
         let options = VisitOptions(action: action, response: nil)
         let properties: PathProperties = [
@@ -317,7 +317,7 @@ private extension VisitProposal {
 
 // MARK: - AlertControllerDelegate
 
-private class AlertControllerDelegate: TurboNavigatorDelegate {
+private class AlertControllerDelegate: NavigatorDelegate {
     func handle(proposal: VisitProposal) -> ProposalResult {
         if proposal.url.path == "/alert" {
             return .acceptCustom(UIAlertController(title: "Alert", message: nil, preferredStyle: .alert))

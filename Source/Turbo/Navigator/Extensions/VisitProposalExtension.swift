@@ -1,23 +1,23 @@
 import UIKit
 
 public extension VisitProposal {
-    var context: TurboNavigation.Context {
+    var context: Navigation.Context {
         if let rawValue = properties["context"] as? String {
-            return TurboNavigation.Context(rawValue: rawValue) ?? .default
+            return Navigation.Context(rawValue: rawValue) ?? .default
         }
         return .default
     }
 
-    var presentation: TurboNavigation.Presentation {
+    var presentation: Navigation.Presentation {
         if let rawValue = properties["presentation"] as? String {
-            return TurboNavigation.Presentation(rawValue: rawValue) ?? .default
+            return Navigation.Presentation(rawValue: rawValue) ?? .default
         }
         return .default
     }
 
-    var modalStyle: TurboNavigation.ModalStyle {
+    var modalStyle: Navigation.ModalStyle {
         if let rawValue = properties["modal_style"] as? String {
-            return TurboNavigation.ModalStyle(rawValue: rawValue) ?? .large
+            return Navigation.ModalStyle(rawValue: rawValue) ?? .large
         }
         return .large
     }

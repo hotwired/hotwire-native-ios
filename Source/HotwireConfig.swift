@@ -29,13 +29,13 @@ public struct HotwireConfig {
     /// Configure options for matching path rules.
     public var pathConfiguration = PathConfiguration()
 
-    /// The view controller used in `TurboNavigator` for web requests. Must be
+    /// The view controller used in `Navigator` for web requests. Must be
     /// a `VisitableViewController` or subclass.
     public var defaultViewController: (URL) -> VisitableViewController = { url in
         VisitableViewController(url: url)
     }
 
-    /// The navigation controller used in `TurboNavigator` for the main and modal stacks.
+    /// The navigation controller used in `Navigator` for the main and modal stacks.
     /// Must be a `UINavigationController` or subclass.
     public var defaultNavigationController: () -> UINavigationController = {
         UINavigationController()
