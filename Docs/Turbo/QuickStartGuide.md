@@ -17,7 +17,7 @@ private let rootURL = URL(string: "https://turbo-native-demo.glitch.me")!
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
-    private lazy var navigator = TurboNavigator()
+    private lazy var navigator = Navigator()
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let _ = (scene as? UIWindowScene) else { return }

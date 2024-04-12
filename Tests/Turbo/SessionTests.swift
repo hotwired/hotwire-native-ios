@@ -15,7 +15,7 @@ class SessionTests: XCTestCase {
     @MainActor
     override func setUp() async throws {
         let configuration = WKWebViewConfiguration()
-        configuration.applicationNameForUserAgent = "Turbo iOS Test/1.0"
+        configuration.applicationNameForUserAgent = "Hotwire Native iOS Test/1.0"
 
         session = Session(webViewConfiguration: configuration)
         session.delegate = sessionDelegate
@@ -34,7 +34,7 @@ class SessionTests: XCTestCase {
     }
 
     func test_init_initializesWebViewWithConfiguration() {
-        XCTAssertEqual(session.webView.configuration.applicationNameForUserAgent, "Turbo iOS Test/1.0")
+        XCTAssertEqual(session.webView.configuration.applicationNameForUserAgent, "Hotwire Native iOS Test/1.0")
     }
 
     func test_coldBootVisit_makesTheSessionTheVisitableDelegate() {

@@ -2,7 +2,7 @@
 import SafariServices
 import XCTest
 
-final class TurboNavigationDelegateTests: TurboNavigator {
+final class NavigationDelegateTests: Navigator {
     func test_controllerForProposal_defaultsToVisitableViewController() throws {
         let url = URL(string: "https://example.com")!
 

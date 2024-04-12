@@ -1,8 +1,8 @@
 import Foundation
 
-/// A JavaScript managed visit through the Turbo library
-/// All visits are JavaScriptVisits except the initial ColdBootVisit
-/// or if a reload() is issued
+/// A `JavaScript` managed visit through the Hotwire library.
+/// All visits are `JavaScriptVisits` except the initial `ColdBootVisit`
+/// or if a `reload()` is issued.
 final class JavaScriptVisit: Visit {
     private var identifier = "(pending)"
     

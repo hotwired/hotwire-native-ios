@@ -1,4 +1,4 @@
-public enum TurboNavigation {
+public enum Navigation {
     public enum Context: String {
         case `default`
         case modal

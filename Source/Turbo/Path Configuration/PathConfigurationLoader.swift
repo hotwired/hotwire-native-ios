@@ -80,22 +80,22 @@ final class PathConfigurationLoader {
     }
     
     private func createCacheDirectoryIfNeeded() {
-        guard !FileManager.default.fileExists(atPath: turboCacheDirectoryURL.path) else { return }
+        guard !FileManager.default.fileExists(atPath: cacheDirectoryURL.path) else { return }
         
         do {
-            try FileManager.default.createDirectory(at: turboCacheDirectoryURL, withIntermediateDirectories: false, attributes: nil)
+            try FileManager.default.createDirectory(at: cacheDirectoryURL, withIntermediateDirectories: false, attributes: nil)
         } catch {
             debugPrint("[path-configuration-loader] *** error creating cache directory: \(error)")
         }
     }
     
-    private var turboCacheDirectoryURL: URL {
+    private var cacheDirectoryURL: URL {
         let directory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
         return directory.appendingPathComponent(cacheDirectory)
     }
     
     var configurationCacheURL: URL {
-        turboCacheDirectoryURL.appendingPathComponent(configurationCacheFilename)
+        cacheDirectoryURL.appendingPathComponent(configurationCacheFilename)
     }
     
     // MARK: - File

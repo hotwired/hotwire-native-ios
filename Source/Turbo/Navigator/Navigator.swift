@@ -3,19 +3,19 @@ import SafariServices
 import UIKit
 import WebKit
 
-class DefaultTurboNavigatorDelegate: NSObject, TurboNavigatorDelegate {}
+class DefaultNavigatorDelegate: NSObject, NavigatorDelegate {}
 
 /// Handles navigation to new URLs using the following rules:
-/// [Turbo Navigator Handled Flows](https://github.com/hotwired/turbo-ios/Docs/TurboNavigator.md)
-public class TurboNavigator {
-    public unowned var delegate: TurboNavigatorDelegate
+/// [Navigator Handled Flows](https://github.com/hotwired/turbo-ios/Docs/Navigator.md)
+public class Navigator {
+    public unowned var delegate: NavigatorDelegate
 
     public var rootViewController: UINavigationController { hierarchyController.navigationController }
     public var activeNavigationController: UINavigationController { hierarchyController.activeNavigationController }
 
     /// Set to handle customize behavior of the `WKUIDelegate`.
     ///
-    /// Subclass `TurboWKUIController` to add additional behavior alongside alert/confirm dialogs.
+    /// Subclass `WKUIController` to add additional behavior alongside alert/confirm dialogs.
     /// Or, provide a completely custom `WKUIDelegate` implementation.
     public var webkitUIDelegate: WKUIDelegate? {
         didSet {
@@ -28,7 +28,7 @@ public class TurboNavigator {
     /// - Parameters:
     ///   - pathConfiguration: _optional:_ remote configuration reference
     ///   - delegate: _optional:_ delegate to handle custom view controllers
-    public convenience init(pathConfiguration: PathConfiguration? = nil, delegate: TurboNavigatorDelegate? = nil) {
+    public convenience init(pathConfiguration: PathConfiguration? = nil, delegate: NavigatorDelegate? = nil) {
         let session = Session(webView: Hotwire.config.makeWebView())
         session.pathConfiguration = pathConfiguration
 
@@ -98,7 +98,7 @@ public class TurboNavigator {
     var session: Session
     var modalSession: Session
     /// Modifies a UINavigationController according to visit proposals.
-    lazy var hierarchyController = TurboNavigationHierarchyController(delegate: self)
+    lazy var hierarchyController = NavigationHierarchyController(delegate: self)
 
     /// Internal initializer requiring preconfigured `Session` instances.
     ///
@@ -107,7 +107,7 @@ public class TurboNavigator {
     ///   - session: the main `Session`
     ///   - modalSession: the `Session` used for the modal navigation controller
     ///   - delegate: _optional:_ delegate to handle custom view controllers
-    init(session: Session, modalSession: Session, delegate: TurboNavigatorDelegate? = nil) {
+    init(session: Session, modalSession: Session, delegate: NavigatorDelegate? = nil) {
         self.session = session
         self.modalSession = modalSession
 
@@ -116,7 +116,7 @@ public class TurboNavigator {
         self.session.delegate = self
         self.modalSession.delegate = self
 
-        self.webkitUIDelegate = TurboWKUIController(delegate: self)
+        self.webkitUIDelegate = WKUIController(delegate: self)
         session.webView.uiDelegate = webkitUIDelegate
         modalSession.webView.uiDelegate = webkitUIDelegate
     }
@@ -124,7 +124,7 @@ public class TurboNavigator {
     // MARK: Private
 
     /// A default delegate implementation if none is provided.
-    private let navigatorDelegate = DefaultTurboNavigatorDelegate()
+    private let navigatorDelegate = DefaultNavigatorDelegate()
     private var backgroundTerminatedWebViewSessions = [Session]()
     private var appInBackground = false
 
@@ -142,7 +142,7 @@ public class TurboNavigator {
 
 // MARK: - SessionDelegate
 
-extension TurboNavigator: SessionDelegate {
+extension Navigator: SessionDelegate {
     public func session(_ session: Session, didProposeVisit proposal: VisitProposal) {
         guard let controller = controller(for: proposal) else { return }
         hierarchyController.route(controller: controller, proposal: proposal)
@@ -195,17 +195,17 @@ extension TurboNavigator: SessionDelegate {
     }
 }
 
-// MARK: - TurboNavigationHierarchyControllerDelegate
+// MARK: - NavigationHierarchyControllerDelegate
 
-extension TurboNavigator: TurboNavigationHierarchyControllerDelegate {
-    func visit(_ controller: Visitable, on navigationStack: TurboNavigationHierarchyController.NavigationStackType, with options: VisitOptions) {
+extension Navigator: NavigationHierarchyControllerDelegate {
+    func visit(_ controller: Visitable, on navigationStack: NavigationHierarchyController.NavigationStackType, with options: VisitOptions) {
         switch navigationStack {
         case .main: session.visit(controller, options: options)
         case .modal: modalSession.visit(controller, options: options)
         }
     }
 
-    func refresh(navigationStack: TurboNavigationHierarchyController.NavigationStackType) {
+    func refresh(navigationStack: NavigationHierarchyController.NavigationStackType) {
         switch navigationStack {
         case .main: session.reload()
         case .modal: modalSession.reload()
@@ -213,7 +213,7 @@ extension TurboNavigator: TurboNavigationHierarchyControllerDelegate {
     }
 }
 
-extension TurboNavigator: TurboWKUIDelegate {
+extension Navigator: WKUIControllerDelegate {
     public func present(_ alert: UIAlertController, animated: Bool) {
         hierarchyController.activeNavigationController.present(alert, animated: animated)
     }
@@ -221,7 +221,7 @@ extension TurboNavigator: TurboWKUIDelegate {
 
 // MARK: - Session and web view reloading
 
-extension TurboNavigator {
+extension Navigator {
     private func inspectAllSessions() {
         [session, modalSession].forEach { inspect($0) }
     }

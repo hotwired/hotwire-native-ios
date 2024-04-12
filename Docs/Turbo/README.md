@@ -43,7 +43,7 @@ You can also integrate the framework manually if your prefer, such as by adding 
 - [Path Configuration](Docs/PathConfiguration.md)
 - [Migration](Docs/Migration.md)
 - [Advanced](Docs/Advanced.md)
-- [TurboNavigator](Docs/TurboNavigator.md)
+- [Navigator](Docs/Navigator.md)
 
 ## Contributing
 

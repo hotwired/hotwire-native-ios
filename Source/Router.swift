@@ -1,10 +1,10 @@
 import Foundation
 
-/// A protocol to bridge back to Turbo world from a native context. Use this
+/// A protocol to bridge back to Hotwire world from a native context. Use this
 /// to trigger a new page visit including routing and presentation.
 ///
-/// When responding to `TurboNavigatorDelegate.handle(proposal:)`, to route
-/// a native view controller, pass in an instance of `TurboNavigator` typed
+/// When responding to `NavigatorDelegate.handle(proposal:)`, to route
+/// a native view controller, pass in an instance of `Navigator` typed
 /// as this protocol with an unowned reference. This ensures you avoid a
 /// circular dependency between the two.
 ///
@@ -15,4 +15,4 @@ public protocol Router: AnyObject {
     func route(_ proposal: VisitProposal)
 }
 
-extension TurboNavigator: Router {}
+extension Navigator: Router {}

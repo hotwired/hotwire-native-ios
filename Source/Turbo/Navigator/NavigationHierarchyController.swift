@@ -2,7 +2,7 @@ import SafariServices
 import UIKit
 import WebKit
 
-class TurboNavigationHierarchyController {
+class NavigationHierarchyController {
     let navigationController: UINavigationController
     let modalNavigationController: UINavigationController
 
@@ -24,7 +24,7 @@ class TurboNavigationHierarchyController {
     }
 
     init(
-        delegate: TurboNavigationHierarchyControllerDelegate,
+        delegate: NavigationHierarchyControllerDelegate,
         navigationController: UINavigationController = Hotwire.config.defaultNavigationController(),
         modalNavigationController: UINavigationController = Hotwire.config.defaultNavigationController()
     ) {
@@ -67,7 +67,7 @@ class TurboNavigationHierarchyController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private unowned let delegate: TurboNavigationHierarchyControllerDelegate
+    private unowned let delegate: NavigationHierarchyControllerDelegate
 
     private func presentAlert(_ alert: UIAlertController) {
         if navigationController.presentedViewController != nil {

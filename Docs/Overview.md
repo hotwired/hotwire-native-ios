@@ -11,7 +11,7 @@ Importing Hotwire imports both Turbo and Strada. You don't need to import each f
 ```swift
 import HotwireNative
 
-let navigator = TurboNavigator() // Part of Turbo
+let navigator = Navigator() // Part of Turbo
 final class FormComponent: BridgeComponent { /* ... */ } // Part of Strada
 ```
 
