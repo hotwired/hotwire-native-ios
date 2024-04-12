@@ -112,7 +112,7 @@ public final class Bridge: Bridgable {
     private let bridgeGlobal = "window.nativeBridge"
 
     /// The webkit.messageHandlers name
-    private let scriptHandlerName = "strada"
+    private let scriptHandlerName = "bridge"
 
     @MainActor
     private func callBridgeFunction(_ function: JavaScriptBridgeFunction, arguments: [Any]) async throws {
@@ -137,7 +137,7 @@ public final class Bridge: Bridgable {
 
     private func makeUserScript() -> WKUserScript? {
         guard
-            let path = Bundle.module.path(forResource: "strada", ofType: "js")
+            let path = Bundle.module.path(forResource: "bridge", ofType: "js")
         else {
             return nil
         }
@@ -146,7 +146,7 @@ public final class Bridge: Bridgable {
             let source = try String(contentsOfFile: path)
             return WKUserScript(source: source, injectionTime: .atDocumentStart, forMainFrameOnly: true)
         } catch {
-            assertionFailure("Could not open strada.js: \(error)")
+            assertionFailure("Could not open bridge.js: \(error)")
             return nil
         }
     }

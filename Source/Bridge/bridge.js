@@ -36,7 +36,7 @@
     }
 
     notifyBridgeOfSupportedComponentsUpdate() {
-      if (this.isStradaAvailable) {
+      if (this.isWebBridgeAvailable) {
         this.webBridge.adapterDidUpdateSupportedComponents()
       }
     }
@@ -47,7 +47,7 @@
 
     // Reply to web with message.
     replyWith(message) {
-      if (this.isStradaAvailable) {
+      if (this.isWebBridgeAvailable) {
         this.webBridge.receive(message)
       }
     }
@@ -64,15 +64,17 @@
     // Native handler
 
     postMessage(message) {
-      webkit.messageHandlers.strada.postMessage(message)
+      webkit.messageHandlers.bridge.postMessage(message)
     }
 
-    get isStradaAvailable() {
-      return window.Strada
+    get isWebBridgeAvailable() {
+        // Fallback to Strada for legacy Strada web JavaScript.
+      return window.Bridge ?? window.Strada
     }
 
     get webBridge() {
-      return window.Strada.web
+      // Fallback to Strada for legacy Strada web JavaScript.
+      return window.Bridge?.web ?? window.Strada.web
     }
   }
 
