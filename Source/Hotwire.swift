@@ -13,7 +13,7 @@ public enum Hotwire {
             HotwireWebViewController(url: url)
         }
 
-        Hotwire.config.userAgent += " \(Strada.userAgentSubstring(for: componentTypes))"
+        Hotwire.config.userAgent += " \(UserAgent.userAgentSubstring(for: componentTypes))"
         bridgeComponentTypes = componentTypes
 
         Hotwire.config.makeCustomWebView = { configuration in

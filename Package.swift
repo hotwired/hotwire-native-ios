@@ -24,7 +24,7 @@ let package = Package(
             path: "Source",
             resources: [
                 .copy("Turbo/WebView/turbo.js"),
-                .copy("Bridge/strada.js")
+                .copy("Bridge/bridge.js")
             ]
         ),
         .testTarget(
