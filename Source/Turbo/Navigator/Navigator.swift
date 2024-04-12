@@ -6,7 +6,7 @@ import WebKit
 class DefaultNavigatorDelegate: NSObject, NavigatorDelegate {}
 
 /// Handles navigation to new URLs using the following rules:
-/// [Turbo Navigator Handled Flows](https://github.com/hotwired/turbo-ios/Docs/Navigator.md)
+/// [Navigator Handled Flows](https://github.com/hotwired/turbo-ios/Docs/Navigator.md)
 public class Navigator {
     public unowned var delegate: NavigatorDelegate
 
@@ -15,7 +15,7 @@ public class Navigator {
 
     /// Set to handle customize behavior of the `WKUIDelegate`.
     ///
-    /// Subclass `TurboWKUIController` to add additional behavior alongside alert/confirm dialogs.
+    /// Subclass `WKUIController` to add additional behavior alongside alert/confirm dialogs.
     /// Or, provide a completely custom `WKUIDelegate` implementation.
     public var webkitUIDelegate: WKUIDelegate? {
         didSet {

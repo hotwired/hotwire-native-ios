@@ -1,6 +1,6 @@
 import Foundation
 
-/// A protocol to bridge back to Turbo world from a native context. Use this
+/// A protocol to bridge back to Hotwire world from a native context. Use this
 /// to trigger a new page visit including routing and presentation.
 ///
 /// When responding to `NavigatorDelegate.handle(proposal:)`, to route
