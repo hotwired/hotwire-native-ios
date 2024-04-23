@@ -17,7 +17,7 @@
 		844BA7B72B9A488A008F48DB /* NumbersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844BA7AC2B9A488A008F48DB /* NumbersViewController.swift */; };
 		844BA7B82B9A488A008F48DB /* Demo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844BA7AD2B9A488A008F48DB /* Demo.swift */; };
 		844BA7B92B9A488A008F48DB /* path-configuration.json in Resources */ = {isa = PBXBuildFile; fileRef = 844BA7AE2B9A488A008F48DB /* path-configuration.json */; };
-		84695B702BC0B7CB00F7BD7A /* HotwireNative in Frameworks */ = {isa = PBXBuildFile; productRef = 84695B6F2BC0B7CB00F7BD7A /* HotwireNative */; };
+		848E12212BD813CA009BB0A4 /* HotwireNative in Frameworks */ = {isa = PBXBuildFile; productRef = 848E12202BD813CA009BB0A4 /* HotwireNative */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,7 +33,7 @@
 		844BA7AC2B9A488A008F48DB /* NumbersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumbersViewController.swift; sourceTree = "<group>"; };
 		844BA7AD2B9A488A008F48DB /* Demo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Demo.swift; sourceTree = "<group>"; };
 		844BA7AE2B9A488A008F48DB /* path-configuration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "path-configuration.json"; sourceTree = "<group>"; };
-		84695B6E2BC0B77D00F7BD7A /* HotwireNative */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = HotwireNative; path = ../..; sourceTree = "<group>"; };
+		8458F3EF2BD8139400867B66 /* hotwire-native-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "hotwire-native-ios"; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,7 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84695B702BC0B7CB00F7BD7A /* HotwireNative in Frameworks */,
+				848E12212BD813CA009BB0A4 /* HotwireNative in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,9 +52,8 @@
 			isa = PBXGroup;
 			children = (
 				844BA7892B9A4843008F48DB /* Demo */,
-				84695B662BC0B55600F7BD7A /* Packages */,
 				844BA7882B9A4843008F48DB /* Products */,
-				84695B682BC0B5AD00F7BD7A /* Frameworks */,
+				8458F3EC2BD8135600867B66 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -92,17 +91,10 @@
 			path = Strada;
 			sourceTree = "<group>";
 		};
-		84695B662BC0B55600F7BD7A /* Packages */ = {
+		8458F3EC2BD8135600867B66 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				84695B6E2BC0B77D00F7BD7A /* HotwireNative */,
-			);
-			path = Packages;
-			sourceTree = "<group>";
-		};
-		84695B682BC0B5AD00F7BD7A /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
+				8458F3EF2BD8139400867B66 /* hotwire-native-ios */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -124,7 +116,7 @@
 			);
 			name = Demo;
 			packageProductDependencies = (
-				84695B6F2BC0B7CB00F7BD7A /* HotwireNative */,
+				848E12202BD813CA009BB0A4 /* HotwireNative */,
 			);
 			productName = Demo;
 			productReference = 844BA7872B9A4843008F48DB /* Demo.app */;
@@ -402,7 +394,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		84695B6F2BC0B7CB00F7BD7A /* HotwireNative */ = {
+		848E12202BD813CA009BB0A4 /* HotwireNative */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = HotwireNative;
 		};
