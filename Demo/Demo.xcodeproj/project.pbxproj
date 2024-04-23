@@ -68,7 +68,7 @@
 		844BA7892B9A4843008F48DB /* Demo */ = {
 			isa = PBXGroup;
 			children = (
-				844BA7BA2B9A4893008F48DB /* Strada */,
+				844BA7BA2B9A4893008F48DB /* Bridge */,
 				844BA7AD2B9A488A008F48DB /* Demo.swift */,
 				844BA7A22B9A4889008F48DB /* SceneController.swift */,
 				844BA78A2B9A4843008F48DB /* AppDelegate.swift */,
@@ -81,14 +81,14 @@
 			name = Demo;
 			sourceTree = "<group>";
 		};
-		844BA7BA2B9A4893008F48DB /* Strada */ = {
+		844BA7BA2B9A4893008F48DB /* Bridge */ = {
 			isa = PBXGroup;
 			children = (
 				844BA7A32B9A488A008F48DB /* FormComponent.swift */,
 				844BA7AB2B9A488A008F48DB /* MenuComponent.swift */,
 				844BA7AA2B9A488A008F48DB /* OverflowMenuComponent.swift */,
 			);
-			path = Strada;
+			path = Bridge;
 			sourceTree = "<group>";
 		};
 		8458F3EC2BD8135600867B66 /* Frameworks */ = {
