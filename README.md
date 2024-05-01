@@ -2,10 +2,6 @@
 
 **Build high-fidelity hybrid apps with native navigation and a single shared web view.** Hotwire Native for iOS provides the tooling to wrap your [Turbo 7](https://github.com/hotwired/turbo)-enabled web app in a native iOS shell. It manages a single WKWebView instance across multiple view controllers, giving you native navigation UI with all the client-side performance benefits of Turbo.
 
-> [!CAUTION]
-> This repo currently points to an unreleased Turbo branch, [turbo-navigator](https://github.com/hotwired/turbo-ios/pull/158).
-> When the PR is merged this repo will point back to the official release.
-
 ## Features
 
 - **Deliver fast, efficient hybrid apps.** Avoid reloading JavaScript and CSS. Save memory by sharing one WKWebView.
@@ -28,8 +24,6 @@ window.Turbo = Turbo
 
 The best way to get started with Hotwire Native iOS to try out the demo app first to get familiar with the framework. The demo app walks you through all the basic Hotwire Native flows as well as some advanced features. To run the demo, clone this repo and open `Demo/Demo.xcodeproj` in Xcode and run the Demo target. See [Demo/README.md](Demo/README.md) for more details about the demo. When you’re ready to start your own application, read through the rest of the documentation.
 
-Note that this framework is a wrapper around [Turbo iOS](https://github.com/hotwired/turbo-ios) and [Strada iOS](https://github.com/hotwired/strada-ios). Each of these underlying dependencies have their own documentation and guides.
-
 ## Installation
 
 Add Hotwire Native as a dependency through Xcode or directly to a Package.swift:
@@ -39,11 +33,6 @@ Add Hotwire Native as a dependency through Xcode or directly to a Package.swift:
 ```
 
 You can also integrate the framework manually if your prefer, such as by adding the repo as a submodule, and linking `Hotwire.framework` to your project.
-
-## Documentation
-
-- [Quick Start](Docs/QuickStartGuide.md)
-- [Overview](Docs/Overview.md)
 
 ## Contributing
 
@@ -56,4 +45,4 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 ---
 
-© 2023 37signals LLC
+© 2024 37signals LLC
