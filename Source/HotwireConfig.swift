@@ -32,7 +32,7 @@ public struct HotwireConfig {
     /// The view controller used in `Navigator` for web requests. Must be
     /// a `VisitableViewController` or subclass.
     public var defaultViewController: (URL) -> VisitableViewController = { url in
-        VisitableViewController(url: url)
+        HotwireWebViewController(url: url)
     }
 
     /// The navigation controller used in `Navigator` for the main and modal stacks.
@@ -44,7 +44,7 @@ public struct HotwireConfig {
     /// Optionally customize the web views used by each Turbo Session.
     /// Ensure you return a new instance each time.
     public var makeCustomWebView: WebViewBlock = { (configuration: WKWebViewConfiguration) in
-        WKWebView(frame: .zero, configuration: configuration)
+        WKWebView.debugInspectable(configuration: configuration)
     }
 
     // MARK: Bridge
@@ -72,6 +72,7 @@ public struct HotwireConfig {
     // A method (not a property) because we need a new instance for each web view.
     private func makeWebViewConfiguration() -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
+        configuration.defaultWebpagePreferences?.preferredContentMode = .mobile
         configuration.applicationNameForUserAgent = userAgent
         configuration.processPool = sharedProcessPool
         return configuration
