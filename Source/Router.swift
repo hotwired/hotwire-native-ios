@@ -17,6 +17,6 @@ public protocol Router: AnyObject {
 
 extension Navigator: Router {
     public func route(_ url: URL) {
-        route(url, parameters: nil)
+        route(url, options: VisitOptions(action: .advance), parameters: nil)
     }
 }
