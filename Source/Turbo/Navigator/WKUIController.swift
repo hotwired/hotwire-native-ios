@@ -22,7 +22,7 @@ open class WKUIController: NSObject, WKUIDelegate {
 
     open func webView(_ webView: WKWebView, runJavaScriptConfirmPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (Bool) -> Void) {
         let alert = UIAlertController(title: message, message: nil, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .destructive) { _ in
+        alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
             completionHandler(true)
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
