@@ -10,9 +10,13 @@ import Foundation
 ///
 /// - Note: See `NumbersViewController` in the demo app for an example.
 public protocol Router: AnyObject {
-    func route(_: URL)
+    func route(_ url: URL)
 
     func route(_ proposal: VisitProposal)
 }
 
-extension Navigator: Router {}
+extension Navigator: Router {
+    public func route(_ url: URL) {
+        route(url, parameters: nil)
+    }
+}
