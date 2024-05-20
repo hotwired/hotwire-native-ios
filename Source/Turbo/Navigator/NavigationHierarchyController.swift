@@ -45,19 +45,37 @@ class NavigationHierarchyController {
             case .default:
                 navigate(with: controller, via: proposal)
             case .pop:
-                pop(via: proposal)
+                pop(animated: proposal.animated)
             case .replace:
                 replace(with: controller, via: proposal)
             case .refresh:
                 refresh(via: proposal)
             case .clearAll:
-                clearAll(via: proposal)
+                clearAll(animated: proposal.animated)
             case .replaceRoot:
                 replaceRoot(with: controller, via: proposal)
             case .none:
                 break // Do nothing.
             }
         }
+    }
+
+    func pop(animated: Bool) {
+        if navigationController.presentedViewController != nil {
+            if modalNavigationController.viewControllers.count == 1 {
+                navigationController.dismiss(animated: animated)
+            } else {
+                modalNavigationController.popViewController(animated: animated)
+            }
+        } else {
+            navigationController.popViewController(animated: animated)
+        }
+    }
+
+    func clearAll(animated: Bool) {
+        delegate.refresh(navigationStack: .main)
+        navigationController.dismiss(animated: animated)
+        navigationController.popToRootViewController(animated: animated)
     }
 
     // MARK: Private
@@ -130,18 +148,6 @@ class NavigationHierarchyController {
         return type(of: previousController) == type(of: controller)
     }
 
-    private func pop(via proposal: VisitProposal) {
-        if navigationController.presentedViewController != nil {
-            if modalNavigationController.viewControllers.count == 1 {
-                navigationController.dismiss(animated: proposal.animated)
-            } else {
-                modalNavigationController.popViewController(animated: proposal.animated)
-            }
-        } else {
-            navigationController.popViewController(animated: proposal.animated)
-        }
-    }
-
     private func replace(with controller: UIViewController, via proposal: VisitProposal) {
         switch proposal.context {
         case .default:
@@ -177,12 +183,6 @@ class NavigationHierarchyController {
             delegate.refresh(navigationStack: .main)
             navigationController.popViewController(animated: proposal.animated)
         }
-    }
-
-    private func clearAll(via proposal: VisitProposal) {
-        delegate.refresh(navigationStack: .main)
-        navigationController.dismiss(animated: proposal.animated)
-        navigationController.popToRootViewController(animated: proposal.animated)
     }
 
     private func replaceRoot(with controller: UIViewController, via proposal: VisitProposal) {
