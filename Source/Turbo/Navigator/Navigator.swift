@@ -59,6 +59,23 @@ public class Navigator {
         hierarchyController.route(controller: controller, proposal: proposal)
     }
 
+    /// Pops the top controller on the presented navigation stack.
+    /// If a modal is presented with a single controller in the navigation
+    /// stack then the modal is dismissed instead.
+    /// - Parameter animated: Pass true to animate the presentation;
+    /// otherwise, pass false.
+    public func pop(animated: Bool = true) {
+        hierarchyController.pop(animated: animated)
+    }
+
+    /// Dismisses a modally presented controller if present, then pops the
+    /// entire navigation stack.
+    /// - Parameter animated: Pass true to animate the presentation;
+    /// otherwise, pass false.
+    public func clearAll(animated: Bool = false) {
+        hierarchyController.clearAll(animated: animated)
+    }
+
     /// Navigate to an external URL.
     ///
     /// - Parameters:
