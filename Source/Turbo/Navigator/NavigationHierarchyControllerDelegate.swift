@@ -10,7 +10,7 @@ protocol NavigationHierarchyControllerDelegate: AnyObject {
     ///   - on: the navigation controller that was modified
     ///   - with: the visit options
     func visit(_ : Visitable,
-               on: NavigationStackType,
+               on: NavigationHierarchyController.NavigationStackType,
                with: VisitOptions)
     
     /// A refresh will pop (or dismiss) then ask the session to refresh the previous (or underlying) Visitable.
@@ -18,6 +18,6 @@ protocol NavigationHierarchyControllerDelegate: AnyObject {
     /// - Parameters:
     ///   - navigationStack: the stack where the refresh is happening
     ///   - newTopmostVisitable: the visitable to be refreshed
-    func refreshVisitable(navigationStack: NavigationStackType,
+    func refreshVisitable(navigationStack: NavigationHierarchyController.NavigationStackType,
                           newTopmostVisitable: Visitable)
 }

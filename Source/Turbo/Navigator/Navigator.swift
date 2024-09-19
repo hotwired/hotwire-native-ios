@@ -224,7 +224,7 @@ extension Navigator: NavigationHierarchyControllerDelegate {
         }
     }
     
-    func refreshVisitable(navigationStack: <<error type>>, newTopmostVisitable: any Visitable) {
+    func refreshVisitable(navigationStack: NavigationHierarchyController.NavigationStackType, newTopmostVisitable: any Visitable) {
         switch navigationStack {
         case .main:
             session.visit(newTopmostVisitable, action: .restore)
