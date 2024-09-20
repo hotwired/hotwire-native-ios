@@ -223,11 +223,13 @@ extension Navigator: NavigationHierarchyControllerDelegate {
         case .modal: modalSession.visit(controller, options: options)
         }
     }
-
-    func refresh(navigationStack: NavigationHierarchyController.NavigationStackType) {
+    
+    func refreshVisitable(navigationStack: NavigationHierarchyController.NavigationStackType, newTopmostVisitable: any Visitable) {
         switch navigationStack {
-        case .main: session.reload()
-        case .modal: modalSession.reload()
+        case .main:
+            session.visit(newTopmostVisitable, action: .restore)
+        case .modal:
+            modalSession.visit(newTopmostVisitable, action: .restore)
         }
     }
 }

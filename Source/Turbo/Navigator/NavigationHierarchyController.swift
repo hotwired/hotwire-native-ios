@@ -73,9 +73,9 @@ class NavigationHierarchyController {
     }
 
     func clearAll(animated: Bool) {
-        delegate.refresh(navigationStack: .main)
         navigationController.dismiss(animated: animated)
         navigationController.popToRootViewController(animated: animated)
+        refreshIfTopViewControllerIsVisitable(from: .main)
     }
 
     // MARK: Private
@@ -173,15 +173,15 @@ class NavigationHierarchyController {
     private func refresh(via proposal: VisitProposal) {
         if navigationController.presentedViewController != nil {
             if modalNavigationController.viewControllers.count == 1 {
-                delegate.refresh(navigationStack: .main)
                 navigationController.dismiss(animated: proposal.animated)
+                refreshIfTopViewControllerIsVisitable(from: .main)
             } else {
-                delegate.refresh(navigationStack: .modal)
                 modalNavigationController.popViewController(animated: proposal.animated)
+                refreshIfTopViewControllerIsVisitable(from: .modal)
             }
         } else {
-            delegate.refresh(navigationStack: .main)
             navigationController.popViewController(animated: proposal.animated)
+            refreshIfTopViewControllerIsVisitable(from: .main)
         }
     }
 
@@ -192,5 +192,12 @@ class NavigationHierarchyController {
 
         navigationController.dismiss(animated: proposal.animated)
         navigationController.setViewControllers([controller], animated: proposal.animated)
+    }
+    
+    private func refreshIfTopViewControllerIsVisitable(from stack: NavigationStackType) {
+        if let navControllerTopmostVisitable = navController(for: stack).topViewController as? Visitable {
+            delegate.refreshVisitable(navigationStack: stack,
+                                                  newTopmostVisitable: navControllerTopmostVisitable)
+        }
     }
 }
