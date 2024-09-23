@@ -40,17 +40,27 @@ class TestVisitable: UIViewController, Visitable {
 }
 
 class TestSessionDelegate: NSObject, SessionDelegate {
-    var sessionDidLoadWebViewCalled = false { didSet { didChange?() }}
+    var sessionDidLoadWebViewCalled = false
     var sessionDidStartRequestCalled = false
     var sessionDidFinishRequestCalled = false
     var failedRequestError: Error? = nil
-    var sessionDidFailRequestCalled = false { didSet { didChange?() }}
+    var sessionDidFailRequestCalled = false
     var sessionDidProposeVisitCalled = false
 
     var didChange: (() -> Void)?
+    
+    func reset() {
+        sessionDidLoadWebViewCalled = false
+        sessionDidStartRequestCalled = false
+        sessionDidFinishRequestCalled = false
+        failedRequestError = nil
+        sessionDidFailRequestCalled = false
+        sessionDidProposeVisitCalled = false
+    }
 
     func sessionDidLoadWebView(_ session: Session) {
         sessionDidLoadWebViewCalled = true
+        didChange?()
     }
 
     func sessionDidStartRequest(_ session: Session) {
@@ -69,6 +79,7 @@ class TestSessionDelegate: NSObject, SessionDelegate {
 
     func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, error: Error) {
         sessionDidFailRequestCalled = true
+        didChange?()
         failedRequestError = error
     }
 

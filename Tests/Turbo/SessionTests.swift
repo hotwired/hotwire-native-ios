@@ -28,7 +28,8 @@ class SessionTests: XCTestCase {
 
     override func tearDown() {
         session.webView.configuration.userContentController.removeScriptMessageHandler(forName: "turbo")
-
+        sessionDelegate.reset()
+        
         server.stopAndWait()
         eventLoop.stop()
     }
