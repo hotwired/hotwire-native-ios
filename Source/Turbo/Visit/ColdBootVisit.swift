@@ -1,5 +1,5 @@
 import Foundation
-import WebKit
+@preconcurrency import WebKit
 
 /// A "Cold Boot" visit is the initial visit to load the page, including all resources.
 /// Subsequent visits go through Turbo and use `JavaScriptVisit`.

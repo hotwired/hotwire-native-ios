@@ -1,5 +1,5 @@
 import UIKit
-import WebKit
+@preconcurrency import WebKit
 
 /// A Session represents the main interface for managing
 /// a Hotwire app in a web view. Each Session manages a single web view

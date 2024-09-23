@@ -1,5 +1,5 @@
 import Foundation
-import WebKit
+@preconcurrency import WebKit
 
 public protocol WKUIControllerDelegate: AnyObject {
     func present(_ alert: UIAlertController, animated: Bool)

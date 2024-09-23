@@ -171,7 +171,7 @@ public final class Bridge: Bridgable {
     }
 }
 
-extension Bridge: ScriptMessageHandlerDelegate {
+extension Bridge: @preconcurrency ScriptMessageHandlerDelegate {
     @MainActor
     func scriptMessageHandlerDidReceiveMessage(_ scriptMessage: WKScriptMessage) {
         if let event = scriptMessage.body as? String, event == "ready" {
