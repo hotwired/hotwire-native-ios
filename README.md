@@ -11,7 +11,7 @@
 
 ## Requirements
 
-Hotwire Native iOS is written in Swift 5.3 and requires iOS 14 or higher. It supports web apps using either Turbo 7 or Turbolinks 5.
+Hotwire Native iOS is written in Swift 5.3 and requires iOS 14 or higher. It supports web apps using Turbo 7.
 
 **Note:** You should understand how Turbo works with web applications in the browser before attempting to use Hotwire Native. See the [Turbo 7 documentation](https://github.com/hotwired/turbo) for details. Ensure that your web app sets the `window.Turbo` global variable as it's required by the native apps:
 

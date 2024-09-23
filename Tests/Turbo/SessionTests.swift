@@ -106,24 +106,6 @@ class SessionTests: XCTestCase {
         XCTAssertEqual(error as? TurboError, TurboError.pageLoadFailure)
     }
 
-    func test_coldBootVisit_Turbolinks5Compatibility_loadsThePageAndSetsTheAdapter() async throws {
-        await visit("/turbolinks")
-
-        XCTAssertTrue(sessionDelegate.sessionDidLoadWebViewCalled)
-
-        let result = try await session.webView.evaluateJavaScript("Turbolinks.controller.adapter === window.turboNative")
-        XCTAssertTrue(try XCTUnwrap(result as? Bool))
-    }
-
-    func test_coldBootVisit_Turbolinks5_3Compatibility_loadsThePageAndSetsTheAdapter() async throws {
-        await visit("/turbolinks-5.3")
-
-        XCTAssertTrue(sessionDelegate.sessionDidLoadWebViewCalled)
-
-        let result = try await session.webView.evaluateJavaScript("Turbolinks.controller.adapter === window.turboNative")
-        XCTAssertTrue(try XCTUnwrap(result as? Bool))
-    }
-
     // MARK: - Server
 
     @MainActor
