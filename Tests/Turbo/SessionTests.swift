@@ -52,6 +52,7 @@ class SessionTests: XCTestCase {
         XCTAssertTrue(sessionDelegate.sessionDidStartRequestCalled)
     }
 
+    @MainActor
     func test_coldBootVisit_whenVisitSucceeds_callsSessionDidLoadWebViewDelegateMethod() async {
         await visit("/")
 
@@ -106,6 +107,7 @@ class SessionTests: XCTestCase {
         XCTAssertEqual(error as? TurboError, TurboError.pageLoadFailure)
     }
 
+    @MainActor
     func test_coldBootVisit_Turbolinks5Compatibility_loadsThePageAndSetsTheAdapter() async throws {
         await visit("/turbolinks")
 
@@ -115,6 +117,7 @@ class SessionTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(result as? Bool))
     }
 
+    @MainActor
     func test_coldBootVisit_Turbolinks5_3Compatibility_loadsThePageAndSetsTheAdapter() async throws {
         await visit("/turbolinks-5.3")
 
