@@ -4,10 +4,10 @@ Note that we have a [code of conduct](/CODE_OF_CONDUCT.md). Please follow it in 
 
 ## Developing locally
 
-To set up your development environment:
+Hotwire Native for iOS is built using Swift 5.3 and iOS 14 as its minimum version. To set up your development environment:
 
 1. Clone the repo
-1. Open the directory in Xcode to install Swift packages
+1. Open the directory in Xcode 15+ to install Swift packages
 
 To run the test suite:
 
