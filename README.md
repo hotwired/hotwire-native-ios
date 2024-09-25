@@ -1,18 +1,18 @@
 # Hotwire Native for iOS
 
-**Build high-fidelity hybrid apps with native navigation and a single shared web view.** Hotwire Native for iOS provides the tooling to wrap your [Turbo 7](https://github.com/hotwired/turbo)-enabled web app in a native iOS shell. It manages a single WKWebView instance across multiple view controllers, giving you native navigation UI with all the client-side performance benefits of Turbo.
 
-- **Deliver fast, efficient hybrid apps.** Avoid reloading JavaScript and CSS. Save memory by sharing one WKWebView.
-- **Reuse mobile web views across platforms.** Create your views once, on the server, in HTML. Deploy them to iOS, [Android](https://github.com/hotwired/turbo-android), and mobile browsers simultaneously. Ship new features without waiting on App Store approval.
-- **Enhance web views with native UI.** Navigate web views using native patterns. Augment web UI with native controls.
-- **Produce large apps with small teams.** Achieve baseline HTML coverage for free. Upgrade to native views as needed.
+[Hotwire Native](https://native.hotwired.dev) is a high-level native framework, available for iOS and Android, that provides you with all the tools you need to leverage your web app and build great mobile apps.
+
+This native Swift library integrates with your [Hotwire](https://hotwired.dev) web app by wrapping it in a native iOS shell. It manages a single WKWebView instance across multiple view controllers, giving you native navigation UI with all the client-side performance benefits of Hotwire.
 
 Read more on [native.hotwired.dev](https://native.hotwired.dev).
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](./CONTRIBUTING.md).
+Hotwire Native for iOS is open-source software, freely distributable under the terms of an [MIT-style license](LICENSE). The [source code is hosted on GitHub](https://github.com/hotwired/hotwire-native-bridge). Development is sponsored by [37signals](https://37signals.com/).
 
----
+We welcome contributions in the form of bug reports, pull requests, or thoughtful discussions in the [GitHub issue tracker](https://github.com/hotwired/hotwire-native-bridge/issues).
+
+---------
 
 © 2024 37signals LLC
