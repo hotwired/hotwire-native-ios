@@ -1,14 +1,29 @@
 # Contributing to Hotwire Native iOS
 
-To set up your development environment:
+Note that we have a [code of conduct](/CODE_OF_CONDUCT.md). Please follow it in your interactions with this project.
+
+## Developing locally
+
+Hotwire Native for iOS is built using Swift 5.3 and iOS 14 as its minimum version. To set up your development environment:
 
 1. Clone the repo
-1. Open the directory in Xcode to install Swift packages
+1. Open the directory in Xcode 15+ to install Swift packages
 
 To run the test suite:
 
 1. Open the directory in Xcode
 1. Click Product → Test or <kbd>⌘</kbd>+<kbd>U</kbd>
+
+## Sending a Pull Request
+
+The core team is monitoring for pull requests. We will review your pull request and either merge it, request changes to it, or close it with an explanation.
+
+Before submitting a pull request, please:
+
+1. Fork the repository and create your branch.
+2. Follow the setup instructions in this file.
+3. If you’re fixing a bug or adding code that should be tested, add tests!
+4. Ensure the test suite passes.
 
 ## Feature parity with Android
 
