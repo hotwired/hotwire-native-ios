@@ -1,7 +1,8 @@
 # Hotwire Native for iOS
 
 ![Swift](https://img.shields.io/badge/Swift-5.3-blue)
-![Platforms](https://img.shields.io/badge/iOS-14+-green)
+![iOS](https://img.shields.io/badge/iOS-14+-green)
+![Turbo](https://img.shields.io/badge/Turbo-7+-purple)
 
 [Hotwire Native](https://native.hotwired.dev) is a high-level native framework, available for iOS and Android, that provides you with all the tools you need to leverage your web app and build great mobile apps.
 
