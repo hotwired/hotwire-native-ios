@@ -70,4 +70,18 @@ extension SceneController: NavigatorDelegate {
             return .acceptCustom(HotwireWebViewController(url: proposal.url))
         }
     }
+
+    func visitableDidFailRequest(_ visitable: any Visitable, error: any Error, retryHandler: RetryBlock?) {
+        if let turboError = error as? TurboError, case let .http(statusCode) = turboError, statusCode == 401 {
+            promptForAuthentication()
+        } else if let errorPresenter = visitable as? ErrorPresenter {
+            errorPresenter.presentError(error) {
+                retryHandler?()
+            }
+        } else {
+            let alert = UIAlertController(title: "Visit failed!", message: error.localizedDescription, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            navigator.rootViewController.present(alert, animated: true)
+        }
+    }
 }
