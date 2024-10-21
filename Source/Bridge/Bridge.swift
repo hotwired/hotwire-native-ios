@@ -25,6 +25,7 @@ public final class Bridge: Bridgable {
     public static func initialize(_ webView: WKWebView) {
         if getBridgeFor(webView) == nil {
             initialize(Bridge(webView: webView))
+            webView.customUserAgent = Hotwire.config.userAgent
         }
     }
 

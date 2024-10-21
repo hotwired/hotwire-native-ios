@@ -17,6 +17,8 @@ public enum Hotwire {
             Bridge.initialize(webView)
             return webView
         }
+        
+        NotificationCenter.default.postDidRegisterBridgeComponents()
     }
 
     static var bridgeComponentTypes = [BridgeComponent.Type]()

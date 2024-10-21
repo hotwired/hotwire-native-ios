@@ -138,6 +138,15 @@ public class Navigator {
         self.webkitUIDelegate = WKUIController(delegate: self)
         session.webView.uiDelegate = webkitUIDelegate
         modalSession.webView.uiDelegate = webkitUIDelegate
+        
+        didRegisterBridgeComponentsObservationToken = NotificationCenter.default.observeDidRegisterBridgeComponents {
+            Bridge.initialize(session.webView)
+            Bridge.initialize(modalSession.webView)
+        }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObservation(didRegisterBridgeComponentsObservationToken)
     }
 
     // MARK: Private
@@ -146,6 +155,7 @@ public class Navigator {
     private let navigatorDelegate = DefaultNavigatorDelegate()
     private var backgroundTerminatedWebViewSessions = [Session]()
     private var appInBackground = false
+    private var didRegisterBridgeComponentsObservationToken: NSObjectProtocol?
 
     private func controller(for proposal: VisitProposal) -> UIViewController? {
         switch delegate.handle(proposal: proposal) {
