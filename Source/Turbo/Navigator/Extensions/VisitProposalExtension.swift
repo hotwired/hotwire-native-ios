@@ -62,7 +62,7 @@ public extension VisitProposal {
 
     /// Allows the proposal to change the animation status when pushing, popping or presenting.
     var animated: Bool {
-        if let animated = parameters?["animated"] as? Bool {
+        if let animated = properties["animated"] as? Bool {
             return animated
         }
 
