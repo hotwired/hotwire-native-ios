@@ -19,11 +19,10 @@ extension NotificationCenter {
 }
 
 extension NotificationCenter {
-    
     func postDidRegisterBridgeComponents() {
         post(name: .didRegisterBridgeComponents, object: nil)
     }
-    
+
     func observeDidRegisterBridgeComponents(reaction: @escaping () -> Void) -> NSObjectProtocol {
         addObserver(forName: .didRegisterBridgeComponents, object: nil, queue: .main) { _ in
             reaction()

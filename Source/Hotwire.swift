@@ -17,7 +17,7 @@ public enum Hotwire {
             Bridge.initialize(webView)
             return webView
         }
-        
+
         NotificationCenter.default.postDidRegisterBridgeComponents()
     }
 
