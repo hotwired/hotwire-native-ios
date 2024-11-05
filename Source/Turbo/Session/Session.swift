@@ -259,7 +259,8 @@ extension Session: VisitableDelegate {
             visit(visitable, action: .restore)
         } else if visitable === previousVisit?.visitable {
             // Navigating backward from a native to a web view screen.
-            visit(visitable, action: .restore)
+            // Temporarily comment out until fix is ready.
+            // visit(visitable, action: .restore)
         }
     }
 
