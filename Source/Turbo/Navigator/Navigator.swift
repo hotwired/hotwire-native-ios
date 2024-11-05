@@ -76,6 +76,11 @@ public class Navigator {
         hierarchyController.clearAll(animated: animated)
     }
 
+    /// Reloads the main `Session`.
+    public func reload() {
+        session.reload()
+    }
+
     /// Navigate to an external URL.
     ///
     /// - Parameters:
