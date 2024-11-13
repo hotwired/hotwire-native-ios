@@ -47,7 +47,7 @@ public class Navigator {
     /// - Parameter parameters: provide context relevant to `url`
     public func route(_ url: URL, options: VisitOptions? = VisitOptions(action: .advance), parameters: [String: Any]? = nil) {
         let properties = session.pathConfiguration?.properties(for: url) ?? PathProperties()
-        route(VisitProposal(url: url, options: options ?? .init(action: .advance), properties: properties))
+        route(VisitProposal(url: url, options: options ?? .init(action: .advance), properties: properties, parameters: parameters))
     }
 
     /// Transforms `VisitProposal` -> `UIViewController`
