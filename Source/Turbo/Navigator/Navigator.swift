@@ -13,7 +13,13 @@ public class Navigator {
     public var rootViewController: UINavigationController { hierarchyController.navigationController }
     public var modalRootViewController: UINavigationController { hierarchyController.modalNavigationController }
     public var activeNavigationController: UINavigationController { hierarchyController.activeNavigationController }
-
+    public var activeWebView: WKWebView {
+        if activeNavigationController == rootViewController {
+            return session.webView
+        }
+        return modalSession.webView
+    }
+    
     /// Set to handle customize behavior of the `WKUIDelegate`.
     ///
     /// Subclass `WKUIController` to add additional behavior alongside alert/confirm dialogs.
