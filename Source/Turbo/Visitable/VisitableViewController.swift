@@ -4,14 +4,7 @@ import WebKit
 open class VisitableViewController: UIViewController, Visitable {
     open weak var visitableDelegate: VisitableDelegate?
     open var visitableURL: URL!
-    var appearReason: AppearReason = .default
-
-    enum AppearReason {
-        case `default`
-        case pushed
-        case poped
-        case tabSwitched
-    }
+    public var appearReason: AppearReason = .default
 
     public convenience init(url: URL) {
         self.init()
@@ -26,7 +19,12 @@ open class VisitableViewController: UIViewController, Visitable {
         installVisitableView()
     }
 
-    override open func viewWillAppear(_ animated: Bool) {
+//    override open func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        visitableDelegate?.visitableViewWillAppear(self)
+//    }
+
+    open override func viewIsAppearing(_ animated: Bool) {
         super.viewWillAppear(animated)
         visitableDelegate?.visitableViewWillAppear(self)
     }
