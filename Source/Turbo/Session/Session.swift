@@ -234,7 +234,7 @@ extension Session: VisitableDelegate {
             previousVisit = nil
         }
 
-        guard let topmostVisit = topmostVisit, let currentVisit = currentVisit else { return }
+        guard let topmostVisit, let currentVisit else { return }
 
         if isSnapshotCacheStale {
             clearSnapshotCache()
@@ -244,20 +244,39 @@ extension Session: VisitableDelegate {
         if isShowingStaleContent {
             reload()
             isShowingStaleContent = false
-        } else if visitable === topmostVisit.visitable && visitable.visitableViewController.isMovingToParent {
+            return
+        }
+
+        if visitable === topmostVisit.visitable && visitable.visitableViewController.isMovingToParent {
             // Back swipe gesture canceled
             if topmostVisit.state == .completed {
                 currentVisit.cancel()
             } else {
                 visit(visitable, action: .advance)
             }
-        } else if visitable === currentVisit.visitable && currentVisit.state == .started {
+            return
+        }
+
+        if visitable === currentVisit.visitable && currentVisit.state == .started {
             // Navigating forward - complete navigation early
             completeNavigationForCurrentVisit()
-        } else if visitable !== topmostVisit.visitable {
+            return
+        }
+
+        if visitable !== topmostVisit.visitable {
             // Navigating backward from a web view screen to a web view screen.
             visit(visitable, action: .restore)
-        } else if visitable === previousVisit?.visitable {
+            return
+        }
+
+        // Switching back to a tab.
+        if visitable === previousVisit?.visitable &&
+            visitable.appearReason == .tabSwitched {
+            completeNavigationForCurrentVisit()
+            return
+        }
+
+        if visitable === previousVisit?.visitable {
             // Navigating backward from a native to a web view screen.
             visit(visitable, action: .restore)
         }
