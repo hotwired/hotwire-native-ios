@@ -4,6 +4,14 @@ import WebKit
 open class VisitableViewController: UIViewController, Visitable {
     open weak var visitableDelegate: VisitableDelegate?
     open var visitableURL: URL!
+    var appearReason: AppearReason = .default
+
+    enum AppearReason {
+        case `default`
+        case pushed
+        case poped
+        case tabSwitched
+    }
 
     public convenience init(url: URL) {
         self.init()
@@ -36,6 +44,7 @@ open class VisitableViewController: UIViewController, Visitable {
     override open func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         visitableDelegate?.visitableViewDidDisappear(self)
+        appearReason = .default
     }
 
     // MARK: Visitable
@@ -77,4 +86,68 @@ open class VisitableViewController: UIViewController, Visitable {
             visitableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
+}
+
+open class HotwireNavigationController: UINavigationController {
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+
+        super.delegate = delegateProxy
+    }
+
+    open override var delegate: UINavigationControllerDelegate? {
+        get {
+            return delegateProxy.originalDelegate
+        }
+        set {
+            // Update the original delegate in the proxy.
+            delegateProxy.setDelegate(newValue)
+        }
+    }
+
+    open override func pushViewController(_ viewController: UIViewController, animated: Bool) {
+        if let visitableViewController = viewController as? VisitableViewController {
+            visitableViewController.appearReason = .pushed
+        }
+
+        super.pushViewController(viewController, animated: animated)
+    }
+
+    open override func popViewController(animated: Bool) -> UIViewController? {
+        let poppedViewController = super.popViewController(animated: animated)
+        if let visitableViewController = topViewController as? VisitableViewController {
+            visitableViewController.appearReason = .poped
+        }
+
+        return poppedViewController
+    }
+
+    // MARK: Private
+    private let delegateProxy = HotwireNavigationControllerDelegateProxy()
+}
+
+final class HotwireNavigationControllerDelegateProxy: NSObject, UINavigationControllerDelegate {
+    weak var originalDelegate: UINavigationControllerDelegate?
+
+    func setDelegate(_ delegate: UINavigationControllerDelegate?) {
+        self.originalDelegate = delegate
+    }
+
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        if navigationController.tabBarController != nil,
+           let visitableViewController = viewController as? VisitableViewController,
+           visitableViewController.appearReason == .default {
+            visitableViewController.appearReason = .tabSwitched
+        }
+
+        // Forward to the original delegate.
+        originalDelegate?.navigationController?(navigationController, willShow: viewController, animated: animated)
+    }
+
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        // Forward to the original delegate.
+        originalDelegate?.navigationController?(navigationController, didShow: viewController, animated: animated)
+    }
+
+    // TODO: Add other delegate methods
 }
