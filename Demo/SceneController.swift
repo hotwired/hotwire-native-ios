@@ -24,19 +24,7 @@ final class SceneController: UIResponder {
             fatalError()
         }
 
-        let tabBarController = UITabBarController()
-        let secondViewController = SecondViewController()
-        secondViewController.title = "Second"
-
-        tabBarController.viewControllers = [
-            navigator.rootViewController,
-            secondViewController
-        ]
-        window.rootViewController = tabBarController
-
-//        navigator.route(baseURL)
-
-//        window.rootViewController = navigator.rootViewController
+        window.rootViewController = navigator.rootViewController
     }
 
     // MARK: - Authentication
@@ -95,12 +83,5 @@ extension SceneController: NavigatorDelegate {
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             navigator.rootViewController.present(alert, animated: true)
         }
-    }
-}
-
-class SecondViewController: UIViewController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .systemGreen
     }
 }
