@@ -28,13 +28,19 @@ final class ButtonComponent: BridgeComponent {
             self.reply(to: "connect")
         }
         let item = UIBarButtonItem(title: data.title, image: image, primaryAction: action)
-        viewController.navigationItem.rightBarButtonItem = item
+
+        if data.side == "right" {
+            viewController.navigationItem.rightBarButtonItem = item
+        } else {
+            viewController.navigationItem.leftBarButtonItem = item
+        }
     }
 }
 
 private extension ButtonComponent {
     struct MessageData: Decodable {
         let title: String
-       let image: String?
+        let image: String?
+        let side: String
     }
 }
