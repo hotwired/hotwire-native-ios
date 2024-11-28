@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4EA39EB62CF791E700294F5C /* ButtonComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EA39EB52CF791E200294F5C /* ButtonComponent.swift */; };
 		844BA78B2B9A4843008F48DB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844BA78A2B9A4843008F48DB /* AppDelegate.swift */; };
 		844BA7942B9A4844008F48DB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 844BA7932B9A4844008F48DB /* Assets.xcassets */; };
 		844BA7972B9A4844008F48DB /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 844BA7962B9A4844008F48DB /* Base */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4EA39EB52CF791E200294F5C /* ButtonComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonComponent.swift; sourceTree = "<group>"; };
 		844BA7872B9A4843008F48DB /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		844BA78A2B9A4843008F48DB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		844BA7932B9A4844008F48DB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -84,6 +86,7 @@
 		844BA7BA2B9A4893008F48DB /* Bridge */ = {
 			isa = PBXGroup;
 			children = (
+				4EA39EB52CF791E200294F5C /* ButtonComponent.swift */,
 				844BA7A32B9A488A008F48DB /* FormComponent.swift */,
 				844BA7AB2B9A488A008F48DB /* MenuComponent.swift */,
 				844BA7AA2B9A488A008F48DB /* OverflowMenuComponent.swift */,
@@ -182,6 +185,7 @@
 				844BA7B02B9A488A008F48DB /* SceneController.swift in Sources */,
 				844BA7B12B9A488A008F48DB /* FormComponent.swift in Sources */,
 				844BA7B52B9A488A008F48DB /* OverflowMenuComponent.swift in Sources */,
+				4EA39EB62CF791E700294F5C /* ButtonComponent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
