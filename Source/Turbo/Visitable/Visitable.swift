@@ -10,19 +10,11 @@ public protocol VisitableDelegate: AnyObject {
     func visitableDidRequestRefresh(_ visitable: Visitable)
 }
 
-public enum AppearReason {
-    case `default`
-    case pushed
-    case poped
-    case tabSwitched
-}
-
 public protocol Visitable: AnyObject {
     var visitableViewController: UIViewController { get }
     var visitableDelegate: VisitableDelegate? { get set }
     var visitableView: VisitableView! { get }
     var visitableURL: URL! { get }
-    var appearReason: AppearReason { get }
 
     func visitableDidRender()
     func showVisitableActivityIndicator()
