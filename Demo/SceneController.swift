@@ -16,7 +16,8 @@ final class SceneController: UIResponder {
             FormComponent.self,
             MenuComponent.self,
             OverflowMenuComponent.self,
-            ButtonComponent.self
+            ButtonComponent.self,
+            NavComponent.self
         ])
     }
 
