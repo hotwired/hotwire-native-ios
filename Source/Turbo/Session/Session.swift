@@ -269,13 +269,6 @@ extension Session: VisitableDelegate {
             return
         }
 
-        // Switching back to a tab.
-        if visitable === previousVisit?.visitable &&
-            visitable.appearReason == .tabSwitched {
-            completeNavigationForCurrentVisit()
-            return
-        }
-
         if visitable === previousVisit?.visitable {
             // Navigating backward from a native to a web view screen.
             visit(visitable, action: .restore)
