@@ -4,7 +4,7 @@ import UIKit
 
 final class NavComponent: BridgeComponent {
     override class var name: String { "nav" }
-    
+
     override func onReceive(message: Message) {
         guard let viewController else { return }
         addButton(via: message, to: viewController)
@@ -16,31 +16,35 @@ final class NavComponent: BridgeComponent {
 
     private func addButton(via message: Message, to viewController: UIViewController) {
         guard let data: MessageData = message.data() else { return }
-        
-        let items:[UIAction] = data.items.map { item in
-            UIAction(title: item.title, image: UIImage(systemName: item.image)){ (action) in
-                // create a hash/dictionary to send the selector for this item
-                // back to the webside
-                let data = ["selector": item.selector]
-                
-                // trigger the callback on 'this.send("connect"...' from the
-                // stimulus controller.
-                self.reply(to: "connect", with: data)
-                //                        ^^^^^^^^^^^
-                // this passed the data through to the callback function on the webside
+
+        let items: [UIAction] = data.items.map { item in
+
+            UIAction(title: item.title,
+                     image: UIImage(systemName: item.image),
+                     attributes: item.destructive ? .destructive : [],
+                     state: item.state == "on" ? .on : .off
+            ) { (_) in
+                self.onItemSelected(item: item)
             }
         }
-        
+
         // build the menu item
         let image = UIImage(systemName: data.image)
-        let menu = UIMenu(children: items)
-        let menu_item = UIBarButtonItem(image: image, menu: menu)
-        
+        let menu = UIMenu(title: data.title, children: items)
+        let menuItem = UIBarButtonItem(image: image, menu: menu)
+
         if data.side == "right" {
-            viewController.navigationItem.rightBarButtonItem = menu_item
+            viewController.navigationItem.rightBarButtonItem = menuItem
         } else {
-            viewController.navigationItem.leftBarButtonItem = menu_item
+            viewController.navigationItem.leftBarButtonItem = menuItem
         }
+    }
+
+    private func onItemSelected(item: MenuItem) {
+        self.reply(
+            to: "connect",
+            with: SelectionMessageData(selectedIndex: item.index)
+        )
     }
 }
 
@@ -54,8 +58,11 @@ private extension NavComponent {
     struct MenuItem: Decodable {
         let title: String
         let image: String
-        let url: String        // not really used...discard at some point
-        let selector: String   // important!  used to signal which menu item was selected
+        let destructive: Bool
+        let state: String
+        let index: Int
     }
-
+    struct SelectionMessageData: Encodable {
+        let selectedIndex: Int
+    }
 }
