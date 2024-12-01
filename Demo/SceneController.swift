@@ -53,6 +53,14 @@ extension SceneController: UIWindowSceneDelegate {
         window?.makeKeyAndVisible()
 
         configureBridge()
+
+        Hotwire.config.makeCustomWebView = { configuration in
+            let webView = WKWebView(frame: .zero, configuration: configuration)
+            webView.allowsLinkPreview = false
+            Bridge.initialize(webView)
+            return webView
+        }
+
         configureRootViewController()
 
         navigator.route(rootURL)
