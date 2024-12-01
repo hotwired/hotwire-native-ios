@@ -1,7 +1,6 @@
 import HotwireNative
 import UIKit
 
-
 final class NavComponent: BridgeComponent {
     override class var name: String { "nav" }
 
