@@ -8,6 +8,10 @@ final class SceneController: UIResponder {
 
     private let rootURL = Demo.current
     private lazy var navigator = Navigator(pathConfiguration: pathConfiguration, delegate: self)
+    private lazy var navigators: [Navigator] = {
+        (0..<3).map { _ in Navigator(pathConfiguration: pathConfiguration, delegate: self) }
+    }()
+    private lazy var tabBarController = TabBarController(navigators: navigators)
 
     // MARK: - Setup
 
@@ -26,8 +30,9 @@ final class SceneController: UIResponder {
         guard let window = window else {
             fatalError()
         }
-
-        window.rootViewController = navigator.rootViewController
+        UITabBar.configureWithOpaqueBackground()
+        UINavigationBar.configureWithOpaqueBackground()
+        window.rootViewController = tabBarController
     }
 
     // MARK: - Authentication
@@ -63,7 +68,10 @@ extension SceneController: UIWindowSceneDelegate {
 
         configureRootViewController()
 
-        navigator.route(rootURL)
+        navigators[0].route(rootURL)
+        navigators[1].route(rootURL.appendingPathComponent("posts"))
+        navigators[2].route(rootURL.appendingPathComponent("playlists"))
+
     }
 }
 
@@ -95,5 +103,52 @@ extension SceneController: NavigatorDelegate {
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             navigator.rootViewController.present(alert, animated: true)
         }
+    }
+}
+
+class TabBarController: UITabBarController {
+    private let navigators: [Navigator]
+    
+    init(navigators: [Navigator]) {
+        self.navigators = navigators
+        super.init(nibName: nil, bundle: nil)
+        
+        viewControllers = navigators.map { $0.rootViewController }
+        
+        // Customize tab bar items
+        viewControllers?[0].tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 0)
+        viewControllers?[1].tabBarItem = UITabBarItem(title: "Posts", image: UIImage(systemName: "play.circle"), tag: 1)
+        viewControllers?[2].tabBarItem = UITabBarItem(title: "Playlists", image: UIImage(systemName: "list.number"), tag: 2)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension UITabBar {
+    static func configureWithOpaqueBackground() {
+        let tabBarAppearance = UITabBarAppearance()
+        tabBarAppearance.configureWithOpaqueBackground()
+        
+        // tabBarAppearance.backgroundColor = .systemGray5
+        tabBarAppearance.backgroundColor = UIColor(red: 0.09, green: 0.11, blue: 0.13, alpha: 1.00)
+        
+        appearance().standardAppearance = tabBarAppearance
+        appearance().scrollEdgeAppearance = tabBarAppearance
+    }
+}
+
+extension UINavigationBar {
+    static func configureWithOpaqueBackground() {
+        let navigationBarAppearance = UINavigationBarAppearance()
+        navigationBarAppearance.configureWithOpaqueBackground()
+        // navigationBarAppearance.backgroundColor = .systemBlue
+        navigationBarAppearance.backgroundColor = UIColor(red: 0.09, green: 0.11, blue: 0.13, alpha: 1.00)
+        navigationBarAppearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        navigationBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+
+        appearance().scrollEdgeAppearance = navigationBarAppearance
+        appearance().standardAppearance = navigationBarAppearance
     }
 }
