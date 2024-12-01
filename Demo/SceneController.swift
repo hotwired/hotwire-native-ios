@@ -41,6 +41,7 @@ final class SceneController: UIResponder {
 
     private lazy var pathConfiguration = PathConfiguration(sources: [
         .file(Bundle.main.url(forResource: "path-configuration", withExtension: "json")!),
+        .server(rootURL.appending(path: "hotwire_native/v1/ios/path_configuration.json"))
     ])
 }
 
