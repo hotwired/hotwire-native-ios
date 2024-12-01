@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4E3662C32CF86E8100FFC98A /* NavComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E3662C22CF86E7D00FFC98A /* NavComponent.swift */; };
 		4E95BEA72CFCDEC700D99435 /* ReviewPromptComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E95BEA62CFCDEC100D99435 /* ReviewPromptComponent.swift */; };
+		4E95BEA92CFCE6D200D99435 /* AppearanceConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E95BEA82CFCE6D100D99435 /* AppearanceConfig.swift */; };
 		4EA39EB62CF791E700294F5C /* ButtonComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EA39EB52CF791E200294F5C /* ButtonComponent.swift */; };
 		844BA78B2B9A4843008F48DB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844BA78A2B9A4843008F48DB /* AppDelegate.swift */; };
 		844BA7942B9A4844008F48DB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 844BA7932B9A4844008F48DB /* Assets.xcassets */; };
@@ -26,6 +27,7 @@
 /* Begin PBXFileReference section */
 		4E3662C22CF86E7D00FFC98A /* NavComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavComponent.swift; sourceTree = "<group>"; };
 		4E95BEA62CFCDEC100D99435 /* ReviewPromptComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewPromptComponent.swift; sourceTree = "<group>"; };
+		4E95BEA82CFCE6D100D99435 /* AppearanceConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceConfig.swift; sourceTree = "<group>"; };
 		4EA39EB52CF791E200294F5C /* ButtonComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonComponent.swift; sourceTree = "<group>"; };
 		844BA7872B9A4843008F48DB /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		844BA78A2B9A4843008F48DB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -78,6 +80,7 @@
 				844BA7AD2B9A488A008F48DB /* Demo.swift */,
 				844BA7A22B9A4889008F48DB /* SceneController.swift */,
 				844BA78A2B9A4843008F48DB /* AppDelegate.swift */,
+				4E95BEA82CFCE6D100D99435 /* AppearanceConfig.swift */,
 				844BA7AC2B9A488A008F48DB /* NumbersViewController.swift */,
 				844BA7AE2B9A488A008F48DB /* path-configuration.json */,
 				844BA7982B9A4844008F48DB /* Info.plist */,
@@ -193,6 +196,7 @@
 				4E3662C32CF86E8100FFC98A /* NavComponent.swift in Sources */,
 				4E95BEA72CFCDEC700D99435 /* ReviewPromptComponent.swift in Sources */,
 				844BA7B52B9A488A008F48DB /* OverflowMenuComponent.swift in Sources */,
+				4E95BEA92CFCE6D200D99435 /* AppearanceConfig.swift in Sources */,
 				4EA39EB62CF791E700294F5C /* ButtonComponent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
