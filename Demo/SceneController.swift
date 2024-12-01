@@ -30,6 +30,7 @@ final class SceneController: UIResponder {
         guard let window = window else {
             fatalError()
         }
+        // window.rootViewController = navigator.rootViewController
         UITabBar.configureWithOpaqueBackground()
         UINavigationBar.configureWithOpaqueBackground()
         window.rootViewController = tabBarController
@@ -68,6 +69,7 @@ extension SceneController: UIWindowSceneDelegate {
 
         configureRootViewController()
 
+        // navigator.route(rootURL)
         navigators[0].route(rootURL)
         navigators[1].route(rootURL.appendingPathComponent("posts"))
         navigators[2].route(rootURL.appendingPathComponent("playlists"))
