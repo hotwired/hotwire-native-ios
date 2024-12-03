@@ -247,8 +247,8 @@ extension Session: VisitableDelegate {
             return
         }
 
+        // Back swipe gesture canceled.
         if visitable === topmostVisit.visitable && visitable.visitableViewController.isMovingToParent {
-            // Back swipe gesture canceled
             if topmostVisit.state == .completed {
                 currentVisit.cancel()
             } else {
@@ -257,20 +257,20 @@ extension Session: VisitableDelegate {
             return
         }
 
+        // Navigating forward - complete navigation early.
         if visitable === currentVisit.visitable && currentVisit.state == .started {
-            // Navigating forward - complete navigation early
             completeNavigationForCurrentVisit()
             return
         }
 
+        // Navigating backward from a web view screen to a web view screen.
         if visitable !== topmostVisit.visitable {
-            // Navigating backward from a web view screen to a web view screen.
             visit(visitable, action: .restore)
             return
         }
 
+        // Navigating backward from a native to a web view screen.
         if visitable === previousVisit?.visitable {
-            // Navigating backward from a native to a web view screen.
             visit(visitable, action: .restore)
         }
     }
