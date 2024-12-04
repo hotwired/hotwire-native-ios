@@ -147,9 +147,18 @@ public class Navigator {
         self.session.delegate = self
         self.modalSession.delegate = self
 
-        self.webkitUIDelegate = WKUIController(delegate: self)
+        webkitUIDelegate = WKUIController(delegate: self)
         session.webView.uiDelegate = webkitUIDelegate
         modalSession.webView.uiDelegate = webkitUIDelegate
+
+        didRegisterBridgeComponentsObservationToken = NotificationCenter.default.observeDidRegisterBridgeComponents {
+            Bridge.initialize(session.webView)
+            Bridge.initialize(modalSession.webView)
+        }
+    }
+
+    deinit {
+        NotificationCenter.default.removeObservation(didRegisterBridgeComponentsObservationToken)
     }
 
     // MARK: Private
@@ -158,6 +167,7 @@ public class Navigator {
     private let navigatorDelegate = DefaultNavigatorDelegate()
     private var backgroundTerminatedWebViewSessions = [Session]()
     private var appInBackground = false
+    private var didRegisterBridgeComponentsObservationToken: NSObjectProtocol?
 
     private func controller(for proposal: VisitProposal) -> UIViewController? {
         switch delegate.handle(proposal: proposal) {
@@ -235,7 +245,7 @@ extension Navigator: NavigationHierarchyControllerDelegate {
         case .modal: modalSession.visit(controller, options: options)
         }
     }
-    
+
     func refreshVisitable(navigationStack: NavigationHierarchyController.NavigationStackType, newTopmostVisitable: any Visitable) {
         switch navigationStack {
         case .main:
