@@ -36,9 +36,9 @@ public struct HotwireConfig {
     }
 
     /// The navigation controller used in `Navigator` for the main and modal stacks.
-    /// Must be a `UINavigationController` or subclass.
+    /// Must be a `HotwireNavigationController` or subclass.
     public var defaultNavigationController: () -> UINavigationController = {
-        UINavigationController()
+        HotwireNavigationController()
     }
 
     /// Optionally customize the web views used by each Turbo Session.

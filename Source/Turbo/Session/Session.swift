@@ -234,7 +234,7 @@ extension Session: VisitableDelegate {
             previousVisit = nil
         }
 
-        guard let topmostVisit = topmostVisit, let currentVisit = currentVisit else { return }
+        guard let topmostVisit, let currentVisit else { return }
 
         if isSnapshotCacheStale {
             clearSnapshotCache()
@@ -244,21 +244,33 @@ extension Session: VisitableDelegate {
         if isShowingStaleContent {
             reload()
             isShowingStaleContent = false
-        } else if visitable === topmostVisit.visitable && visitable.visitableViewController.isMovingToParent {
-            // Back swipe gesture canceled
+            return
+        }
+
+        // Back swipe gesture canceled.
+        if visitable === topmostVisit.visitable && visitable.visitableViewController.isMovingToParent {
             if topmostVisit.state == .completed {
                 currentVisit.cancel()
             } else {
                 visit(visitable, action: .advance)
             }
-        } else if visitable === currentVisit.visitable && currentVisit.state == .started {
-            // Navigating forward - complete navigation early
+            return
+        }
+
+        // Navigating forward - complete navigation early.
+        if visitable === currentVisit.visitable && currentVisit.state == .started {
             completeNavigationForCurrentVisit()
-        } else if visitable !== topmostVisit.visitable {
-            // Navigating backward from a web view screen to a web view screen.
+            return
+        }
+
+        // Navigating backward from a web view screen to a web view screen.
+        if visitable !== topmostVisit.visitable {
             visit(visitable, action: .restore)
-        } else if visitable === previousVisit?.visitable {
-            // Navigating backward from a native to a web view screen.
+            return
+        }
+
+        // Navigating backward from a native to a web view screen.
+        if visitable === previousVisit?.visitable {
             visit(visitable, action: .restore)
         }
     }

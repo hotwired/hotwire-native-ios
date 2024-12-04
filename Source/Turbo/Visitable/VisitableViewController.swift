@@ -4,6 +4,8 @@ import WebKit
 open class VisitableViewController: UIViewController, Visitable {
     open weak var visitableDelegate: VisitableDelegate?
     open var visitableURL: URL!
+    var appearReason: AppearReason = .pushedOntoNavigationStack
+    var disappearReason: DisappearReason = .poppedFromNavigationStack
 
     public convenience init(url: URL) {
         self.init()
@@ -20,21 +22,25 @@ open class VisitableViewController: UIViewController, Visitable {
 
     override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        if appearReason == .tabSelected { return }
         visitableDelegate?.visitableViewWillAppear(self)
     }
 
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        if appearReason == .tabSelected { return }
         visitableDelegate?.visitableViewDidAppear(self)
     }
 
     override open func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        if disappearReason == .tabDeselected { return }
         visitableDelegate?.visitableViewWillDisappear(self)
     }
 
     override open func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        if disappearReason == .tabDeselected { return }
         visitableDelegate?.visitableViewDidDisappear(self)
     }
 
@@ -76,5 +82,19 @@ open class VisitableViewController: UIViewController, Visitable {
             visitableView.topAnchor.constraint(equalTo: view.topAnchor),
             visitableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+    }
+}
+
+extension VisitableViewController {
+    public enum AppearReason {
+        case pushedOntoNavigationStack
+        case revealedByPop
+        case tabSelected
+    }
+
+    public enum DisappearReason {
+        case coveredByPush
+        case poppedFromNavigationStack
+        case tabDeselected
     }
 }
