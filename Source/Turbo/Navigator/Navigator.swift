@@ -177,8 +177,8 @@ public class Navigator {
     private func ensureWebViewUserAgentIsInitialized() {
         if (initializedUserAgent == nil) {
             initializedUserAgent = Hotwire.config.userAgent
-            session.webView.customUserAgent = initializedUserAgent
-            modalSession.webView.customUserAgent = initializedUserAgent
+            session.webView.configuration.applicationNameForUserAgent = initializedUserAgent
+            modalSession.webView.configuration.applicationNameForUserAgent = initializedUserAgent
         } else if (initializedUserAgent != Hotwire.config.userAgent) {
             // Log error/warning
         }
