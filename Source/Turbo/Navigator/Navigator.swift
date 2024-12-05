@@ -61,6 +61,8 @@ public class Navigator {
     ///
     /// - Parameter proposal: the proposal to visit
     public func route(_ proposal: VisitProposal) {
+        ensureWebViewUserAgentIsInitialized()
+        
         guard let controller = controller(for: proposal) else { return }
         hierarchyController.route(controller: controller, proposal: proposal)
     }
@@ -128,6 +130,8 @@ public class Navigator {
 
     var session: Session
     var modalSession: Session
+    var initializedUserAgent: String? = nil
+    
     /// Modifies a UINavigationController according to visit proposals.
     lazy var hierarchyController = NavigationHierarchyController(delegate: self)
 
@@ -167,6 +171,16 @@ public class Navigator {
             customViewController
         case .reject:
             nil
+        }
+    }
+    
+    private ensureWebViewUserAgentIsInitialized() {
+        if (initializedUserAgent == nil) {
+            initializedUserAgent = Hotwire.config.userAgent
+            session.webView.customUserAgent = initializedUserAgent
+            modalSession.webView.customUserAgent = initializedUserAgent
+        } else if (initializedUserAgent != Hotwire.config.userAgent) {
+            // Log error/warning
         }
     }
 }
