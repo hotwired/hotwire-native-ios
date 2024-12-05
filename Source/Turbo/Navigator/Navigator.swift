@@ -130,7 +130,6 @@ public class Navigator {
 
     var session: Session
     var modalSession: Session
-    var initializedUserAgent: String? = nil
     
     /// Modifies a UINavigationController according to visit proposals.
     lazy var hierarchyController = NavigationHierarchyController(delegate: self)
@@ -162,6 +161,7 @@ public class Navigator {
     private let navigatorDelegate = DefaultNavigatorDelegate()
     private var backgroundTerminatedWebViewSessions = [Session]()
     private var appInBackground = false
+    private var initializedUserAgent: String? = nil
 
     private func controller(for proposal: VisitProposal) -> UIViewController? {
         switch delegate.handle(proposal: proposal) {
@@ -174,7 +174,7 @@ public class Navigator {
         }
     }
     
-    private ensureWebViewUserAgentIsInitialized() {
+    private func ensureWebViewUserAgentIsInitialized() {
         if (initializedUserAgent == nil) {
             initializedUserAgent = Hotwire.config.userAgent
             session.webView.customUserAgent = initializedUserAgent
