@@ -7,25 +7,15 @@ final class SceneController: UIResponder {
     var window: UIWindow?
 
     private let rootURL = Demo.current
-    private lazy var navigator = Navigator(pathConfiguration: pathConfiguration, delegate: self)
-
-    // MARK: - Setup
-
-    private func configureBridge() {
-        Hotwire.registerBridgeComponents([
+    private lazy var navigator = Navigator(
+        pathConfiguration: pathConfiguration,
+        delegate: self,
+        bridgeComponentTypes: [
             FormComponent.self,
             MenuComponent.self,
             OverflowMenuComponent.self,
-        ])
-    }
-
-    private func configureRootViewController() {
-        guard let window = window else {
-            fatalError()
-        }
-
-        window.rootViewController = navigator.rootViewController
-    }
+        ]
+    )
 
     // MARK: - Authentication
 
@@ -46,10 +36,8 @@ extension SceneController: UIWindowSceneDelegate {
         guard let windowScene = scene as? UIWindowScene else { return }
 
         window = UIWindow(windowScene: windowScene)
+        window?.rootViewController = navigator.rootViewController
         window?.makeKeyAndVisible()
-
-        configureBridge()
-        configureRootViewController()
 
         navigator.route(rootURL)
     }
