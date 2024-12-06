@@ -11,14 +11,6 @@ final class SceneController: UIResponder {
 
     // MARK: - Setup
 
-    private func configureBridge() {
-        Hotwire.registerBridgeComponents([
-            FormComponent.self,
-            MenuComponent.self,
-            OverflowMenuComponent.self,
-        ])
-    }
-
     private func configureRootViewController() {
         guard let window = window else {
             fatalError()
@@ -47,8 +39,6 @@ extension SceneController: UIWindowSceneDelegate {
 
         window = UIWindow(windowScene: windowScene)
         window?.makeKeyAndVisible()
-
-        configureBridge()
         configureRootViewController()
 
         navigator.route(rootURL)
