@@ -35,7 +35,13 @@ public class Navigator {
     /// - Parameters:
     ///   - pathConfiguration: _optional:_ remote configuration reference
     ///   - delegate: _optional:_ delegate to handle custom view controllers
-    public convenience init(pathConfiguration: PathConfiguration? = nil, delegate: NavigatorDelegate? = nil) {
+    public convenience init(pathConfiguration: PathConfiguration? = nil,
+                            delegate: NavigatorDelegate? = nil,
+                            bridgeComponentTypes: [BridgeComponent.Type]) {
+        if !bridgeComponentTypes.isEmpty {
+            Hotwire.registerBridgeComponents(bridgeComponentTypes)
+        }
+
         let session = Session(webView: Hotwire.config.makeWebView())
         session.pathConfiguration = pathConfiguration
 
