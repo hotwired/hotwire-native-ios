@@ -33,14 +33,13 @@ public class Navigator {
 
     /// Convenience initializer that doesn't require manually creating `Session` instances.
     /// - Parameters:
-    ///   - pathConfiguration: _optional:_ remote configuration reference
     ///   - delegate: _optional:_ delegate to handle custom view controllers
-    public convenience init(pathConfiguration: PathConfiguration? = nil, delegate: NavigatorDelegate? = nil) {
+    public convenience init(delegate: NavigatorDelegate? = nil) {
         let session = Session(webView: Hotwire.config.makeWebView())
-        session.pathConfiguration = pathConfiguration
+        session.pathConfiguration = Hotwire.config.pathConfiguration
 
         let modalSession = Session(webView: Hotwire.config.makeWebView())
-        modalSession.pathConfiguration = pathConfiguration
+        modalSession.pathConfiguration = Hotwire.config.pathConfiguration
 
         self.init(session: session, modalSession: modalSession, delegate: delegate)
     }
