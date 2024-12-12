@@ -12,6 +12,10 @@ final class SceneController: UIResponder {
     // MARK: - Setup
 
     private func configureBridge() {
+        // TODO: Move to AppDelegate when PR #55 is merged.
+        // https://github.com/hotwired/hotwire-native-ios/pull/55/files
+        Hotwire.config.applicationUserAgentPrefix = "Hotwire Demo;"
+
         Hotwire.registerBridgeComponents([
             FormComponent.self,
             MenuComponent.self,

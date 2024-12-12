@@ -1,8 +1,15 @@
 import Foundation
 
-public enum UserAgent {
-    public static func userAgentSubstring(for componentTypes: [BridgeComponent.Type]) -> String {
+enum UserAgent {
+    static func build(componentTypes: [BridgeComponent.Type], applicationPrefix: String?) -> String {
         let components = componentTypes.map { $0.name }.joined(separator: " ")
-        return "bridge-components: [\(components)]"
+        let componentsSubstring = "bridge-components: [\(components)]"
+
+        return [
+            applicationPrefix,
+            "Hotwire Native iOS;",
+            "Turbo Native iOS;",
+            componentsSubstring
+        ].compactMap { $0 }.joined(separator: " ")
     }
 }
