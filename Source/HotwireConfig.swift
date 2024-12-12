@@ -80,8 +80,8 @@ public struct HotwireConfig {
         let configuration = WKWebViewConfiguration()
         configuration.defaultWebpagePreferences?.preferredContentMode = .mobile
         configuration.applicationNameForUserAgent = UserAgent.build(
-            componentTypes: Hotwire.bridgeComponentTypes,
-            applicationPrefix: applicationUserAgentPrefix
+            applicationPrefix: applicationUserAgentPrefix,
+            componentTypes: Hotwire.bridgeComponentTypes
         )
         configuration.processPool = sharedProcessPool
         return configuration

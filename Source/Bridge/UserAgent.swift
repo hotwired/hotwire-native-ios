@@ -1,7 +1,7 @@
 import Foundation
 
 enum UserAgent {
-    static func build(componentTypes: [BridgeComponent.Type], applicationPrefix: String?) -> String {
+    static func build(applicationPrefix: String?, componentTypes: [BridgeComponent.Type]) -> String {
         let components = componentTypes.map { $0.name }.joined(separator: " ")
         let componentsSubstring = "bridge-components: [\(components)]"
 
