@@ -42,7 +42,19 @@ public struct HotwireConfig {
     }
 
     /// Optionally customize the web views used by each Turbo Session.
+    ///
     /// Ensure you return a new instance each time.
+    /// Make sure to call `Bridge.initialize(webView)` if you are using bridge
+    /// components and call this *after* `Hotwire.registerBridgeComponents()`.
+    ///
+    /// ```swift
+    /// Hotwire.config.makeCustomWebView = { config in
+    ///     let webView = WKWebView(frame: .zero, configuration: config)
+    ///     Bridge.initialize(webView)
+    ///     // Customize web view...
+    ///     return webView
+    /// }
+    /// ```
     public var makeCustomWebView: WebViewBlock = { (configuration: WKWebViewConfiguration) in
         WKWebView.debugInspectable(configuration: configuration)
     }
