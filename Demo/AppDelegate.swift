@@ -4,13 +4,7 @@ import UIKit
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        Hotwire.config.backButtonDisplayMode = .minimal
-        Hotwire.config.showDoneButtonOnModals = true
-
-        #if DEBUG
-        Hotwire.config.debugLoggingEnabled = true
-        #endif
-
+        configureHotwire()
         return true
     }
 
@@ -18,5 +12,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
         UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+    }
+
+    private func configureHotwire() {
+        // Load the path configuration
+        Hotwire.loadPathConfiguration(from: [
+            .file(Bundle.main.url(forResource: "path-configuration", withExtension: "json")!)
+        ])
+
+        // Set an optional custom user agent application prefix.
+        Hotwire.config.applicationUserAgentPrefix = "Hotwire Demo;"
+
+        // Register bridge components
+        Hotwire.registerBridgeComponents([
+            FormComponent.self,
+            MenuComponent.self,
+            OverflowMenuComponent.self,
+        ])
+
+        // Set configuration options
+        Hotwire.config.backButtonDisplayMode = .minimal
+        Hotwire.config.showDoneButtonOnModals = true
+#if DEBUG
+        Hotwire.config.debugLoggingEnabled = true
+#endif
     }
 }
