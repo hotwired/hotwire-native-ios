@@ -70,7 +70,7 @@ public struct HotwireConfig {
     public func makeWebView() -> WKWebView {
         let webView = makeCustomWebView(makeWebViewConfiguration())
         
-        if (!Hotwire.bridgeComponentTypes.isEmpty) {
+        if !Hotwire.bridgeComponentTypes.isEmpty {
             Bridge.initialize(webView)
         }
         
