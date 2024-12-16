@@ -259,9 +259,9 @@ extension Session: VisitableDelegate {
 
         // Navigating forward - complete navigation early.
         if visitable === currentVisit.visitable {
-            let currentVisitCompletedWithResponse = currentVisit.options.response?.responseHTML != nil && currentVisit.state == .completed
+            let currentVisitHasResponse = currentVisit.options.response?.responseHTML != nil
             
-            if currentVisit.state == .started || currentVisitCompletedWithResponse {
+            if currentVisit.state == .started || (currentVisitHasResponse && currentVisit.state == .completed) {
                 completeNavigationForCurrentVisit()
                 return
             }
