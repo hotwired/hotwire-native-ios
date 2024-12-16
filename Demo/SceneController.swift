@@ -7,29 +7,7 @@ final class SceneController: UIResponder {
     var window: UIWindow?
 
     private let rootURL = Demo.current
-    private lazy var navigator = Navigator(pathConfiguration: pathConfiguration, delegate: self)
-
-    // MARK: - Setup
-
-    private func configureBridge() {
-        // TODO: Move to AppDelegate when PR #55 is merged.
-        // https://github.com/hotwired/hotwire-native-ios/pull/55/files
-        Hotwire.config.applicationUserAgentPrefix = "Hotwire Demo;"
-
-        Hotwire.registerBridgeComponents([
-            FormComponent.self,
-            MenuComponent.self,
-            OverflowMenuComponent.self,
-        ])
-    }
-
-    private func configureRootViewController() {
-        guard let window = window else {
-            fatalError()
-        }
-
-        window.rootViewController = navigator.rootViewController
-    }
+    private lazy var navigator = Navigator(delegate: self)
 
     // MARK: - Authentication
 
@@ -37,12 +15,6 @@ final class SceneController: UIResponder {
         let authURL = rootURL.appendingPathComponent("/signin")
         navigator.route(authURL)
     }
-
-    // MARK: - Path Configuration
-
-    private lazy var pathConfiguration = PathConfiguration(sources: [
-        .file(Bundle.main.url(forResource: "path-configuration", withExtension: "json")!),
-    ])
 }
 
 extension SceneController: UIWindowSceneDelegate {
@@ -50,10 +22,8 @@ extension SceneController: UIWindowSceneDelegate {
         guard let windowScene = scene as? UIWindowScene else { return }
 
         window = UIWindow(windowScene: windowScene)
+        window?.rootViewController = navigator.rootViewController
         window?.makeKeyAndVisible()
-
-        configureBridge()
-        configureRootViewController()
 
         navigator.route(rootURL)
     }

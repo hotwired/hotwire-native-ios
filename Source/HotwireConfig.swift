@@ -87,11 +87,3 @@ public struct HotwireConfig {
         return configuration
     }
 }
-
-public extension HotwireConfig {
-    class PathConfiguration {
-        /// Enable to include the query string (in addition to the path) when applying rules.
-        /// Disable to only consider the path when applying rules.
-        public var matchQueryStrings = true
-    }
-}
