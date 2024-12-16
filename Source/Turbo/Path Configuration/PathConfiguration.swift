@@ -20,6 +20,10 @@ public struct PathConfigurationLoaderOptions {
 public final class PathConfiguration {
     public weak var delegate: PathConfigurationDelegate?
 
+    /// Enable to include the query string (in addition to the path) when applying rules.
+    /// Disable to only consider the path when applying rules.
+    public var matchQueryStrings = true
+
     /// Returns top-level settings: `{ settings: {} }`
     public private(set) var settings: [String: AnyHashable] = [:]
 
