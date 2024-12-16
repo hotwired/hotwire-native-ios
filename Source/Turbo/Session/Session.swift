@@ -258,9 +258,13 @@ extension Session: VisitableDelegate {
         }
 
         // Navigating forward - complete navigation early.
-        if visitable === currentVisit.visitable && currentVisit.state == .started {
-            completeNavigationForCurrentVisit()
-            return
+        if visitable === currentVisit.visitable {
+            let currentVisitCompletedWithResponse = currentVisit.options.response?.responseHTML != nil && currentVisit.state == .completed
+            
+            if currentVisit.state == .started || currentVisitCompletedWithResponse {
+                completeNavigationForCurrentVisit()
+                return
+            }
         }
 
         // Navigating backward from a web view screen to a web view screen.
