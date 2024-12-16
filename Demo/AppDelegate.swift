@@ -20,6 +20,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             .file(Bundle.main.url(forResource: "path-configuration", withExtension: "json")!)
         ])
 
+        // Set an optional custom user agent application prefix.
+        Hotwire.config.applicationUserAgentPrefix = "Hotwire Demo;"
+
         // Register bridge components
         Hotwire.registerBridgeComponents([
             FormComponent.self,

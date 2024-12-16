@@ -4,10 +4,16 @@ import WebKit
 public struct HotwireConfig {
     public typealias WebViewBlock = (_ configuration: WKWebViewConfiguration) -> WKWebView
 
-    /// Override to set a custom user agent.
-    /// - Important: Include "Hotwire Native" or "Turbo Native" to use `turbo_native_app?`
-    /// on your Rails server.
-    public var userAgent = "Hotwire Native iOS; Turbo Native iOS"
+    /// Set a custom user agent application prefix for every WKWebView instance.
+    ///
+    /// The library will automatically append a substring to your prefix
+    /// which includes:
+    /// - "Hotwire Native iOS; Turbo Native iOS;"
+    /// - "bridge-components: [your bridge components];"
+    ///
+    /// WKWebView's default user agent string will also appear at the
+    /// beginning of the user agent.
+    public var applicationUserAgentPrefix: String? = nil
 
     /// When enabled, adds a `UIBarButtonItem` of type `.done` to the left
     /// navigation bar button item on screens presented modally.
@@ -73,7 +79,10 @@ public struct HotwireConfig {
     private func makeWebViewConfiguration() -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
         configuration.defaultWebpagePreferences?.preferredContentMode = .mobile
-        configuration.applicationNameForUserAgent = userAgent
+        configuration.applicationNameForUserAgent = UserAgent.build(
+            applicationPrefix: applicationUserAgentPrefix,
+            componentTypes: Hotwire.bridgeComponentTypes
+        )
         configuration.processPool = sharedProcessPool
         return configuration
     }
