@@ -11,12 +11,6 @@ public enum Hotwire {
     public static func registerBridgeComponents(_ componentTypes: [BridgeComponent.Type]) {
         Hotwire.config.userAgent += " \(UserAgent.userAgentSubstring(for: componentTypes))"
         bridgeComponentTypes = componentTypes
-
-        Hotwire.config.makeCustomWebView = { configuration in
-            let webView = WKWebView.debugInspectable(configuration: configuration)
-            Bridge.initialize(webView)
-            return webView
-        }
     }
 
     static var bridgeComponentTypes = [BridgeComponent.Type]()
