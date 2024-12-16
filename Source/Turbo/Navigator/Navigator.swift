@@ -13,7 +13,13 @@ public class Navigator {
     public var rootViewController: UINavigationController { hierarchyController.navigationController }
     public var modalRootViewController: UINavigationController { hierarchyController.modalNavigationController }
     public var activeNavigationController: UINavigationController { hierarchyController.activeNavigationController }
-
+    public var activeWebView: WKWebView {
+        if activeNavigationController == rootViewController {
+            return session.webView
+        }
+        return modalSession.webView
+    }
+    
     /// Set to handle customize behavior of the `WKUIDelegate`.
     ///
     /// Subclass `WKUIController` to add additional behavior alongside alert/confirm dialogs.
@@ -27,14 +33,13 @@ public class Navigator {
 
     /// Convenience initializer that doesn't require manually creating `Session` instances.
     /// - Parameters:
-    ///   - pathConfiguration: _optional:_ remote configuration reference
     ///   - delegate: _optional:_ delegate to handle custom view controllers
-    public convenience init(pathConfiguration: PathConfiguration? = nil, delegate: NavigatorDelegate? = nil) {
+    public convenience init(delegate: NavigatorDelegate? = nil) {
         let session = Session(webView: Hotwire.config.makeWebView())
-        session.pathConfiguration = pathConfiguration
+        session.pathConfiguration = Hotwire.config.pathConfiguration
 
         let modalSession = Session(webView: Hotwire.config.makeWebView())
-        modalSession.pathConfiguration = pathConfiguration
+        modalSession.pathConfiguration = Hotwire.config.pathConfiguration
 
         self.init(session: session, modalSession: modalSession, delegate: delegate)
     }
@@ -47,7 +52,7 @@ public class Navigator {
     /// - Parameter parameters: provide context relevant to `url`
     public func route(_ url: URL, options: VisitOptions? = VisitOptions(action: .advance), parameters: [String: Any]? = nil) {
         let properties = session.pathConfiguration?.properties(for: url) ?? PathProperties()
-        route(VisitProposal(url: url, options: options ?? .init(action: .advance), properties: properties))
+        route(VisitProposal(url: url, options: options ?? .init(action: .advance), properties: properties, parameters: parameters))
     }
 
     /// Transforms `VisitProposal` -> `UIViewController`
@@ -74,6 +79,12 @@ public class Navigator {
     /// otherwise, pass false.
     public func clearAll(animated: Bool = false) {
         hierarchyController.clearAll(animated: animated)
+    }
+
+    /// Reloads the main and modal `Session`.
+    public func reload() {
+        session.reload()
+        modalSession.reload()
     }
 
     /// Navigate to an external URL.
@@ -223,11 +234,13 @@ extension Navigator: NavigationHierarchyControllerDelegate {
         case .modal: modalSession.visit(controller, options: options)
         }
     }
-
-    func refresh(navigationStack: NavigationHierarchyController.NavigationStackType) {
+    
+    func refreshVisitable(navigationStack: NavigationHierarchyController.NavigationStackType, newTopmostVisitable: any Visitable) {
         switch navigationStack {
-        case .main: session.reload()
-        case .modal: modalSession.reload()
+        case .main:
+            session.visit(newTopmostVisitable, action: .restore)
+        case .modal:
+            modalSession.visit(newTopmostVisitable, action: .restore)
         }
     }
 }

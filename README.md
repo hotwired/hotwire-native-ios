@@ -1,48 +1,21 @@
 # Hotwire Native for iOS
 
-**Build high-fidelity hybrid apps with native navigation and a single shared web view.** Hotwire Native for iOS provides the tooling to wrap your [Turbo 7](https://github.com/hotwired/turbo)-enabled web app in a native iOS shell. It manages a single WKWebView instance across multiple view controllers, giving you native navigation UI with all the client-side performance benefits of Turbo.
+![Swift](https://img.shields.io/badge/Swift-5.3-blue)
+![iOS](https://img.shields.io/badge/iOS-14+-green)
+![Turbo](https://img.shields.io/badge/Turbo-7+-purple)
 
-## Features
+[Hotwire Native](https://native.hotwired.dev) is a high-level native framework, available for iOS and Android, that provides you with all the tools you need to leverage your web app and build great mobile apps.
 
-- **Deliver fast, efficient hybrid apps.** Avoid reloading JavaScript and CSS. Save memory by sharing one WKWebView.
-- **Reuse mobile web views across platforms.** Create your views once, on the server, in HTML. Deploy them to iOS, [Android](https://github.com/hotwired/turbo-android), and mobile browsers simultaneously. Ship new features without waiting on App Store approval.
-- **Enhance web views with native UI.** Navigate web views using native patterns. Augment web UI with native controls.
-- **Produce large apps with small teams.** Achieve baseline HTML coverage for free. Upgrade to native views as needed.
+This native Swift library integrates with your [Hotwire](https://hotwired.dev) web app by wrapping it in a native iOS shell. It manages a single WKWebView instance across multiple view controllers, giving you native navigation UI with all the client-side performance benefits of Hotwire.
 
-## Requirements
-
-Hotwire Native iOS is written in Swift 5.3 and requires iOS 14 or higher. It supports web apps using either Turbo 7 or Turbolinks 5.
-
-**Note:** You should understand how Turbo works with web applications in the browser before attempting to use Hotwire Native. See the [Turbo 7 documentation](https://github.com/hotwired/turbo) for details. Ensure that your web app sets the `window.Turbo` global variable as it's required by the native apps:
-
-```javascript
-import { Turbo } from "@hotwired/turbo-rails"
-window.Turbo = Turbo
-```
-
-## Getting Started
-
-The best way to get started with Hotwire Native iOS to try out the demo app first to get familiar with the framework. The demo app walks you through all the basic Hotwire Native flows as well as some advanced features. To run the demo, clone this repo and open `Demo/Demo.xcodeproj` in Xcode and run the Demo target. See [Demo/README.md](Demo/README.md) for more details about the demo. When you’re ready to start your own application, read through the rest of the documentation.
-
-## Installation
-
-Add Hotwire Native as a dependency through Xcode or directly to a Package.swift:
-
-```
-.package(url: "https://github.com/hotwired/hotwire-native-ios", from: "<latest-version>")
-```
-
-You can also integrate the framework manually if your prefer, such as by adding the repo as a submodule, and linking `Hotwire.framework` to your project.
+Read more on [native.hotwired.dev](https://native.hotwired.dev).
 
 ## Contributing
 
-Hotwire Native iOS is open-source software, freely distributable under the terms of an [MIT-style license](LICENSE). The [source code is hosted on GitHub](https://github.com/hotwired/hotwire-native-ios).
-Development is sponsored by [37signals](https://37signals.com/).
+Hotwire Native for iOS is open-source software, freely distributable under the terms of an [MIT-style license](LICENSE). The [source code is hosted on GitHub](https://github.com/hotwired/hotwire-native-bridge). Development is sponsored by [37signals](https://37signals.com/).
 
-We welcome contributions in the form of bug reports, pull requests, or thoughtful discussions in the [GitHub issue tracker](https://github.com/hotwired/hotwire-native-ios/issues).
+We welcome contributions in the form of bug reports, pull requests, or thoughtful discussions in the [GitHub issue tracker](https://github.com/hotwired/hotwire-native-bridge/issues).
 
-Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
-
----
+---------
 
 © 2024 37signals LLC

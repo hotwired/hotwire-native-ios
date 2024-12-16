@@ -1,15 +1,29 @@
 import Foundation
-import HotwireNative
+@testable import HotwireNative
 import XCTest
 
 class UserAgentTests: XCTestCase {
-    func testUserAgentSubstringWithTwoComponents() {
-        let userAgentSubstring = UserAgent.userAgentSubstring(for: [OneBridgeComponent.self, TwoBridgeComponent.self])
-        XCTAssertEqual(userAgentSubstring, "bridge-components: [one two]")
+    func testUserAgentSubstringWithNoComponents() {
+        let userAgentSubstring = UserAgent.build(
+            applicationPrefix: nil,
+            componentTypes: []
+        )
+        XCTAssertEqual(userAgentSubstring, "Hotwire Native iOS; Turbo Native iOS; bridge-components: []")
     }
 
-    func testUserAgentSubstringWithNoComponents() {
-        let userAgentSubstring = UserAgent.userAgentSubstring(for: [])
-        XCTAssertEqual(userAgentSubstring, "bridge-components: []")
+    func testUserAgentSubstringWithTwoComponents() {
+        let userAgentSubstring = UserAgent.build(
+            applicationPrefix: nil,
+            componentTypes: [OneBridgeComponent.self, TwoBridgeComponent.self]
+        )
+        XCTAssertEqual(userAgentSubstring, "Hotwire Native iOS; Turbo Native iOS; bridge-components: [one two]")
+    }
+
+    func testUserAgentSubstringCustomPrefix() {
+        let userAgentSubstring = UserAgent.build(
+            applicationPrefix: "Hotwire Demo;",
+            componentTypes: [OneBridgeComponent.self, TwoBridgeComponent.self]
+        )
+        XCTAssertEqual(userAgentSubstring, "Hotwire Demo; Hotwire Native iOS; Turbo Native iOS; bridge-components: [one two]")
     }
 }
