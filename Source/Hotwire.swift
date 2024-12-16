@@ -10,12 +10,6 @@ public enum Hotwire {
     /// configuration further, making sure to call `Bridge.initialize()`.
     public static func registerBridgeComponents(_ componentTypes: [BridgeComponent.Type]) {
         bridgeComponentTypes = componentTypes
-
-        Hotwire.config.makeCustomWebView = { configuration in
-            let webView = WKWebView.debugInspectable(configuration: configuration)
-            Bridge.initialize(webView)
-            return webView
-        }
     }
 
 

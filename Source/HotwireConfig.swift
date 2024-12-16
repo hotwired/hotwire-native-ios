@@ -68,7 +68,13 @@ public struct HotwireConfig {
     // MARK: - Internal
 
     public func makeWebView() -> WKWebView {
-        makeCustomWebView(makeWebViewConfiguration())
+        let webView = makeCustomWebView(makeWebViewConfiguration())
+        
+        if !Hotwire.bridgeComponentTypes.isEmpty {
+            Bridge.initialize(webView)
+        }
+        
+        return webView
     }
 
     // MARK: - Private
