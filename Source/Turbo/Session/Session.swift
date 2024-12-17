@@ -258,9 +258,15 @@ extension Session: VisitableDelegate {
         }
 
         // Navigating forward - complete navigation early.
-        if visitable === currentVisit.visitable && currentVisit.state == .started {
-            completeNavigationForCurrentVisit()
-            return
+        if visitable === currentVisit.visitable {
+            let currentVisitHasResponse = currentVisit.options.response?.responseHTML != nil
+            
+            /// Most visits will be `.started` here, but form submission redirects containing `response.responseHTML` in
+            /// the modal context while navigating back to the default context will already be `.completed` at this point.
+            if currentVisit.state == .started || (currentVisitHasResponse && currentVisit.state == .completed) {
+                completeNavigationForCurrentVisit()
+                return
+            }
         }
 
         // Navigating backward from a web view screen to a web view screen.
