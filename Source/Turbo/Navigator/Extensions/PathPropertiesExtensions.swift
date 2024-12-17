@@ -1,23 +1,29 @@
 public extension PathProperties {
     var context: Navigation.Context {
-        if let rawValue = self["context"] as? String {
-            return Navigation.Context(rawValue: rawValue) ?? .default
+        guard let rawValue = self["context"] as? String,
+              let context = Navigation.Context(rawValue: rawValue) else {
+            return .default
         }
-        return .default
+
+        return context
     }
 
     var presentation: Navigation.Presentation {
-        if let rawValue = self["presentation"] as? String {
-            return Navigation.Presentation(rawValue: rawValue) ?? .default
+        guard let rawValue = self["presentation"] as? String,
+              let presentation = Navigation.Presentation(rawValue: rawValue) else {
+            return .default
         }
-        return .default
+
+        return presentation
     }
 
     var modalStyle: Navigation.ModalStyle {
-        if let rawValue = self["modal_style"] as? String {
-            return Navigation.ModalStyle(rawValue: rawValue) ?? .large
+        guard let rawValue = self["modal_style"] as? String,
+              let modalStyle = Navigation.ModalStyle(rawValue: rawValue) else {
+            return .large
         }
-        return .large
+
+        return modalStyle
     }
 
     var pullToRefreshEnabled: Bool {
@@ -25,11 +31,7 @@ public extension PathProperties {
     }
 
     var modalDismissGestureEnabled: Bool {
-        if let dismissEnabled = self["modal_dismiss_gesture_enabled"] as? Bool {
-            return dismissEnabled
-        }
-
-        return true
+        self["modal_dismiss_gesture_enabled"] as? Bool ?? true
     }
 
     /// Used to identify a custom native view controller if provided in the path configuration properties of a given pattern.
@@ -59,19 +61,15 @@ public extension PathProperties {
     /// - Important: A default value is provided in case the view controller property is missing from the configuration file. This will route the default `VisitableViewController`.
     /// - Note: A `ViewController` must conform to `PathConfigurationIdentifiable` to couple the identifier with a view controlelr.
     var viewController: String {
-        if let viewController = self["view_controller"] as? String {
-            return viewController
+        guard let viewController = self["view_controller"] as? String else {
+            return VisitableViewController.pathConfigurationIdentifier
         }
 
-        return VisitableViewController.pathConfigurationIdentifier
+        return viewController
     }
 
     /// Allows the proposal to change the animation status when pushing, popping or presenting.
     var animated: Bool {
-        if let animated = self["animated"] as? Bool {
-            return animated
-        }
-
-        return true
+        self["animated"] as? Bool ?? true
     }
 }
