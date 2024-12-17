@@ -261,6 +261,8 @@ extension Session: VisitableDelegate {
         if visitable === currentVisit.visitable {
             let currentVisitHasResponse = currentVisit.options.response?.responseHTML != nil
             
+            /// Most visits will be `.started` here, but form submission redirects containing `response.responseHTML` in
+            /// the modal context while navigating back to the default context will already be `.completed` at this point.
             if currentVisit.state == .started || (currentVisitHasResponse && currentVisit.state == .completed) {
                 completeNavigationForCurrentVisit()
                 return
