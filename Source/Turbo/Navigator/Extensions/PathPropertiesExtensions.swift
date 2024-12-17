@@ -1,0 +1,77 @@
+public extension PathProperties {
+    var context: Navigation.Context {
+        if let rawValue = self["context"] as? String {
+            return Navigation.Context(rawValue: rawValue) ?? .default
+        }
+        return .default
+    }
+
+    var presentation: Navigation.Presentation {
+        if let rawValue = self["presentation"] as? String {
+            return Navigation.Presentation(rawValue: rawValue) ?? .default
+        }
+        return .default
+    }
+
+    var modalStyle: Navigation.ModalStyle {
+        if let rawValue = self["modal_style"] as? String {
+            return Navigation.ModalStyle(rawValue: rawValue) ?? .large
+        }
+        return .large
+    }
+
+    var pullToRefreshEnabled: Bool {
+        self["pull_to_refresh_enabled"] as? Bool ?? true
+    }
+
+    var modalDismissGestureEnabled: Bool {
+        if let dismissEnabled = self["modal_dismiss_gesture_enabled"] as? Bool {
+            return dismissEnabled
+        }
+
+        return true
+    }
+
+    /// Used to identify a custom native view controller if provided in the path configuration properties of a given pattern.
+    ///
+    /// For example, given the following configuration file:
+    ///
+    /// ```json
+    /// {
+    ///   "rules": [
+    ///     {
+    ///       "patterns": [
+    ///         "/recipes/*"
+    ///       ],
+    ///       "properties": {
+    ///         "view_controller": "recipes",
+    ///       }
+    ///     }
+    ///  ]
+    /// }
+    /// ```
+    ///
+    /// A VisitProposal to `https://example.com/recipes/` will have
+    /// ```swift
+    /// proposal.viewController == "recipes"
+    /// ```
+    ///
+    /// - Important: A default value is provided in case the view controller property is missing from the configuration file. This will route the default `VisitableViewController`.
+    /// - Note: A `ViewController` must conform to `PathConfigurationIdentifiable` to couple the identifier with a view controlelr.
+    var viewController: String {
+        if let viewController = self["view_controller"] as? String {
+            return viewController
+        }
+
+        return VisitableViewController.pathConfigurationIdentifier
+    }
+
+    /// Allows the proposal to change the animation status when pushing, popping or presenting.
+    var animated: Bool {
+        if let animated = self["animated"] as? Bool {
+            return animated
+        }
+
+        return true
+    }
+}
