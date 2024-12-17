@@ -26,6 +26,14 @@ public extension VisitProposal {
         properties["pull_to_refresh_enabled"] as? Bool ?? true
     }
 
+    var modalSheetDismissGestureEnabled: Bool {
+        if let dismissEnabled = properties["modal_sheet_dismiss_gesture_enabled"] as? Bool {
+            return dismissEnabled
+        }
+
+        return true
+    }
+
     /// Used to identify a custom native view controller if provided in the path configuration properties of a given pattern.
     ///
     /// For example, given the following configuration file:
