@@ -169,6 +169,12 @@
       this.postMessage("pageInvalidated")
     }
 
+    linkPrefetchingIsEnabledForLocation(location) {
+      // Disable link prefetching since it can be activated by link taps and
+      // cause double-requests across the default/modal context boundaries.
+      return false
+    }
+
     log(message) {
       this.postMessage("log", { message: message })
     }
