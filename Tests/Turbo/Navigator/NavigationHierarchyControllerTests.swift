@@ -327,7 +327,7 @@ final class NavigationHierarchyControllerTests: XCTestCase {
             path: "/new",
             context: .modal,
             additionalProperties: [
-                "modal_style": "formSheet"
+                "modal_style": "form_sheet"
             ])
         navigator.route(proposal)
         XCTAssertEqual(modalNavigationController.modalPresentationStyle, .formSheet)
