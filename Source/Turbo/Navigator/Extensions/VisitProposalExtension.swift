@@ -26,8 +26,8 @@ public extension VisitProposal {
         properties["pull_to_refresh_enabled"] as? Bool ?? true
     }
 
-    var modalSheetDismissGestureEnabled: Bool {
-        if let dismissEnabled = properties["modal_sheet_dismiss_gesture_enabled"] as? Bool {
+    var modalDismissGestureEnabled: Bool {
+        if let dismissEnabled = properties["modal_dismiss_gesture_enabled"] as? Bool {
             return dismissEnabled
         }
 
