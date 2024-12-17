@@ -107,6 +107,8 @@ class NavigationHierarchyController {
             if let visitable = controller as? Visitable {
                 delegate.visit(visitable, on: .modal, with: proposal.options)
             }
+            controller.configureModalBehaviour(with: proposal)
+
             if navigationController.presentedViewController != nil, !modalNavigationController.isBeingDismissed {
                 pushOrReplace(on: modalNavigationController, with: controller, via: proposal)
             } else {
@@ -160,6 +162,8 @@ class NavigationHierarchyController {
             if let visitable = controller as? Visitable {
                 delegate.visit(visitable, on: .modal, with: proposal.options)
             }
+            controller.configureModalBehaviour(with: proposal)
+
             if navigationController.presentedViewController != nil {
                 modalNavigationController.replaceLastViewController(with: controller)
             } else {

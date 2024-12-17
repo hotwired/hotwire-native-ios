@@ -19,6 +19,10 @@ extension UINavigationController {
             modalPresentationStyle = .automatic
         case .full:
             modalPresentationStyle = .fullScreen
+        case .pageSheet:
+            modalPresentationStyle = .pageSheet
+        case .formSheet:
+            modalPresentationStyle = .formSheet
         }
     }
 }
