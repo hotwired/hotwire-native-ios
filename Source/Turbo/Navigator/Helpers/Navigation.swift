@@ -18,7 +18,7 @@ public enum Navigation {
         case medium
         case large
         case full
-        case pageSheet
-        case formSheet
+        case pageSheet = "page_sheet"
+        case formSheet = "form_sheet"
     }
 }
