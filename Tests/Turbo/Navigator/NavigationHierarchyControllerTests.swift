@@ -327,7 +327,7 @@ final class NavigationHierarchyControllerTests: XCTestCase {
             path: "/new",
             context: .modal,
             additionalProperties: [
-                "modal_style": "formSheet"
+                "modal_style": "form_sheet"
             ])
         navigator.route(proposal)
         XCTAssertEqual(modalNavigationController.modalPresentationStyle, .formSheet)
@@ -339,9 +339,16 @@ final class NavigationHierarchyControllerTests: XCTestCase {
             context: .modal
         )
         navigator.route(proposal)
-        // NOTE: For most view controllers, UIKit maps `automatic` style to the UIModalPresentationStyle.pageSheet style,
-        // but some system view controllers may map it to a different style.
-        XCTAssertEqual(modalNavigationController.modalPresentationStyle, .pageSheet)
+        // For most view controllers, UIKit maps [automatic] to:
+        // UIModalPresentationStyle.formSheet in iOS 18 and later
+        // UIModalPresentationStyle.pageSheet in versions of iOS earlier than iOS 18
+        // Some system view controllers may map it to a different style.
+        // https://developer.apple.com/documentation/uikit/uimodalpresentationstyle/automatic
+        if #available(iOS 18, *) {
+            XCTAssertEqual(modalNavigationController.modalPresentationStyle, .formSheet)
+        } else {
+            XCTAssertEqual(modalNavigationController.modalPresentationStyle, .pageSheet)
+        }
     }
 
     func test_modalDismissGestureEnabled_isCorrectlySet() throws {
