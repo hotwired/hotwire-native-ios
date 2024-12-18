@@ -171,7 +171,8 @@
 
     linkPrefetchingIsEnabledForLocation(location) {
       // Disable link prefetching since it can be activated by link taps and
-      // cause double-requests across the default/modal context boundaries.
+      // cause double-requests across the default/modal context boundaries. We
+      // also don't want to prefetch links that may correspond to native screens.
       return false
     }
 
