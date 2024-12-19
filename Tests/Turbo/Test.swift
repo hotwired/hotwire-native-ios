@@ -46,8 +46,10 @@ class TestSessionDelegate: NSObject, SessionDelegate {
     var failedRequestError: Error? = nil
     var sessionDidFailRequestCalled = false { didSet { didChange?() }}
     var sessionDidProposeVisitCalled = false
+    var sessionWebNavigationDecisionCalled = false
 
     var didChange: (() -> Void)?
+    var customWebNavigationDecision: WebNavigationDecision?
 
     func sessionDidLoadWebView(_ session: Session) {
         sessionDidLoadWebViewCalled = true
@@ -74,6 +76,12 @@ class TestSessionDelegate: NSObject, SessionDelegate {
 
     func session(_ session: Session, didProposeVisit proposal: VisitProposal) {
         sessionDidProposeVisitCalled = true
+    }
+
+    func session(_ session: HotwireNative.Session,
+                 webNavigationDecisionFor navigationAction: WKNavigationAction) -> HotwireNative.WebNavigationDecision {
+        sessionWebNavigationDecisionCalled = true
+        return customWebNavigationDecision ?? .defaultDecision(for: navigationAction)
     }
 }
 

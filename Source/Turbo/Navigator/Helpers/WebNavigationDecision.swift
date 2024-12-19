@@ -1,6 +1,6 @@
 import WebKit
 
-public struct WebNavigationDecision {
+public struct WebNavigationDecision: Equatable {
     public let policy: WKNavigationActionPolicy
     public let externallyOpenableURL: URL?
     public let shouldReloadPage: Bool
