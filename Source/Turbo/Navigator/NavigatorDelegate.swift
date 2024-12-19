@@ -1,4 +1,5 @@
 import Foundation
+import WebKit
 
 /// Contract for handling navigation requests and actions
 /// - Note: Methods  are __optional__ by default implementation in `NavigatorDelegate` extension.
@@ -33,6 +34,8 @@ public protocol NavigatorDelegate: AnyObject {
     /// Optional. Called after a form finishes a submission.
     /// If not implemented, no action is taken.
     func formSubmissionDidFinish(at url: URL)
+
+    func webNavigationDecision(for navigationAction: WKNavigationAction) -> WebNavigationDecision
 }
 
 public extension NavigatorDelegate {
@@ -57,4 +60,8 @@ public extension NavigatorDelegate {
     func formSubmissionDidStart(to url: URL) {}
 
     func formSubmissionDidFinish(at url: URL) {}
+
+    func webNavigationDecision(for navigationAction: WKNavigationAction) -> WebNavigationDecision {
+        return WebNavigationDecision.defaultDecision(for: navigationAction)
+    }
 }

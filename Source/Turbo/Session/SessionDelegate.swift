@@ -1,4 +1,5 @@
 import UIKit
+import WebKit
 
 public protocol SessionDelegate: AnyObject {
     func session(_ session: Session, didProposeVisit proposal: VisitProposal)
@@ -14,6 +15,7 @@ public protocol SessionDelegate: AnyObject {
     func sessionDidFinishFormSubmission(_ session: Session)
 
     func sessionWebViewProcessDidTerminate(_ session: Session)
+    func session(_ session: Session, webNavigationDecisionFor navigationAction: WKNavigationAction) -> WebNavigationDecision
 }
 
 public extension SessionDelegate {

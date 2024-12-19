@@ -208,6 +208,10 @@ extension Navigator: SessionDelegate {
         reloadIfPermitted(session)
     }
 
+    public func session(_ session: Session, webNavigationDecisionFor navigationAction: WKNavigationAction) -> WebNavigationDecision {
+        return delegate.webNavigationDecision(for: navigationAction)
+    }
+
     public func session(_ session: Session, didReceiveAuthenticationChallenge challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         delegate.didReceiveAuthenticationChallenge(challenge, completionHandler: completionHandler)
     }
