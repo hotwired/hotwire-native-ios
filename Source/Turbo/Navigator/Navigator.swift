@@ -87,6 +87,11 @@ public class Navigator {
         modalSession.reload()
     }
 
+    /// Invalidates the session cache.
+    public func invalidateSessionCache() {
+        session.markSnapshotCacheAsStale()
+    }
+
     /// Navigate to an external URL.
     ///
     /// - Parameters:
