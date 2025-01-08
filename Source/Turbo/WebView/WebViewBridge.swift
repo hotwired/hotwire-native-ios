@@ -7,6 +7,7 @@ protocol WebViewDelegate: AnyObject {
     func webView(_ webView: WebViewBridge, didFinishFormSubmissionToLocation location: URL)
     func webView(_ webView: WebViewBridge, didFailInitialPageLoadWithError: Error)
     func webView(_ webView: WebViewBridge, didFailJavaScriptEvaluationWithError error: Error)
+    func webView(_ webView: WebViewBridge, didFailRequestWithNonHttpStatusToLocation location: URL, identifier: String)
 }
 
 protocol WebViewPageLoadDelegate: AnyObject {
@@ -121,6 +122,8 @@ extension WebViewBridge: ScriptMessageHandlerDelegate {
             delegate?.webViewDidInvalidatePage(self)
         case .visitProposed:
             delegate?.webView(self, didProposeVisitToLocation: message.location!, options: message.options!)
+        case .visitRequestFailedWithNonHttpStatusCode:
+            delegate?.webView(self, didFailRequestWithNonHttpStatusToLocation: message.location!, identifier: message.identifier!)
         case .visitProposalScrollingToAnchor:
             break
         case .visitProposalRefreshingPage:
