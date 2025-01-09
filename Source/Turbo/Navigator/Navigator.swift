@@ -178,6 +178,13 @@ extension Navigator: SessionDelegate {
         hierarchyController.route(controller: controller, proposal: proposal)
     }
 
+    public func session(_ session: Session, didProposeVisitToCrossOriginRedirect location: URL) {
+        // Pop the current destination from the backstack since it
+        // resulted in a visit failure due to a cross-origin redirect.
+        pop(animated: false)
+        route(location)
+    }
+
     public func sessionDidStartFormSubmission(_ session: Session) {
         if let url = session.topmostVisitable?.visitableURL {
             delegate.formSubmissionDidStart(to: url)
