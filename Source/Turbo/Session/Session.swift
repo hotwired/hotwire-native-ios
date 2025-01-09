@@ -358,6 +358,59 @@ extension Session: WebViewDelegate {
         currentVisit.cancel()
         visit(currentVisit.visitable)
     }
+
+    func webView(_ webView: WebViewBridge, didFailRequestWithNonHttpStatusToLocation location: URL, identifier: String) {
+        log("didFailRequestWithNonHttpStatusToLocation",
+            ["location": location,
+             "visitIdentifier": identifier]
+        )
+
+        Task {
+            await resolveRedirect(to: location, identifier: identifier)
+        }
+    }
+
+    private func resolveRedirect(to location: URL, identifier: String) async {
+        do {
+            let result = try await RedirectHandler().resolve(location: location)
+            switch result {
+            case .noRedirect:
+                await failCurrentVisit(with: TurboError.http(statusCode: 0))
+            case .redirect(let url):
+                break
+            case .crossOriginRedirect(let url):
+                await visitProposedToCrossOriginRedirect(
+                    location: location,
+                    redirectLocation: url,
+                    visitIdentifier: identifier
+                )
+            }
+        } catch {
+            await failCurrentVisit(with: error)
+        }
+    }
+
+    @MainActor
+    private func failCurrentVisit(with error: Error) {
+        guard let currentVisit else { return }
+        currentVisit.fail(with: error)
+    }
+
+    @MainActor
+    private func visitProposedToCrossOriginRedirect(location: URL,
+                                                    redirectLocation: URL,
+                                                    visitIdentifier: String) {
+        log("visitProposedToCrossOriginRedirect", [
+            "location": location,
+            "redirectLocation": redirectLocation,
+            "visitIdentifier": visitIdentifier
+        ])
+        
+        guard let visit = currentVisit as? JavaScriptVisit,
+              visit.identifier == visitIdentifier else { return }
+
+        delegate?.session(self, didProposeVisitToCrossOriginRedirect: redirectLocation)
+    }
 }
 
 extension Session: WKNavigationDelegate {
