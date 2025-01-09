@@ -359,6 +359,18 @@ extension Session: WebViewDelegate {
         visit(currentVisit.visitable)
     }
 
+    /// Called by the Turbo bridge when a visit request fails with a non-HTTP status code,
+    /// suggesting it may be the result of a cross-origin redirect visit.
+    ///
+    /// Determining a cross-origin redirect is not possible in JavaScript using the Fetch API
+    /// due to CORS restrictions, so verification is performed on the native side.
+    /// If a redirect is detected, a cross-origin redirect visit is proposed; otherwise,
+    /// the visit is failed.
+    ///
+    /// - Parameters:
+    ///   - webView: The web view bridge.
+    ///   - location: The original visit location requested.
+    ///   - identifier: A unique identifier for the visit.
     func webView(_ webView: WebViewBridge, didFailRequestWithNonHttpStatusToLocation location: URL, identifier: String) {
         log("didFailRequestWithNonHttpStatusToLocation",
             ["location": location,
@@ -375,9 +387,26 @@ extension Session: WebViewDelegate {
             let result = try await RedirectHandler().resolve(location: location)
             switch result {
             case .noRedirect:
-                await failCurrentVisit(with: TurboError.http(statusCode: 0))
+                log("resolveRedirect: no redirect",
+                    ["location": location,
+                     "visitIdentifier": identifier]
+                )
+                await failCurrentVisit(
+                    with: TurboError.http(statusCode: 0),
+                    visitIdentifier: identifier
+                )
             case .redirect(let url):
-                break
+                // Same-domain redirects are handled by Turbo.
+                // Handling them here could lead to an infinite loop.
+                log("resolveRedirect: same domain redirect",
+                    ["location": location,
+                     "redirectLocation": url,
+                     "visitIdentifier": identifier]
+                )
+                await failCurrentVisit(
+                    with: TurboError.http(statusCode: 0),
+                    visitIdentifier: identifier
+                )
             case .crossOriginRedirect(let url):
                 await visitProposedToCrossOriginRedirect(
                     location: location,
@@ -386,26 +415,34 @@ extension Session: WebViewDelegate {
                 )
             }
         } catch {
-            await failCurrentVisit(with: error)
+            await failCurrentVisit(
+                with: error,
+                visitIdentifier: identifier
+            )
         }
     }
 
     @MainActor
-    private func failCurrentVisit(with error: Error) {
-        guard let currentVisit else { return }
-        currentVisit.fail(with: error)
+    private func failCurrentVisit(with error: Error, visitIdentifier: String) {
+        // This is only relevant to `JavaScriptVisit`, as `ColdBootVisit` currently
+        // doesn't go through the same flow.
+        guard let visit = currentVisit as? JavaScriptVisit,
+              visit.identifier == visitIdentifier else { return }
+
+        visit.fail(with: error)
     }
 
     @MainActor
-    private func visitProposedToCrossOriginRedirect(location: URL,
-                                                    redirectLocation: URL,
-                                                    visitIdentifier: String) {
-        log("visitProposedToCrossOriginRedirect", [
-            "location": location,
-            "redirectLocation": redirectLocation,
-            "visitIdentifier": visitIdentifier
-        ])
-        
+    private func visitProposedToCrossOriginRedirect(
+        location: URL,
+        redirectLocation: URL,
+        visitIdentifier: String) {
+        log("visitProposedToCrossOriginRedirect",
+            ["location": location,
+             "redirectLocation": redirectLocation,
+             "visitIdentifier": visitIdentifier]
+        )
+
         guard let visit = currentVisit as? JavaScriptVisit,
               visit.identifier == visitIdentifier else { return }
 
