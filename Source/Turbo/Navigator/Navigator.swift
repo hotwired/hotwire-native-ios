@@ -182,7 +182,8 @@ extension Navigator: SessionDelegate {
         // Pop the current destination from the backstack since it
         // resulted in a visit failure due to a cross-origin redirect.
         pop(animated: false)
-        route(location)
+        let decision = delegate.handle(externalURL: location)
+        open(externalURL: location, decision)
     }
 
     public func sessionDidStartFormSubmission(_ session: Session) {
