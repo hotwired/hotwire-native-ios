@@ -15,23 +15,17 @@ enum RedirectHandlerError: Error {
 struct RedirectHandler {
     enum Result {
         case noRedirect
-        case redirect(URL)
+        case redirect(URL) // Same-domain redirect.
         case crossOriginRedirect(URL)
     }
 
     func resolve(location: URL) async throws -> Result {
         do {
             let request = URLRequest(url: location)
-            let (data, response) = try await URLSession.shared.data(for: request)
-            guard let httpResponse = response as? HTTPURLResponse else {
-                throw RedirectHandlerError.responseValidationFailed(reason: .invalidResponse)
-            }
+            let (_, response) = try await URLSession.shared.data(for: request)
+            let httpResponse = try validateResponse(response)
 
-            guard httpResponse.isSuccessful else {
-                throw RedirectHandlerError.responseValidationFailed(reason: .unacceptableStatusCode(code: httpResponse.statusCode))
-            }
-
-            guard let responseUrl = response.url else {
+            guard let responseUrl = httpResponse.url else {
                 throw RedirectHandlerError.responseValidationFailed(reason: .missingURL)
             }
 
@@ -47,9 +41,23 @@ struct RedirectHandler {
             }
 
             return .redirect(responseUrl)
+        } catch let error as RedirectHandlerError {
+            throw error
         } catch {
             throw RedirectHandlerError.requestFailed(error)
         }
+    }
+
+    private func validateResponse(_ response: URLResponse) throws -> HTTPURLResponse {
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw RedirectHandlerError.responseValidationFailed(reason: .invalidResponse)
+        }
+
+        guard httpResponse.isSuccessful else {
+            throw RedirectHandlerError.responseValidationFailed(reason: .unacceptableStatusCode(code: httpResponse.statusCode))
+        }
+
+        return httpResponse
     }
 }
 
