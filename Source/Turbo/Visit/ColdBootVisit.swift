@@ -67,9 +67,24 @@ extension ColdBootVisit: WKNavigationDelegate {
             if let url = navigationAction.request.url {
                 UIApplication.shared.open(url)
             }
-        } else {
-            decisionHandler(.allow)
+            return
         }
+
+        guard let url = navigationAction.request.url else {
+            decisionHandler(.cancel)
+            return
+        }
+
+        let isRedirect = location != url
+        let redirectIsCrossOrigin = isRedirect && location.host != url.host
+
+        if redirectIsCrossOrigin {
+            decisionHandler(.cancel)
+            UIApplication.shared.open(url)
+            return
+        }
+
+        decisionHandler(.allow)
     }
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
