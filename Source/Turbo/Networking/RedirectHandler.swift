@@ -15,7 +15,7 @@ enum RedirectHandlerError: Error {
 struct RedirectHandler {
     enum Result {
         case noRedirect
-        case redirect(URL) // Same-domain redirect.
+        case sameOriginRedirect(URL)
         case crossOriginRedirect(URL)
     }
 
@@ -40,7 +40,7 @@ struct RedirectHandler {
                 return .crossOriginRedirect(responseUrl)
             }
 
-            return .redirect(responseUrl)
+            return .sameOriginRedirect(responseUrl)
         } catch let error as RedirectHandlerError {
             throw error
         } catch {

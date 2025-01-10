@@ -395,7 +395,7 @@ extension Session: WebViewDelegate {
                     with: TurboError.http(statusCode: 0),
                     visitIdentifier: identifier
                 )
-            case .redirect(let url):
+            case .sameOriginRedirect(let url):
                 // Same-domain redirects are handled by Turbo.
                 // Handling them here could lead to an infinite loop.
                 log("resolveRedirect: same domain redirect",
