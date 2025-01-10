@@ -4,7 +4,7 @@ import Foundation
 /// All visits are `JavaScriptVisits` except the initial `ColdBootVisit`
 /// or if a `reload()` is issued.
 final class JavaScriptVisit: Visit {
-    private var identifier = "(pending)"
+    var identifier = "(pending)"
     
     init(visitable: Visitable, options: VisitOptions, bridge: WebViewBridge, restorationIdentifier: String?) {
         super.init(visitable: visitable, options: options, bridge: bridge)
