@@ -62,12 +62,7 @@ struct RedirectHandler {
 }
 
 extension HTTPURLResponse {
-    public var isSuccessful: Bool { (200...299).contains(statusCode) }
-        switch statusCode {
-        case 200 ... 299:
-            return true
-        default:
-            return false
-        }
+    public var isSuccessful: Bool {
+        (200...299).contains(statusCode)
     }
 }
