@@ -79,9 +79,14 @@ extension ColdBootVisit: WKNavigationDelegate {
         let redirectIsCrossOrigin = isRedirect && location.host != url.host
 
         if redirectIsCrossOrigin {
+            log("Cross-origin redirect detected: \(location) -> \(url).")
             decisionHandler(.cancel)
             UIApplication.shared.open(url)
             return
+        }
+
+        if isRedirect {
+            log("Same-origin redirect detected: \(location) -> \(url).")
         }
 
         decisionHandler(.allow)
