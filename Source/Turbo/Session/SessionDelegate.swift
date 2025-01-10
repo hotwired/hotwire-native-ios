@@ -3,6 +3,7 @@ import WebKit
 
 public protocol SessionDelegate: AnyObject {
     func session(_ session: Session, didProposeVisit proposal: VisitProposal)
+    func session(_ session: Session,  didProposeVisitToCrossOriginRedirect location: URL)
     func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, error: Error)
 
     func session(_ session: Session, openExternalURL url: URL)

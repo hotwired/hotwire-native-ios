@@ -46,7 +46,8 @@ class TestSessionDelegate: NSObject, SessionDelegate {
     var failedRequestError: Error? = nil
     var sessionDidFailRequestCalled = false { didSet { didChange?() }}
     var sessionDidProposeVisitCalled = false
-    var sessionWebNavigationDecisionCalled = false
+    var sessionDidProposeVisitToCrossOriginRedirectWasCalled = false
+    var sessionDidProposeVisitToCrossOriginRedirectLocation: URL?
 
     var didChange: (() -> Void)?
     var customWebNavigationDecision: WebNavigationDecision?
@@ -78,10 +79,9 @@ class TestSessionDelegate: NSObject, SessionDelegate {
         sessionDidProposeVisitCalled = true
     }
 
-    func session(_ session: HotwireNative.Session,
-                 webNavigationDecisionFor navigationAction: WKNavigationAction) -> HotwireNative.WebNavigationDecision {
-        sessionWebNavigationDecisionCalled = true
-        return customWebNavigationDecision ?? .defaultDecision(for: navigationAction)
+    func session(_ session: Session, didProposeVisitToCrossOriginRedirect location: URL) {
+        sessionDidProposeVisitToCrossOriginRedirectWasCalled = true
+        sessionDidProposeVisitToCrossOriginRedirectLocation = location
     }
 }
 

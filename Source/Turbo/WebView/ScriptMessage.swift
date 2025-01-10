@@ -58,6 +58,7 @@ extension ScriptMessage {
         case visitRequestStarted
         case visitRequestCompleted
         case visitRequestFailed
+        case visitRequestFailedWithNonHttpStatusCode
         case visitRequestFinished
         case visitRendered
         case visitCompleted
