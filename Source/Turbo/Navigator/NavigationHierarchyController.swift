@@ -2,6 +2,32 @@ import SafariServices
 import UIKit
 import WebKit
 
+extension NavigationHierarchyController {
+    /// Handles special Turbo historical location routes
+       private func handleHistoricalLocation(proposal: VisitProposal) {
+           switch proposal.url.path {
+           case "/recede_historical_location":
+               // Pop or dismiss the current view
+               pop(animated: proposal.animated)
+
+           case "/resume_historical_location":
+               // No-op - do nothing
+               break
+               
+           case "/refresh_historical_location":
+               // refresh current view
+               refresh(via: proposal)
+           default:
+               break
+           }
+       }
+       
+       /// Check if URL is a Turbo historical location directive
+       private func isHistoricalLocation(_ url: URL) -> Bool {
+           return url.path.hasSuffix("_historical_location")
+       }
+}
+
 class NavigationHierarchyController {
     let navigationController: UINavigationController
     let modalNavigationController: UINavigationController
@@ -34,6 +60,11 @@ class NavigationHierarchyController {
     }
 
     func route(controller: UIViewController, proposal: VisitProposal) {
+        if isHistoricalLocation(proposal.url) {
+            handleHistoricalLocation(proposal: proposal)
+              return
+        }
+        
         if let alert = controller as? UIAlertController {
             presentAlert(alert, via: proposal)
         } else {
