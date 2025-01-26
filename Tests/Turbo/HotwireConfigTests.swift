@@ -9,7 +9,7 @@ final class HotwireConfigTests: XCTestCase {
         let testComponent = MockBridgeComponent.self
         Hotwire.registerBridgeComponents([testComponent])
         
-        XCTAssertEqual(config.userAgent, "TestApp/1.0 Hotwire Native iOS; Turbo Native iOS; bridge-components: [MockComponent]")
+        XCTAssertEqual(config.userAgentComponent, "TestApp/1.0 Hotwire Native iOS; Turbo Native iOS; bridge-components: [MockComponent]")
     }
 }
 
