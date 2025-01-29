@@ -30,9 +30,14 @@ public struct HotwireConfig {
         }
     }
     
-    /// Getter for user-agent string
-    /// - returns: "`applicationUserAgentPrefix`; Native iOS; Turbo Native iOS; bridge-components: [your bridge components];"
-    public var userAgentComponent: String {
+    /// Gets the user agent that the library builds to identify the app
+    /// and its registered bridge components.
+    ///
+    /// The user agent includes:
+    /// - Your (optional) custom `applicationUserAgentPrefix`
+    /// - "Native iOS; Turbo Native iOS;"
+    /// - "bridge-components: [your bridge components];"
+    public var userAgent: String {
         get {
             return UserAgent.build(
                 applicationPrefix: applicationUserAgentPrefix,
@@ -96,7 +101,7 @@ public struct HotwireConfig {
     private func makeWebViewConfiguration() -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
         configuration.defaultWebpagePreferences?.preferredContentMode = .mobile
-        configuration.applicationNameForUserAgent = userAgentComponent
+        configuration.applicationNameForUserAgent = userAgent
         configuration.processPool = sharedProcessPool
         return configuration
     }
