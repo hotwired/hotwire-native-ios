@@ -41,6 +41,8 @@ class NavigationHierarchyController {
                 visitable.visitableView.allowsPullToRefresh = proposal.pullToRefreshEnabled
             }
 
+            dismissModalIfNeeded(for: proposal)
+
             switch proposal.presentation {
             case .default:
                 navigate(with: controller, via: proposal)
@@ -175,6 +177,11 @@ class NavigationHierarchyController {
     }
 
     private func refresh(via proposal: VisitProposal) {
+        if proposal.isHistoricalLocation {
+            refreshIfTopViewControllerIsVisitable(from: .main)
+            return
+        }
+
         if navigationController.presentedViewController != nil {
             if modalNavigationController.viewControllers.count == 1 {
                 navigationController.dismiss(animated: proposal.animated)
@@ -183,10 +190,11 @@ class NavigationHierarchyController {
                 modalNavigationController.popViewController(animated: proposal.animated)
                 refreshIfTopViewControllerIsVisitable(from: .modal)
             }
-        } else {
-            navigationController.popViewController(animated: proposal.animated)
-            refreshIfTopViewControllerIsVisitable(from: .main)
+            return
         }
+
+        navigationController.popViewController(animated: proposal.animated)
+        refreshIfTopViewControllerIsVisitable(from: .main)
     }
 
     private func replaceRoot(with controller: UIViewController, via proposal: VisitProposal) {
@@ -203,5 +211,16 @@ class NavigationHierarchyController {
             delegate.refreshVisitable(navigationStack: stack,
                                                   newTopmostVisitable: navControllerTopmostVisitable)
         }
+    }
+
+    private func dismissModalIfNeeded(for visit: VisitProposal) {
+        // The desired behaviour for historical location visits is
+        // to always dismiss the "modal" stack.
+        guard visit.isHistoricalLocation,
+              navigationController.presentedViewController != nil else {
+            return
+        }
+
+        navigationController.dismiss(animated: visit.animated)
     }
 }
