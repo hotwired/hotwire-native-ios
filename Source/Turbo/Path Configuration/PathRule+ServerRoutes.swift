@@ -11,6 +11,7 @@ extension PathRule {
         patterns: ["/recede_historical_location"],
         properties: [
             "presentation": "pop",
+            "context": "default",
             "historical_location": true
         ]
     )
@@ -19,6 +20,7 @@ extension PathRule {
         patterns: ["/resume_historical_location"],
         properties: [
             "presentation": "none",
+            "context": "default",
             "historical_location": true
         ]
     )
@@ -27,6 +29,7 @@ extension PathRule {
         patterns: ["/refresh_historical_location"],
         properties: [
             "presentation": "refresh",
+            "context": "default",
             "historical_location": true
         ]
     )
