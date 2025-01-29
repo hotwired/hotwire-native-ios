@@ -30,6 +30,28 @@ class PathConfigurationTests: XCTestCase {
         }
     }
 
+    func test_loadingPathConfigWithHistoricalLocationRulesDoesNotOverrideTheDefaults() {
+        let fileURL = Bundle.module.url(
+            forResource: "test-configuration-historical-locations",
+            withExtension: "json",
+            subdirectory: "Fixtures")!
+        configuration.sources = [.file(fileURL)]
+
+        XCTAssertEqual(configuration.rules.count, 3 + PathRule.defaultServerRoutes.count)
+
+        let recedeProperties = configuration.properties(for: "/recede_historical_location")
+        XCTAssertEqual(recedeProperties.context, .default)
+        XCTAssertEqual(recedeProperties.presentation, .pop)
+
+        let refreshProperties = configuration.properties(for: "/refresh_historical_location")
+        XCTAssertEqual(refreshProperties.context, .default)
+        XCTAssertEqual(refreshProperties.presentation, .refresh)
+
+        let resumeProperties = configuration.properties(for: "/resume_historical_location")
+        XCTAssertEqual(resumeProperties.context, .default)
+        XCTAssertEqual(resumeProperties.presentation, .none)
+    }
+
     func test_settings_returnsCurrentSettings() {
         loadConfigurationFromFile()
 
