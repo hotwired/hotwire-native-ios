@@ -32,7 +32,6 @@ class PathRuleTests: XCTestCase {
         let rule = PathRule.recedeHistoricalLocation
         XCTAssertEqual(rule.patterns, ["/recede_historical_location"])
         XCTAssertEqual(rule.properties, ["presentation": "pop",
-                                         "visitable": false,
                                          "historical_location": true])
     }
 
@@ -40,7 +39,6 @@ class PathRuleTests: XCTestCase {
         let rule = PathRule.refreshHistoricalLocation
         XCTAssertEqual(rule.patterns, ["/refresh_historical_location"])
         XCTAssertEqual(rule.properties, ["presentation": "refresh",
-                                         "visitable": false,
                                          "historical_location": true])
     }
 
@@ -48,7 +46,6 @@ class PathRuleTests: XCTestCase {
         let rule = PathRule.resumeHistoricalLocation
         XCTAssertEqual(rule.patterns, ["/resume_historical_location"])
         XCTAssertEqual(rule.properties, ["presentation": "none",
-                                         "visitable": false,
                                          "historical_location": true])
     }
 
