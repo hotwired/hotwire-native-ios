@@ -45,6 +45,20 @@ public struct HotwireConfig {
             )
         }
     }
+    
+    /// Gets the full user agent that is used for every WKWebView instance. This includes:
+    /// - The WKWebView's default WebKit user agent string
+    /// - Your (optional) custom `applicationUserAgentPrefix`
+    /// - "Hotwire Native iOS; Turbo Native iOS;"
+    /// - "bridge-components: [your bridge components];"
+    public var userAgentWithWebViewDefault: String {
+        get {
+            if let defaultAgent = Self.cachedUserAgent {
+                return "\(defaultAgent)"
+            }
+            return userAgent
+        }
+    }
 
     // MARK: Turbo
 
@@ -90,10 +104,16 @@ public struct HotwireConfig {
             Bridge.initialize(webView)
         }
         
+        if Self.cachedUserAgent == nil {
+            Self.cachedUserAgent = webView.value(forKey: "userAgent") as? String
+        }
+        
         return webView
     }
 
     // MARK: - Private
+    
+    internal static var cachedUserAgent: String?
 
     private let sharedProcessPool = WKProcessPool()
 
