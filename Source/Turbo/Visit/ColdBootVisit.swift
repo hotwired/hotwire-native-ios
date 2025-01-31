@@ -75,6 +75,13 @@ extension ColdBootVisit: WKNavigationDelegate {
             return
         }
 
+        // Allow navigation if it happens inside an iframe (sub-frame).
+        // This prevents iframe loads from being treated as a full navigation during cold boots.
+        guard let targetFrame = navigationAction.targetFrame, targetFrame.isMainFrame else {
+            decisionHandler(.allow)
+            return
+        }
+
         let isRedirect = location != url
         let redirectIsCrossOrigin = isRedirect && location.host != url.host
 
