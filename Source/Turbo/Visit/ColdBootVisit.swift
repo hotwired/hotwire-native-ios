@@ -76,7 +76,7 @@ extension ColdBootVisit: WKNavigationDelegate {
         }
 
         // Allow navigation if it happens inside an iframe (sub-frame).
-        // This prevents Turbo Native from mistakenly treating iframe loads as full navigations.
+        // This prevents iframe loads from being treated as a full navigation during cold boots.
         guard let targetFrame = navigationAction.targetFrame, targetFrame.isMainFrame else {
             decisionHandler(.allow)
             return
