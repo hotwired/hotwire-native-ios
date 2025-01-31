@@ -24,7 +24,7 @@ open class VisitableView: UIView {
     open func activateWebView(_ webView: WKWebView, forVisitable visitable: Visitable) {
         self.webView = webView
         self.visitable = visitable
-        addSubview(webView)
+        insertSubview(webView, belowSubview: activityIndicatorView)
         addFillConstraints(for: webView)
         installRefreshControl()
         showOrHideWebView()
@@ -68,7 +68,7 @@ open class VisitableView: UIView {
         guard let scrollView = webView?.scrollView, allowsPullToRefresh else { return }
 
         #if !targetEnvironment(macCatalyst)
-        scrollView.addSubview(refreshControl)
+        scrollView.insertSubview(refreshControl, belowSubview: webView!)
 
         /// Infer refresh control's default height from its frame, if given.
         /// Otherwise fallback to 60 (the default height).
@@ -155,7 +155,12 @@ open class VisitableView: UIView {
     open func showScreenshot() {
         guard !isShowingScreenshot, !isRefreshing else { return }
 
-        addSubview(screenshotContainerView)
+        if let webView = webView {
+            insertSubview(screenshotContainerView, aboveSubview: webView)
+        } else {
+            addSubview(screenshotContainerView)
+        }
+        
         addFillConstraints(for: screenshotContainerView)
         showOrHideWebView()
     }
