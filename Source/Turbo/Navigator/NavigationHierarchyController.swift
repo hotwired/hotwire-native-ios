@@ -216,10 +216,8 @@ class NavigationHierarchyController {
     private func dismissModalIfNeeded(for visit: VisitProposal) {
         // The desired behaviour for historical location visits is
         // to always dismiss the "modal" stack.
-        guard visit.isHistoricalLocation,
-              navigationController.presentedViewController != nil else {
-            return
-        }
+        let dismissModal = visit.isHistoricalLocation && navigationController.presentedViewController != nil
+        guard dismissModal else { return }
 
         navigationController.dismiss(animated: visit.animated)
     }
