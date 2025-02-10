@@ -7,13 +7,17 @@ final class SceneController: UIResponder {
     var window: UIWindow?
 
     private let rootURL = Demo.current
-    private lazy var navigator = Navigator(delegate: self)
+    private var navigators = [Navigator]()
+    private let tabBarController = UITabBarController()
+    private var activeNavigator: Navigator {
+        navigators[tabBarController.selectedIndex]
+    }
 
     // MARK: - Authentication
 
     private func promptForAuthentication() {
         let authURL = rootURL.appendingPathComponent("/signin")
-        navigator.route(authURL)
+        navigators[tabBarController.selectedIndex].route(authURL)
     }
 }
 
@@ -22,10 +26,24 @@ extension SceneController: UIWindowSceneDelegate {
         guard let windowScene = scene as? UIWindowScene else { return }
 
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = navigator.rootViewController
+        window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
 
-        navigator.route(rootURL)
+        loadTabs()
+    }
+
+    private func loadTabs() {
+        tabBarController.viewControllers = Tab.all.map { tab in
+            let navigator = Navigator(delegate: self)
+            navigator.rootViewController.tabBarItem = UITabBarItem(
+                title: tab.title,
+                image: UIImage(systemName: tab.imageName),
+                selectedImage: nil
+            )
+            navigators.append(navigator)
+            navigator.route(tab.url)
+            return navigator.rootViewController
+        }
     }
 }
 
@@ -33,7 +51,7 @@ extension SceneController: NavigatorDelegate {
     func handle(proposal: VisitProposal) -> ProposalResult {
         switch proposal.viewController {
         case NumbersViewController.pathConfigurationIdentifier:
-            return .acceptCustom(NumbersViewController(url: proposal.url, navigator: navigator))
+            return .acceptCustom(NumbersViewController(url: proposal.url, navigator: activeNavigator))
 
         case "numbers_detail":
             let alertController = UIAlertController(title: "Number", message: "\(proposal.url.lastPathComponent)", preferredStyle: .alert)
@@ -64,7 +82,7 @@ extension SceneController: NavigatorDelegate {
         } else {
             let alert = UIAlertController(title: "Visit failed!", message: error.localizedDescription, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            navigator.rootViewController.present(alert, animated: true)
+            activeNavigator.activeNavigationController.present(alert, animated: true)
         }
     }
 }
