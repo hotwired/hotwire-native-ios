@@ -4,6 +4,7 @@ import UIKit
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        configureAppearance()
         configureHotwire()
         return true
     }
@@ -12,6 +13,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
         UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+    }
+
+    // Make navigation and tab bars opaque.
+    private func configureAppearance() {
+        UINavigationBar.appearance().scrollEdgeAppearance = .init()
+        UITabBar.appearance().scrollEdgeAppearance = .init()
     }
 
     private func configureHotwire() {
