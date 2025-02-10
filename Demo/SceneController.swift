@@ -45,6 +45,15 @@ extension SceneController: NavigatorDelegate {
         }
     }
 
+    func handle(externalURL: URL) -> ExternalURLNavigationAction {
+        /// Open SMS links in Messages.app, e.g. `sms:555-555-5555`.
+        if externalURL.scheme == "sms" {
+            .openViaSystem
+        } else {
+            .openViaSafariController
+        }
+    }
+
     func visitableDidFailRequest(_ visitable: any Visitable, error: any Error, retryHandler: RetryBlock?) {
         if let turboError = error as? TurboError, case let .http(statusCode) = turboError, statusCode == 401 {
             promptForAuthentication()
