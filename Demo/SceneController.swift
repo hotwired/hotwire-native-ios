@@ -53,11 +53,6 @@ extension SceneController: NavigatorDelegate {
         case NumbersViewController.pathConfigurationIdentifier:
             return .acceptCustom(NumbersViewController(url: proposal.url, navigator: activeNavigator))
 
-        case "numbers_detail":
-            let alertController = UIAlertController(title: "Number", message: "\(proposal.url.lastPathComponent)", preferredStyle: .alert)
-            alertController.addAction(.init(title: "OK", style: .default, handler: nil))
-            return .acceptCustom(alertController)
-
         default:
             return .acceptCustom(HotwireWebViewController(url: proposal.url))
         }

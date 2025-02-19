@@ -35,6 +35,7 @@ final class NumbersViewController: UITableViewController, PathConfigurationIdent
 
         let number = indexPath.row + 1
         cell.textLabel?.text = "Row \(number)"
+        cell.accessoryType = .disclosureIndicator
 
         return cell
     }
