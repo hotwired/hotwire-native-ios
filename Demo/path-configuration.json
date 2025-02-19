@@ -42,33 +42,6 @@
         "presentation": "clear_all"
       },
       "comment": "Reset navigation stacks when visiting root page."
-    },
-    {
-      "patterns": [
-        "/recede_historical_location"
-      ],
-      "properties": {
-        "presentation": "pop"
-      },
-      "comment": "Dismiss a modal or pop a controller with `recede_or_redirect_to` via turbo-rails."
-    },
-    {
-      "patterns": [
-        "/refresh_historical_location"
-      ],
-      "properties": {
-        "presentation": "refresh"
-      },
-      "comment": "After dismissing or popping, refresh the visible screen with `refresh_or_redirect_to`."
-    },
-    {
-      "patterns": [
-        "/resume_historical_location"
-      ],
-      "properties": {
-        "presentation": "none"
-      },
-      "comment": "Skip navigation with `resume_or_redirect_to` via turbo-rails."
     }
   ]
 }
