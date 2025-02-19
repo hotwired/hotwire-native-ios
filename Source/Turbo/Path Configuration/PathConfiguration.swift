@@ -28,7 +28,8 @@ public final class PathConfiguration {
     public private(set) var settings: [String: AnyHashable] = [:]
 
     /// The list of rules from the configuration: `{ rules: [] }`
-    public private(set) var rules: [PathRule] = []
+    /// Default server route rules are included by default.
+    public private(set) var rules: [PathRule] = PathRule.defaultServerRoutes
 
     /// Sources for this configuration, setting it will
     /// cause the configuration to be loaded from the new sources
@@ -93,6 +94,8 @@ public final class PathConfiguration {
         // Update our internal state with the config from the loader
         settings = config.settings
         rules = config.rules
+        // Always include the default server route rules.
+        rules.append(contentsOf: PathRule.defaultServerRoutes)
         delegate?.pathConfigurationDidUpdate()
     }
 }
