@@ -12,9 +12,17 @@ struct Tab {
         return Demo.current
     }
 
-    static let all = [
-        Tab(title: "Navigation", imageName: "arrow.left.arrow.right", path: nil),
-        Tab(title: "Bridge Components", imageName: "widget.small", path: "components"),
-        Tab(title: "Resources", imageName: "questionmark.text.page", path: "resources"),
-    ]
+    static let all = {
+        var tabs = [
+            Tab(title: "Navigation", imageName: "arrow.left.arrow.right", path: nil),
+            Tab(title: "Bridge Components", imageName: "widget.small", path: "components"),
+            Tab(title: "Resources", imageName: "questionmark.text.page", path: "resources"),
+        ]
+
+        if Demo.current == Demo.local {
+            tabs.append(Tab(title: "Bugs & Fixes", imageName: "ladybug", path: "bugs"))
+        }
+
+        return tabs
+    }()
 }
