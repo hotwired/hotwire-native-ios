@@ -29,6 +29,22 @@ public struct HotwireConfig {
             HotwireLogger.debugLoggingEnabled = debugLoggingEnabled
         }
     }
+    
+    /// Gets the user agent that the library builds to identify the app
+    /// and its registered bridge components.
+    ///
+    /// The user agent includes:
+    /// - Your (optional) custom `applicationUserAgentPrefix`
+    /// - "Native iOS; Turbo Native iOS;"
+    /// - "bridge-components: [your bridge components];"
+    public var userAgent: String {
+        get {
+            return UserAgent.build(
+                applicationPrefix: applicationUserAgentPrefix,
+                componentTypes: Hotwire.bridgeComponentTypes
+            )
+        }
+    }
 
     // MARK: Turbo
 
@@ -85,10 +101,7 @@ public struct HotwireConfig {
     private func makeWebViewConfiguration() -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
         configuration.defaultWebpagePreferences?.preferredContentMode = .mobile
-        configuration.applicationNameForUserAgent = UserAgent.build(
-            applicationPrefix: applicationUserAgentPrefix,
-            componentTypes: Hotwire.bridgeComponentTypes
-        )
+        configuration.applicationNameForUserAgent = userAgent
         configuration.processPool = sharedProcessPool
         return configuration
     }

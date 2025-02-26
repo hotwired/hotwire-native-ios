@@ -6,7 +6,7 @@ import WebKit
 class DefaultNavigatorDelegate: NSObject, NavigatorDelegate {}
 
 /// Handles navigation to new URLs using the following rules:
-/// [Navigator Handled Flows](https://github.com/hotwired/turbo-ios/Docs/Navigator.md)
+/// [Navigator Handled Flows](https://native.hotwired.dev/reference/navigation)
 public class Navigator {
     public unowned var delegate: NavigatorDelegate
 
