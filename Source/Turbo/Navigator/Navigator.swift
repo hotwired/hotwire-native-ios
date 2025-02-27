@@ -19,8 +19,8 @@ public class Navigator {
         }
         return modalSession.webView
     }
-    public var session: Session
-    public var modalSession: Session
+    public private(set) var session: Session
+    public private(set) var modalSession: Session
     
     /// Set to handle customize behavior of the `WKUIDelegate`.
     ///
