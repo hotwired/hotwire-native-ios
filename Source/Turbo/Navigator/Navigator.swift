@@ -19,6 +19,8 @@ public class Navigator {
         }
         return modalSession.webView
     }
+    public private(set) var session: Session
+    public private(set) var modalSession: Session
     
     /// Set to handle customize behavior of the `WKUIDelegate`.
     ///
@@ -125,8 +127,6 @@ public class Navigator {
 
     // MARK: Internal
 
-    var session: Session
-    var modalSession: Session
     /// Modifies a UINavigationController according to visit proposals.
     lazy var hierarchyController = NavigationHierarchyController(delegate: self)
 
