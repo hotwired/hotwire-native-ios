@@ -46,7 +46,8 @@ public final class BridgeDelegate: BridgingDelegate {
     public func webViewDidBecomeActive(_ webView: WKWebView) {
         bridge = Bridge.getBridgeFor(webView)
         bridge?.delegate = self
-        
+        destinationIsActive = true
+
         if bridge == nil {
             logger.warning("bridgeNotInitializedForWebView")
         }
