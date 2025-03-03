@@ -274,6 +274,11 @@ extension Session: VisitableDelegate {
             visit(visitable, action: .restore)
             return
         }
+        
+        // If the topmost visitable is already the active visitable, nothing needs to be done
+        if topmostVisitable === activeVisitable {
+            return
+        }
 
         // Navigating backward from a native to a web view screen.
         if visitable === previousVisit?.visitable {
