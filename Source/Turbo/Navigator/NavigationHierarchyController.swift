@@ -94,6 +94,11 @@ class NavigationHierarchyController {
             navigationController.present(alert, animated: proposal.animated)
         }
     }
+    
+    private var isInModalContext: Bool {
+        navigationController.presentedViewController != nil
+        && !modalNavigationController.isBeingDismissed
+    }
 
     private func navigate(with controller: UIViewController, via proposal: VisitProposal) {
         switch proposal.context {
@@ -101,15 +106,18 @@ class NavigationHierarchyController {
             if let visitable = controller as? Visitable {
                 delegate.visit(visitable, on: .main, with: proposal.options)
             }
-            navigationController.dismiss(animated: proposal.animated)
-            pushOrReplace(on: navigationController, with: controller, via: proposal)
+            
+            pushOrReplace(on: navigationController,
+                          with: controller,
+                          via: proposal,
+                          didSwitchToDefaultContext: isInModalContext)
         case .modal:
             if let visitable = controller as? Visitable {
                 delegate.visit(visitable, on: .modal, with: proposal.options)
             }
             controller.configureModalBehaviour(with: proposal)
 
-            if navigationController.presentedViewController != nil, !modalNavigationController.isBeingDismissed {
+            if isInModalContext {
                 pushOrReplace(on: modalNavigationController, with: controller, via: proposal)
             } else {
                 modalNavigationController.setViewControllers([controller], animated: proposal.animated)
@@ -119,12 +127,16 @@ class NavigationHierarchyController {
         }
     }
 
-    private func pushOrReplace(on navigationController: UINavigationController, with controller: UIViewController, via proposal: VisitProposal) {
+    private func pushOrReplace(on navigationController: UINavigationController,
+                               with controller: UIViewController,
+                               via proposal: VisitProposal,
+                               didSwitchToDefaultContext: Bool = false) {
+        
         if visitingSamePage(on: navigationController, with: controller, via: proposal.url) {
             navigationController.replaceLastViewController(with: controller)
         } else if visitingPreviousPage(on: navigationController, with: controller, via: proposal.url) {
             navigationController.popViewController(animated: proposal.animated)
-        } else if proposal.options.action == .advance {
+        } else if proposal.options.action == .advance || didSwitchToDefaultContext {
             navigationController.pushViewController(controller, animated: proposal.animated)
         } else {
             navigationController.replaceLastViewController(with: controller)
