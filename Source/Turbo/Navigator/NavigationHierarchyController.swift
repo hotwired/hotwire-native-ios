@@ -106,11 +106,12 @@ class NavigationHierarchyController {
             if let visitable = controller as? Visitable {
                 delegate.visit(visitable, on: .main, with: proposal.options)
             }
+            let willContextSwitch = isInModalContext
             navigationController.dismiss(animated: proposal.animated)
             pushOrReplace(on: navigationController,
                           with: controller,
                           via: proposal,
-                          didSwitchToDefaultContext: isInModalContext)
+                          didSwitchToDefaultContext: willContextSwitch)
         case .modal:
             if let visitable = controller as? Visitable {
                 delegate.visit(visitable, on: .modal, with: proposal.options)
