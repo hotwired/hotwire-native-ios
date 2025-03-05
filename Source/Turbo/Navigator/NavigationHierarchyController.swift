@@ -106,7 +106,7 @@ class NavigationHierarchyController {
             if let visitable = controller as? Visitable {
                 delegate.visit(visitable, on: .main, with: proposal.options)
             }
-            
+            navigationController.dismiss(animated: proposal.animated)
             pushOrReplace(on: navigationController,
                           with: controller,
                           via: proposal,
