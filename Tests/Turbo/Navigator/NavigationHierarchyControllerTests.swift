@@ -214,6 +214,36 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         XCTAssert(modalNavigationController.viewControllers.last is VisitableViewController)
         assertVisited(url: proposal.url, on: .modal)
     }
+    
+    func test_modal_default_default_replaceAction_pushesOnMainStack_ifDifferentDestination() {
+        navigator.route(VisitProposal(path: "/one", context: .default))
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        
+        navigator.route(VisitProposal(path: "/two", context: .modal))
+        XCTAssertEqual(modalNavigationController.viewControllers.count, 1)
+
+        let proposal = VisitProposal(path: "/three", action: .replace, context: .default)
+        navigator.route(proposal)
+        
+        XCTAssertNil(navigationController.presentedViewController)
+        XCTAssertEqual(navigationController.viewControllers.count, 2)
+        assertVisited(url: proposal.url, on: .main)
+    }
+    
+    func test_modal_default_default_replaceAction_replacesOnMainStack_ifSameDestination() {
+        navigator.route(VisitProposal(path: "/one", context: .default))
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        
+        navigator.route(VisitProposal(path: "/two", context: .modal))
+        XCTAssertEqual(modalNavigationController.viewControllers.count, 1)
+
+        let proposal = VisitProposal(path: "/one", action: .replace, context: .default)
+        navigator.route(proposal)
+        
+        XCTAssertNil(navigationController.presentedViewController)
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        assertVisited(url: proposal.url, on: .main)
+    }
 
     func test_modal_modal_replace_pushesOnModalStack() {
         navigator.route(VisitProposal(path: "/one", context: .modal))
@@ -439,7 +469,8 @@ private extension VisitProposal {
         let options = VisitOptions(action: action, response: nil)
         let defaultProperties: PathProperties = [
             "context": context.rawValue,
-            "presentation": presentation.rawValue
+            "presentation": presentation.rawValue,
+            "animated": false,
         ]
         let properties = defaultProperties.merging(additionalProperties) { (current, _) in current }
 
