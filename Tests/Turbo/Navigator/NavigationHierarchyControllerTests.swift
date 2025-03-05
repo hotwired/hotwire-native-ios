@@ -469,8 +469,7 @@ private extension VisitProposal {
         let options = VisitOptions(action: action, response: nil)
         let defaultProperties: PathProperties = [
             "context": context.rawValue,
-            "presentation": presentation.rawValue,
-            "animated": false,
+            "presentation": presentation.rawValue
         ]
         let properties = defaultProperties.merging(additionalProperties) { (current, _) in current }
 
