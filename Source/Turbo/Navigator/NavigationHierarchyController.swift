@@ -106,12 +106,12 @@ class NavigationHierarchyController {
             if let visitable = controller as? Visitable {
                 delegate.visit(visitable, on: .main, with: proposal.options)
             }
-            let willContextSwitch = isInModalContext
+            let willReplaceModalContext = isInModalContext
             navigationController.dismiss(animated: proposal.animated)
             pushOrReplace(on: navigationController,
                           with: controller,
                           via: proposal,
-                          didSwitchToDefaultContext: willContextSwitch)
+                          didReplaceModalContext: willReplaceModalContext)
         case .modal:
             if let visitable = controller as? Visitable {
                 delegate.visit(visitable, on: .modal, with: proposal.options)
@@ -131,13 +131,13 @@ class NavigationHierarchyController {
     private func pushOrReplace(on navigationController: UINavigationController,
                                with controller: UIViewController,
                                via proposal: VisitProposal,
-                               didSwitchToDefaultContext: Bool = false) {
+                               didReplaceModalContext: Bool = false) {
         
         if visitingSamePage(on: navigationController, with: controller, via: proposal.url) {
             navigationController.replaceLastViewController(with: controller)
         } else if visitingPreviousPage(on: navigationController, with: controller, via: proposal.url) {
             navigationController.popViewController(animated: proposal.animated)
-        } else if proposal.options.action == .advance || didSwitchToDefaultContext {
+        } else if proposal.options.action == .advance || didReplaceModalContext {
             navigationController.pushViewController(controller, animated: proposal.animated)
         } else {
             navigationController.replaceLastViewController(with: controller)
