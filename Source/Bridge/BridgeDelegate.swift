@@ -56,6 +56,7 @@ public final class BridgeDelegate: BridgingDelegate {
     public func webViewDidBecomeDeactivated() {
         bridge?.delegate = nil
         bridge = nil
+        destinationIsActive = false
     }
     
     @discardableResult
