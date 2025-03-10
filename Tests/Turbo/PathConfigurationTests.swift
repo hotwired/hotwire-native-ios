@@ -6,16 +6,55 @@ class PathConfigurationTests: XCTestCase {
     var configuration: PathConfiguration!
 
     override func setUp() {
-        configuration = PathConfiguration(sources: [.file(fileURL)])
-        XCTAssertGreaterThan(configuration.rules.count, 0)
+        configuration = PathConfiguration()
+    }
+
+    func test_initWithNoSourcesSetsDefaultRules() {
+        // Default three historical location rules are always added by default.
+        XCTAssertEqual(configuration.rules.count, PathRule.defaultServerRoutes.count)
+
+        for rule in PathRule.defaultServerRoutes {
+            XCTAssertNotNil(configuration.properties(for: rule.patterns.first!))
+        }
     }
 
     func test_init_automaticallyLoadsTheConfigurationFromTheSpecifiedLocation() {
+        loadConfigurationFromFile()
+
         XCTAssertEqual(configuration.settings.count, 2)
-        XCTAssertEqual(configuration.rules.count, 5)
+        // Default three historical location rules are always added by default.
+        XCTAssertEqual(configuration.rules.count, 5 + PathRule.defaultServerRoutes.count)
+
+        for rule in PathRule.defaultServerRoutes {
+            XCTAssertNotNil(configuration.properties(for: rule.patterns.first!))
+        }
+    }
+
+    func test_loadingPathConfigWithHistoricalLocationRulesDoesNotOverrideTheDefaults() {
+        let fileURL = Bundle.module.url(
+            forResource: "test-configuration-historical-locations",
+            withExtension: "json",
+            subdirectory: "Fixtures")!
+        configuration.sources = [.file(fileURL)]
+
+        XCTAssertEqual(configuration.rules.count, 3 + PathRule.defaultServerRoutes.count)
+
+        let recedeProperties = configuration.properties(for: "/recede_historical_location")
+        XCTAssertEqual(recedeProperties.context, .default)
+        XCTAssertEqual(recedeProperties.presentation, .pop)
+
+        let refreshProperties = configuration.properties(for: "/refresh_historical_location")
+        XCTAssertEqual(refreshProperties.context, .default)
+        XCTAssertEqual(refreshProperties.presentation, .refresh)
+
+        let resumeProperties = configuration.properties(for: "/resume_historical_location")
+        XCTAssertEqual(resumeProperties.context, .default)
+        XCTAssertEqual(resumeProperties.presentation, .none)
     }
 
     func test_settings_returnsCurrentSettings() {
+        loadConfigurationFromFile()
+
         XCTAssertEqual(configuration.settings, [
             "some-feature-enabled": true,
             "server": "beta"
@@ -23,12 +62,16 @@ class PathConfigurationTests: XCTestCase {
     }
 
     func test_propertiesForPath_whenPathMatches_returnsProperties() {
+        loadConfigurationFromFile()
+
         XCTAssertEqual(configuration.properties(for: "/"), [
             "page": "root"
         ])
     }
 
     func test_propertiesForPath_whenPathMatchesMultipleRules_mergesProperties() {
+        loadConfigurationFromFile()
+
         XCTAssertEqual(configuration.properties(for: "/new"), [
             "context": "modal",
             "background_color": "black"
@@ -41,6 +84,8 @@ class PathConfigurationTests: XCTestCase {
     }
 
     func test_propertiesForURL_withParams() {
+        loadConfigurationFromFile()
+
         let url = URL(string: "http://turbo.test/sample.pdf?open_in_external_browser=true")!
 
         Hotwire.config.pathConfiguration.matchQueryStrings = false
@@ -53,15 +98,23 @@ class PathConfigurationTests: XCTestCase {
     }
 
     func test_propertiesForPath_whenNoMatch_returnsEmptyProperties() {
+        loadConfigurationFromFile()
+
         XCTAssertEqual(configuration.properties(for: "/missing"), [:])
     }
 
     func test_subscript_isAConvenienceMethodForPropertiesForPath() {
+        loadConfigurationFromFile()
+
         XCTAssertEqual(configuration.properties(for: "/new"), configuration["/new"])
         XCTAssertEqual(configuration.properties(for: "/edit"), configuration["/edit"])
         XCTAssertEqual(configuration.properties(for: "/"), configuration["/"])
         XCTAssertEqual(configuration.properties(for: "/missing"), configuration["/missing"])
         XCTAssertEqual(configuration.properties(for: "/sample.pdf?open_in_external_browser=true"), configuration["/sample.pdf?open_in_external_browser=true"])
+    }
+
+    func loadConfigurationFromFile() {
+        configuration.sources = [.file(fileURL)]
     }
 }
 
