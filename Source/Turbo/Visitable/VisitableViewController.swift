@@ -4,8 +4,8 @@ import WebKit
 open class VisitableViewController: UIViewController, Visitable {
     open weak var visitableDelegate: VisitableDelegate?
     open var visitableURL: URL!
-    var appearReason: AppearReason = .pushedOntoNavigationStack
-    var disappearReason: DisappearReason = .poppedFromNavigationStack
+    open var appearReason: AppearReason = .pushedOntoNavigationStack
+    open var disappearReason: DisappearReason = .poppedFromNavigationStack
 
     public convenience init(url: URL) {
         self.init()
