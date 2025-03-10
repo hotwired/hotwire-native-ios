@@ -51,6 +51,13 @@ open class HotwireNavigationController: UINavigationController {
         return poppedViewController
     }
 
+    open override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+        if let topVisitableViewController = topViewController as? VisitableViewController {
+            topVisitableViewController.appearReason = .revealedByPop
+        }
+        super.dismiss(animated: flag, completion: completion)
+    }
+
     open override func viewWillAppear(_ animated: Bool) {
         if let topVisitableViewController = topViewController as? VisitableViewController,
            topVisitableViewController.disappearReason == .tabDeselected {
