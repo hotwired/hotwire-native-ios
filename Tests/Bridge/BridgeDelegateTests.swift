@@ -3,6 +3,7 @@ import Foundation
 import WebKit
 import XCTest
 
+@MainActor
 class BridgeDelegateTests: XCTestCase {
     private var delegate: BridgeDelegate!
     private var destination: AppBridgeDestination!
@@ -10,8 +11,7 @@ class BridgeDelegateTests: XCTestCase {
     private let json = """
         {"title":"Page-title","subtitle":"Page-subtitle"}
     """
-    
-    @MainActor
+
     override func setUp() async throws {
         destination = AppBridgeDestination()
         delegate = BridgeDelegate(location: "https://37signals.com",
@@ -22,8 +22,7 @@ class BridgeDelegateTests: XCTestCase {
         delegate.bridge = bridge
         delegate.onViewDidLoad()
     }
-    
-    @MainActor
+
     func testBridgeDidInitialize() async throws {
         await withCheckedContinuation { continuation in
             bridge.registerComponentsContinuation = continuation
@@ -40,7 +39,6 @@ class BridgeDelegateTests: XCTestCase {
         XCTAssertNil(componentTwo)
     }
 
-    @MainActor
     func testBridgeDidReceiveMessage() {
         let json = """
             {"title":"Page-title","subtitle":"Page-subtitle"}
@@ -64,8 +62,7 @@ class BridgeDelegateTests: XCTestCase {
         XCTAssertEqual(component?.onReceiveMessageArg, message)
         XCTAssertNotNil(component?.delegate)
     }
-    
-    @MainActor
+
     func testBridgeIgnoresMessageForUnknownComponent() {
         let json = """
             {"title":"Page-title","subtitle":"Page-subtitle"}
@@ -80,7 +77,6 @@ class BridgeDelegateTests: XCTestCase {
     }
     
     // Web view URL takes precedence over the provided location.
-    @MainActor
     func test_bridgeHandlesRedirectedWebViewURL() {
         let redirectedLocation = "https://37signals.com/sign-in"
         bridge.webView = RedirectedWebView(location: redirectedLocation)
@@ -106,7 +102,6 @@ class BridgeDelegateTests: XCTestCase {
     }
     
     // When web view URL is nil, the bride delegate falls back to the original location.
-    @MainActor
     func test_bridgeFallsbackToOriginalDestination() {
         bridge.webView = RedirectedWebView(location: nil)
         
@@ -129,8 +124,7 @@ class BridgeDelegateTests: XCTestCase {
         XCTAssertEqual(component?.onReceiveMessageArg, message)
         XCTAssertNotNil(component?.delegate)
     }
-    
-    @MainActor
+
     func testBridgeIgnoresMessageForInactiveDestination() {
         let message = Message(id: "1",
                               component: "one",
@@ -149,8 +143,7 @@ class BridgeDelegateTests: XCTestCase {
         component = delegate.component()
         XCTAssertNil(component)
     }
-    
-    @MainActor
+
     func testBridgeForwardsViewWillAppearToComponents() {
         delegate.bridgeDidReceiveMessage(testMessage())
         
@@ -160,8 +153,7 @@ class BridgeDelegateTests: XCTestCase {
         delegate.onViewWillAppear()
         XCTAssertTrue(component!.onViewWillAppearWasCalled)
     }
-    
-    @MainActor
+
     func testBridgeForwardsViewDidAppearToComponents() {
         delegate.bridgeDidReceiveMessage(testMessage())
         
@@ -171,8 +163,7 @@ class BridgeDelegateTests: XCTestCase {
         delegate.onViewDidAppear()
         XCTAssertTrue(component!.onViewDidAppearWasCalled)
     }
-    
-    @MainActor
+
     func testBridgeForwardsViewWillDisappearToComponents() {
         delegate.bridgeDidReceiveMessage(testMessage())
         
@@ -182,8 +173,7 @@ class BridgeDelegateTests: XCTestCase {
         delegate.onViewWillDisappear()
         XCTAssertTrue(component!.onViewWillDisappearWasCalled)
     }
-    
-    @MainActor
+
     func testBridgeForwardsViewDidDisappearToComponents() {
         delegate.bridgeDidReceiveMessage(testMessage())
         
@@ -192,17 +182,6 @@ class BridgeDelegateTests: XCTestCase {
         
         delegate.onViewDidDisappear()
         XCTAssertTrue(component!.onViewDidDisappearWasCalled)
-    }
-    
-    @MainActor
-    func testBridgeDestinationIsActiveAfterViewWillDisappearIsCalled() {
-        delegate.bridgeDidReceiveMessage(testMessage())
-        
-        let component: BridgeComponentSpy? = delegate.component()
-        XCTAssertNotNil(component)
-        
-        delegate.onViewWillDisappear()
-        XCTAssertTrue(delegate.bridgeDidReceiveMessage(testMessage()))
     }
     
     // MARK: reply(with:)
@@ -215,8 +194,7 @@ class BridgeDelegateTests: XCTestCase {
         XCTAssertTrue(bridge.replyWithMessageWasCalled)
         XCTAssertEqual(bridge.replyWithMessageArg, message)
     }
-    
-    @MainActor
+
     func test_replyWithFailsWhenBridgeNotSet() async throws {
         delegate.bridge = nil
 

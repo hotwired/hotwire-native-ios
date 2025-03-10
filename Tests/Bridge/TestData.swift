@@ -35,3 +35,15 @@ struct MessageData: Codable, Equatable {
     let subtitle: String
     let actionName: String
 }
+
+extension Message {
+    static let test = Message(
+        id: "1",
+        component: "two",
+        event: "connect",
+        metadata: .init(url: "https://37signals.com"),
+        jsonData: """
+            {"title":"Page-title","subtitle":"Page-subtitle"}
+        """
+    )
+}
