@@ -90,11 +90,13 @@ extension VisitableViewController {
         case pushedOntoNavigationStack
         case revealedByPop
         case tabSelected
+        case revealedByModalDismiss
     }
 
     public enum DisappearReason {
         case coveredByPush
         case poppedFromNavigationStack
         case tabDeselected
+        case coveredByModal
     }
 }
