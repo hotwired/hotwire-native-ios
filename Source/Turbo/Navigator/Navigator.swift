@@ -91,33 +91,6 @@ public class Navigator {
         modalSession.reload()
     }
 
-    /// Navigate to an external URL.
-    ///
-    /// - Parameters:
-    ///   - externalURL: the URL to navigate to
-    ///   - via: navigation action
-    public func open(externalURL: URL, _ via: ExternalURLNavigationAction) {
-        switch via {
-        case .openViaSystem:
-            UIApplication.shared.open(externalURL)
-
-        case .openViaSafariController:
-            /// SFSafariViewController will crash if we pass along a URL that's not valid.
-            guard externalURL.scheme == "http" || externalURL.scheme == "https" else { return }
-
-            let safariViewController = SFSafariViewController(url: externalURL)
-            safariViewController.modalPresentationStyle = .pageSheet
-            if #available(iOS 15.0, *) {
-                safariViewController.preferredControlTintColor = .tintColor
-            }
-
-            activeNavigationController.present(safariViewController, animated: true)
-
-        case .reject:
-            return
-        }
-    }
-
     public func appDidBecomeActive() {
         appInBackground = false
         inspectAllSessions()
@@ -198,8 +171,7 @@ extension Navigator: SessionDelegate {
         // Pop the current destination from the backstack since it
         // resulted in a visit failure due to a cross-origin redirect.
         pop(animated: false)
-        let decision = delegate.handle(externalURL: location)
-        open(externalURL: location, decision)
+        route(location)
     }
 
     public func sessionDidStartFormSubmission(_ session: Session) {
@@ -215,11 +187,6 @@ extension Navigator: SessionDelegate {
         if let url = session.topmostVisitable?.visitableURL {
             delegate.formSubmissionDidFinish(at: url)
         }
-    }
-
-    public func session(_ session: Session, openExternalURL externalURL: URL) {
-        let decision = delegate.handle(externalURL: externalURL)
-        open(externalURL: externalURL, decision)
     }
 
     public func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, error: Error) {
