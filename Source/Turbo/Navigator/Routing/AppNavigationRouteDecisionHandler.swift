@@ -6,20 +6,34 @@ final class AppNavigationRouteDecisionHandler: RouteDecisionHandler {
     let decision: Router.Decision = .navigate
     let navigationActionPolicy: WKNavigationActionPolicy = .cancel
 
-    func matches(location: URL) -> Bool {
-        // TODO: Provide a base URL
-        return true
+    func matches(location: URL,
+                 configuration: Navigator.Configuration) -> Bool {
+        if #available(iOS 16, *) {
+            return configuration.startLocation.host() == location.host()
+        }
+
+        return configuration.startLocation.host == location.host
     }
 
-    func handle(location: URL, activeNavigationController: UINavigationController) {
+    func handle(location: URL,
+                configuration: Navigator.Configuration,
+                activeNavigationController: UINavigationController) {
         // No-op.
     }
 
-    func matches(navigationAction: WKNavigationAction) -> Bool {
-        return navigationAction.navigationType == .linkActivated
+    func matches(navigationAction: WKNavigationAction,
+                 configuration: Navigator.Configuration) -> Bool {
+        guard let url = navigationAction.request.url else {
+            return false
+        }
+
+        return navigationAction.navigationType == .linkActivated &&
+        matches(location: url, configuration: configuration)
     }
 
-    func handle(navigationAction: WKNavigationAction, activeNavigationController: UINavigationController) {
+    func handle(navigationAction: WKNavigationAction,
+                configuration: Navigator.Configuration,
+                activeNavigationController: UINavigationController) {
         // No-op.
     }
 }
