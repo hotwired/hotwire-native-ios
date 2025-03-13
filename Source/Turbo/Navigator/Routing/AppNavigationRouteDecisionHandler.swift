@@ -11,7 +11,7 @@ final class AppNavigationRouteDecisionHandler: RouteDecisionHandler {
         return true
     }
 
-    func handle(location: URL) {
+    func handle(location: URL, activeNavigationController: UINavigationController) {
         // No-op.
     }
 
@@ -19,7 +19,7 @@ final class AppNavigationRouteDecisionHandler: RouteDecisionHandler {
         return navigationAction.navigationType == .linkActivated
     }
 
-    func handle(navigationAction: WKNavigationAction) {
+    func handle(navigationAction: WKNavigationAction, activeNavigationController: UINavigationController) {
         // No-op.
     }
 }

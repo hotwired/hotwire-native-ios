@@ -174,7 +174,10 @@ public class Navigator {
     }
 
     private func routeDecision(for location: URL) -> Router.Decision {
-        return Hotwire.config.router.decideRoute(for: location)
+        return Hotwire.config.router.decideRoute(
+            for: location,
+            activeNavigationController: activeNavigationController
+        )
     }
 }
 
@@ -220,7 +223,10 @@ extension Navigator: SessionDelegate {
     }
 
     public func session(_ session: Session, decidePolicyFor navigationAction: WKNavigationAction) -> WKNavigationActionPolicy {
-        return Hotwire.config.router.decidePolicy(for: navigationAction)
+        return Hotwire.config.router.decidePolicy(
+            for: navigationAction,
+            activeNavigationController: activeNavigationController
+        )
     }
 
     public func sessionWebViewProcessDidTerminate(_ session: Session) {

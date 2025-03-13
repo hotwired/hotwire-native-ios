@@ -8,10 +8,12 @@ public final class Router {
         self.decisionHandlers = decisionHandlers
     }
 
-    func decideRoute(for location: URL) -> Decision {
+    func decideRoute(for location: URL,
+                     activeNavigationController: UINavigationController) -> Decision {
         for handler in decisionHandlers {
             if handler.matches(location: location) {
-                handler.handle(location: location)
+                handler.handle(location: location,
+                               activeNavigationController: activeNavigationController)
                 return handler.decision
             }
         }
@@ -19,10 +21,12 @@ public final class Router {
         return .cancel
     }
 
-    func decidePolicy(for navigationAction: WKNavigationAction) -> WKNavigationActionPolicy {
+    func decidePolicy(for navigationAction: WKNavigationAction,
+                      activeNavigationController: UINavigationController) -> WKNavigationActionPolicy {
         for handler in decisionHandlers {
             if handler.matches(navigationAction: navigationAction) {
-                handler.handle(navigationAction: navigationAction)
+                handler.handle(navigationAction: navigationAction,
+                               activeNavigationController: activeNavigationController)
                 return handler.navigationActionPolicy
             }
         }
@@ -52,8 +56,8 @@ public protocol RouteDecisionHandler {
     /// Handle custom routing behavior when a match is found.
     /// For example, open an external browser or app for external domain urls.
     /// - Parameter location: The location URL.
-    func handle(location: URL)
+    func handle(location: URL, activeNavigationController: UINavigationController)
 
     func matches(navigationAction: WKNavigationAction) -> Bool
-    func handle(navigationAction: WKNavigationAction)
+    func handle(navigationAction: WKNavigationAction, activeNavigationController: UINavigationController)
 }
