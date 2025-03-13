@@ -1,4 +1,5 @@
 import UIKit
+import WebKit
 
 public protocol SessionDelegate: AnyObject {
     func session(_ session: Session, didProposeVisit proposal: VisitProposal)
@@ -7,6 +8,7 @@ public protocol SessionDelegate: AnyObject {
 
     func session(_ session: Session, openExternalURL url: URL)
     func session(_ session: Session, didReceiveAuthenticationChallenge challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
+    func session(_ session: Session, decidePolicyFor navigationAction: WKNavigationAction) -> WKNavigationActionPolicy
 
     func sessionDidLoadWebView(_ session: Session)
     func sessionDidStartRequest(_ session: Session)
