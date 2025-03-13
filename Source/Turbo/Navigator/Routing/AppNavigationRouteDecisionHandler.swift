@@ -27,7 +27,7 @@ final class AppNavigationRouteDecisionHandler: RouteDecisionHandler {
             return false
         }
 
-        return navigationAction.navigationType == .linkActivated &&
+        return navigationAction.shouldNavigateInApp &&
         matches(location: url, configuration: configuration)
     }
 
@@ -37,3 +37,11 @@ final class AppNavigationRouteDecisionHandler: RouteDecisionHandler {
         // No-op.
     }
 }
+
+private extension WKNavigationAction {
+    var shouldNavigateInApp: Bool {
+        navigationType == .linkActivated ||
+        isMainFrameNavigation
+    }
+}
+

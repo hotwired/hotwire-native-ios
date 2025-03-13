@@ -29,7 +29,7 @@ final class BrowserRouteDecisionHandler: RouteDecisionHandler {
             return false
         }
 
-        return navigationAction.navigationType == .linkActivated &&
+        return navigationAction.shouldOpenURLExternally &&
         matches(location: url, configuration: configuration)
     }
 
@@ -71,5 +71,12 @@ final class BrowserRouteDecisionHandler: RouteDecisionHandler {
         case .reject:
             return
         }
+    }
+}
+
+private extension WKNavigationAction {
+    var shouldOpenURLExternally: Bool {
+        return navigationType == .linkActivated ||
+        (isMainFrameNavigation && navigationType == .other)
     }
 }
