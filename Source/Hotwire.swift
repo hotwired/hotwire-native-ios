@@ -13,6 +13,10 @@ public enum Hotwire {
     }
 
 
+    public static func registerRouteDecisionHandlers(_ decisionHandlers: [any RouteDecisionHandler]) {
+        config.router = Router(decisionHandlers: decisionHandlers)
+    }
+
     /// Loads the `PathConfiguration` JSON file(s) from the provided sources
     /// to configure navigation rules
     /// - Parameter sources: An array of `PathConfiguration.Source` objects representing
