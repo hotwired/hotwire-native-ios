@@ -34,14 +34,14 @@ public class Navigator {
     /// Convenience initializer that doesn't require manually creating `Session` instances.
     /// - Parameters:
     ///   - delegate: _optional:_ delegate to handle custom view controllers
-    public convenience init(delegate: NavigatorDelegate? = nil) {
+    public convenience init(configuration: Navigator.Configuration, delegate: NavigatorDelegate? = nil) {
         let session = Session(webView: Hotwire.config.makeWebView())
         session.pathConfiguration = Hotwire.config.pathConfiguration
 
         let modalSession = Session(webView: Hotwire.config.makeWebView())
         modalSession.pathConfiguration = Hotwire.config.pathConfiguration
 
-        self.init(session: session, modalSession: modalSession, delegate: delegate)
+        self.init(session: session, modalSession: modalSession, delegate: delegate, configuration: configuration)
     }
 
     /// Transforms `URL` -> `VisitProposal` -> `UIViewController`.
@@ -141,9 +141,13 @@ public class Navigator {
     ///   - session: the main `Session`
     ///   - modalSession: the `Session` used for the modal navigation controller
     ///   - delegate: _optional:_ delegate to handle custom view controllers
-    init(session: Session, modalSession: Session, delegate: NavigatorDelegate? = nil) {
+    init(session: Session,
+         modalSession: Session,
+         delegate: NavigatorDelegate? = nil,
+         configuration: Navigator.Configuration) {
         self.session = session
         self.modalSession = modalSession
+        self.configuration = configuration
 
         self.delegate = delegate ?? navigatorDelegate
 
@@ -161,6 +165,7 @@ public class Navigator {
     private let navigatorDelegate = DefaultNavigatorDelegate()
     private var backgroundTerminatedWebViewSessions = [Session]()
     private var appInBackground = false
+    private let configuration: Navigator.Configuration
 
     private func controller(for proposal: VisitProposal) -> UIViewController? {
         switch delegate.handle(proposal: proposal) {
@@ -176,6 +181,7 @@ public class Navigator {
     private func routeDecision(for location: URL) -> Router.Decision {
         return Hotwire.config.router.decideRoute(
             for: location,
+            configuration: configuration,
             activeNavigationController: activeNavigationController
         )
     }
@@ -225,6 +231,7 @@ extension Navigator: SessionDelegate {
     public func session(_ session: Session, decidePolicyFor navigationAction: WKNavigationAction) -> WKNavigationActionPolicy {
         return Hotwire.config.router.decidePolicy(
             for: navigationAction,
+            configuration: configuration,
             activeNavigationController: activeNavigationController
         )
     }
