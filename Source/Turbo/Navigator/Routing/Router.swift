@@ -9,10 +9,12 @@ public final class Router {
     }
 
     func decideRoute(for location: URL,
+                     configuration: Navigator.Configuration,
                      activeNavigationController: UINavigationController) -> Decision {
         for handler in decisionHandlers {
-            if handler.matches(location: location) {
+            if handler.matches(location: location, configuration: configuration) {
                 handler.handle(location: location,
+                               configuration: configuration,
                                activeNavigationController: activeNavigationController)
                 return handler.decision
             }
@@ -22,10 +24,12 @@ public final class Router {
     }
 
     func decidePolicy(for navigationAction: WKNavigationAction,
+                      configuration: Navigator.Configuration,
                       activeNavigationController: UINavigationController) -> WKNavigationActionPolicy {
         for handler in decisionHandlers {
-            if handler.matches(navigationAction: navigationAction) {
+            if handler.matches(navigationAction: navigationAction, configuration: configuration) {
                 handler.handle(navigationAction: navigationAction,
+                               configuration: configuration,
                                activeNavigationController: activeNavigationController)
                 return handler.navigationActionPolicy
             }
@@ -51,13 +55,20 @@ public protocol RouteDecisionHandler {
     /// Use your own custom rules based on the location's domain, protocol, path, or any other factors.
     /// - Parameter location: The location URL.
     /// - Returns: `true` if location matches this decision handler, `false` otherwise.
-    func matches(location: URL) -> Bool
+    func matches(location: URL,
+                 configuration: Navigator.Configuration) -> Bool
 
     /// Handle custom routing behavior when a match is found.
     /// For example, open an external browser or app for external domain urls.
     /// - Parameter location: The location URL.
-    func handle(location: URL, activeNavigationController: UINavigationController)
+    func handle(location: URL,
+                configuration: Navigator.Configuration,
+                activeNavigationController: UINavigationController)
 
-    func matches(navigationAction: WKNavigationAction) -> Bool
-    func handle(navigationAction: WKNavigationAction, activeNavigationController: UINavigationController)
+    func matches(navigationAction: WKNavigationAction,
+                 configuration: Navigator.Configuration) -> Bool
+
+    func handle(navigationAction: WKNavigationAction,
+                configuration: Navigator.Configuration,
+                activeNavigationController: UINavigationController)
 }
