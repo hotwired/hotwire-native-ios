@@ -69,6 +69,8 @@ public struct HotwireConfig {
         WKWebView.debugInspectable(configuration: configuration)
     }
 
+    public var defaultExternalURLOpeningOption: ExternalURLOpeningOption = .safari
+
     // MARK: Bridge
 
     /// Set a custom JSON encoder when parsing bridge payloads.
