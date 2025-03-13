@@ -60,6 +60,10 @@ public class Navigator {
     ///
     /// - Parameter proposal: the proposal to visit
     public func route(_ proposal: VisitProposal) {
+        if routeDecision(for: proposal.url) == .cancel {
+            return
+        }
+
         guard let controller = controller(for: proposal) else { return }
         hierarchyController.route(controller: controller, proposal: proposal)
     }
@@ -168,14 +172,17 @@ public class Navigator {
             nil
         }
     }
+
+    private func routeDecision(for location: URL) -> Router.Decision {
+        return Hotwire.config.router.decideRoute(for: location)
+    }
 }
 
 // MARK: - SessionDelegate
 
 extension Navigator: SessionDelegate {
     public func session(_ session: Session, didProposeVisit proposal: VisitProposal) {
-        guard let controller = controller(for: proposal) else { return }
-        hierarchyController.route(controller: controller, proposal: proposal)
+        route(proposal)
     }
 
     public func session(_ session: Session, didProposeVisitToCrossOriginRedirect location: URL) {
@@ -210,6 +217,10 @@ extension Navigator: SessionDelegate {
         delegate.visitableDidFailRequest(visitable, error: error) {
             session.reload()
         }
+    }
+
+    public func session(_ session: Session, decidePolicyFor navigationAction: WKNavigationAction) -> WKNavigationActionPolicy {
+        return Hotwire.config.router.decidePolicy(for: navigationAction)
     }
 
     public func sessionWebViewProcessDidTerminate(_ session: Session) {
