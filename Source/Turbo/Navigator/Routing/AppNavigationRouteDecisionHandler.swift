@@ -44,4 +44,3 @@ private extension WKNavigationAction {
         isMainFrameNavigation
     }
 }
-
