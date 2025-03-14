@@ -18,9 +18,9 @@ final class BrowserRouteDecisionHandler: RouteDecisionHandler {
 
     func handle(location: URL,
                 configuration: Navigator.Configuration,
-                activeNavigationController: UINavigationController) {
+                navigator: Navigator) {
         open(externalURL: location,
-             activeNavigationController: activeNavigationController)
+             activeNavigationController: navigator.activeNavigationController)
     }
 
     func matches(navigationAction: WKNavigationAction,
@@ -35,21 +35,21 @@ final class BrowserRouteDecisionHandler: RouteDecisionHandler {
 
     func handle(navigationAction: WKNavigationAction,
                 configuration: Navigator.Configuration,
-                activeNavigationController: UINavigationController) {
+                navigator: Navigator) {
         guard let url = navigationAction.request.url else {
             return
         }
 
         handle(location: url,
                configuration: configuration,
-               activeNavigationController: activeNavigationController)
+               navigator: navigator)
     }
 
     /// Navigate to an external URL.
     ///
     /// - Parameters:
-    ///   - externalURL: the URL to navigate to
-    ///   - via: navigation action
+    ///   - externalURL: The URL to navigate to.
+    ///   - activeNavigationController: The active navigation controller.
     public func open(externalURL: URL,
                      activeNavigationController: UINavigationController) {
         switch Hotwire.config.defaultExternalURLOpeningOption {

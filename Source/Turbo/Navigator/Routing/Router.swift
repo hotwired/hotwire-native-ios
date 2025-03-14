@@ -10,12 +10,12 @@ public final class Router {
 
     func decideRoute(for location: URL,
                      configuration: Navigator.Configuration,
-                     activeNavigationController: UINavigationController) -> Decision {
+                     navigator: Navigator) -> Decision {
         for handler in decisionHandlers {
             if handler.matches(location: location, configuration: configuration) {
                 handler.handle(location: location,
                                configuration: configuration,
-                               activeNavigationController: activeNavigationController)
+                               navigator: navigator)
                 return handler.decision
             }
         }
@@ -25,12 +25,12 @@ public final class Router {
 
     func decidePolicy(for navigationAction: WKNavigationAction,
                       configuration: Navigator.Configuration,
-                      activeNavigationController: UINavigationController) -> WKNavigationActionPolicy {
+                      navigator: Navigator) -> WKNavigationActionPolicy {
         for handler in decisionHandlers {
             if handler.matches(navigationAction: navigationAction, configuration: configuration) {
                 handler.handle(navigationAction: navigationAction,
                                configuration: configuration,
-                               activeNavigationController: activeNavigationController)
+                               navigator: navigator)
                 return handler.navigationActionPolicy
             }
         }
@@ -63,12 +63,12 @@ public protocol RouteDecisionHandler {
     /// - Parameter location: The location URL.
     func handle(location: URL,
                 configuration: Navigator.Configuration,
-                activeNavigationController: UINavigationController)
+                navigator: Navigator)
 
     func matches(navigationAction: WKNavigationAction,
                  configuration: Navigator.Configuration) -> Bool
 
     func handle(navigationAction: WKNavigationAction,
                 configuration: Navigator.Configuration,
-                activeNavigationController: UINavigationController)
+                navigator: Navigator)
 }

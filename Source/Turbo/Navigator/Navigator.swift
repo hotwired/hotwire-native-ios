@@ -155,7 +155,7 @@ public class Navigator {
         return Hotwire.config.router.decideRoute(
             for: location,
             configuration: configuration,
-            activeNavigationController: activeNavigationController
+            navigator: self
         )
     }
 }
@@ -199,7 +199,7 @@ extension Navigator: SessionDelegate {
         return Hotwire.config.router.decidePolicy(
             for: navigationAction,
             configuration: configuration,
-            activeNavigationController: activeNavigationController
+            navigator: self
         )
     }
 

@@ -17,7 +17,7 @@ final class AppNavigationRouteDecisionHandler: RouteDecisionHandler {
 
     func handle(location: URL,
                 configuration: Navigator.Configuration,
-                activeNavigationController: UINavigationController) {
+                navigator: Navigator) {
         // No-op.
     }
 
@@ -33,7 +33,7 @@ final class AppNavigationRouteDecisionHandler: RouteDecisionHandler {
 
     func handle(navigationAction: WKNavigationAction,
                 configuration: Navigator.Configuration,
-                activeNavigationController: UINavigationController) {
+                navigator: Navigator) {
         // No-op.
     }
 }
