@@ -1,14 +1,15 @@
 import Foundation
 
-/// When `Navigator` encounters an external URL, its delegate may handle it with any of these actions.
-public enum ExternalURLNavigationAction {
-    /// Attempts to open via an embedded `SafariViewController` so the user stays in-app.
-    /// Silently fails if you pass a URL that's not `http` or `https`.
-    case openViaSafariController
+/// Defines how external URLs should be opened. This enum is used in `BrowserRouteDecisionHandler`.
+/// However, you can also write your own implementation for handling external URLs and reuse this enum.
+public enum ExternalURLOpeningOption {
+    /// Open via an embedded `SafariViewController` so the user stays in-app.
+    /// NOTE: This will silently fail for a URL that's not `http` or `https`.
+    case safari
 
-    /// Attempts to open via `openURL(_:options:completionHandler)`.
+    /// Open via `openURL(_:options:completionHandler)`.
     /// This is useful if the external URL is a deeplink.
-    case openViaSystem
+    case system
 
     /// Will do nothing with the external URL.
     case reject

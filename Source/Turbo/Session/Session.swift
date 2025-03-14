@@ -452,54 +452,18 @@ extension Session: WebViewDelegate {
 
 extension Session: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        let navigationDecision = NavigationDecision(navigationAction: navigationAction)
-        decisionHandler(navigationDecision.policy)
-
-        if let url = navigationDecision.externallyOpenableURL {
-            openExternalURL(url)
-        } else if navigationDecision.shouldReloadPage {
-            reload()
+        guard let delegate else {
+            decisionHandler(.allow)
+            return
         }
+
+        let decision = delegate.session(self, decidePolicyFor: navigationAction)
+        decisionHandler(decision)
     }
 
     public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
         log("webViewWebContentProcessDidTerminate")
         delegate?.sessionWebViewProcessDidTerminate(self)
-    }
-
-    private func openExternalURL(_ url: URL) {
-        log("openExternalURL", ["url": url])
-        delegate?.session(self, openExternalURL: url)
-    }
-
-    private struct NavigationDecision {
-        let navigationAction: WKNavigationAction
-
-        var policy: WKNavigationActionPolicy {
-            navigationAction.navigationType == .linkActivated || isMainFrameNavigation ? .cancel : .allow
-        }
-
-        var externallyOpenableURL: URL? {
-            if let url = navigationAction.request.url, shouldOpenURLExternally {
-                return url
-            } else {
-                return nil
-            }
-        }
-
-        var shouldOpenURLExternally: Bool {
-            let type = navigationAction.navigationType
-            return type == .linkActivated || (isMainFrameNavigation && type == .other)
-        }
-
-        var shouldReloadPage: Bool {
-            let type = navigationAction.navigationType
-            return isMainFrameNavigation && type == .reload
-        }
-
-        var isMainFrameNavigation: Bool {
-            navigationAction.targetFrame?.isMainFrame ?? false
-        }
     }
 }
 

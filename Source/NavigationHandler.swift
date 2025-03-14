@@ -9,13 +9,13 @@ import Foundation
 /// circular dependency between the two.
 ///
 /// - Note: See `NumbersViewController` in the demo app for an example.
-public protocol Router: AnyObject {
+public protocol NavigationHandler: AnyObject {
     func route(_ url: URL)
 
     func route(_ proposal: VisitProposal)
 }
 
-extension Navigator: Router {
+extension Navigator: NavigationHandler {
     public func route(_ url: URL) {
         route(url, options: VisitOptions(action: .advance), parameters: nil)
     }
