@@ -34,7 +34,15 @@ final class AppNavigationRouteDecisionHandler: RouteDecisionHandler {
     func handle(navigationAction: WKNavigationAction,
                 configuration: Navigator.Configuration,
                 navigator: Navigator) {
-        // No-op.
+        guard let url = navigationAction.request.url else {
+            return
+        }
+
+        // Explicitly handle target="_blank" links by routing them through the navigator.
+        if navigationAction.navigationType == .linkActivated &&
+            navigationAction.requestsNewWindow {
+            navigator.route(url)
+        }
     }
 }
 
@@ -42,5 +50,11 @@ private extension WKNavigationAction {
     var shouldNavigateInApp: Bool {
         navigationType == .linkActivated ||
         isMainFrameNavigation
+    }
+
+    /// Indicates if the navigation action requests a new window (e.g., target="_blank").
+    var requestsNewWindow: Bool {
+        guard let targetFrame else { return true }
+        return !targetFrame.isMainFrame
     }
 }
