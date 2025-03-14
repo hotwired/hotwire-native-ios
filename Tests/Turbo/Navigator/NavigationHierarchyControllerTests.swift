@@ -10,7 +10,11 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         navigationController = TestableNavigationController()
         modalNavigationController = TestableNavigationController()
 
-        navigator = Navigator(session: session, modalSession: modalSession)
+        navigator = Navigator(
+            session: session,
+            modalSession: modalSession,
+            configuration: .init(name: "Test", startLocation: oneURL)
+        )
         hierarchyController = NavigationHierarchyController(delegate: navigator, navigationController: navigationController, modalNavigationController: modalNavigationController)
         navigator.hierarchyController = hierarchyController
 
@@ -308,8 +312,8 @@ final class NavigationHierarchyControllerTests: XCTestCase {
     }
 
     func test_externalURL_presentsSafariViewController() throws {
-        let externalURL = URL(string: "https://example.com")!
-        navigator.session(navigator.session, openExternalURL: externalURL)
+        let externalURL = URL(string: "https://external.com")!
+        navigator.route(externalURL)
 
         XCTAssert(navigationController.presentedViewController is SFSafariViewController)
         XCTAssertEqual(navigationController.presentedViewController?.modalPresentationStyle, .pageSheet)
@@ -317,7 +321,7 @@ final class NavigationHierarchyControllerTests: XCTestCase {
 
     func test_invalidExternalURL_doesNotPresentSafariViewController() throws {
         let externalURL = URL(string: "ftp://example.com")!
-        navigator.session(navigator.session, openExternalURL: externalURL)
+        navigator.route(externalURL)
 
         /// No assertions needed. App will crash if we pass a non-http or non-https scheme to SFSafariViewController.
     }
