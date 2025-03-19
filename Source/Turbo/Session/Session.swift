@@ -85,7 +85,10 @@ public class Session: NSObject {
 
     public func reload() {
         guard let visitable = topmostVisitable else { return }
-
+        if let currentURL = webView.url {
+            visitable.visitableURL = currentURL
+        }
+        
         initialized = false
         visit(visitable)
         topmostVisit = currentVisit
