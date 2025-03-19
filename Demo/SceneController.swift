@@ -7,7 +7,10 @@ final class SceneController: UIResponder {
     var window: UIWindow?
 
     private let rootURL = Demo.current
-    private lazy var navigator = Navigator(delegate: self)
+    private lazy var navigator = Navigator(
+        configuration: .init(name: "main", startLocation: rootURL),
+        delegate: self
+    )
 
     // MARK: - Authentication
 

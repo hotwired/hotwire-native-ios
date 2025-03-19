@@ -40,6 +40,9 @@ class TestVisitable: UIViewController, Visitable {
 }
 
 class TestSessionDelegate: NSObject, SessionDelegate {
+    func session(_ session: HotwireNative.Session, decidePolicyFor navigationAction: WKNavigationAction) -> WKNavigationActionPolicy {
+        .cancel
+    }
     var sessionDidLoadWebViewCalled = false { didSet { didChange?() }}
     var sessionDidStartRequestCalled = false
     var sessionDidFinishRequestCalled = false
