@@ -1,0 +1,31 @@
+{
+  "rules":[
+    {
+      "patterns":[
+        "/recede_historical_location"
+      ],
+      "properties":{
+        "presentation":"pop",
+        "context":"modal"
+      }
+    },
+    {
+      "patterns":[
+        "/resume_historical_location"
+      ],
+      "properties":{
+        "presentation":"refresh",
+        "context":"modal"
+      }
+    },
+    {
+      "patterns":[
+        "/refresh_historical_location"
+      ],
+      "properties":{
+        "presentation":"pop",
+        "context":"modal"
+      }
+    }
+  ]
+}
