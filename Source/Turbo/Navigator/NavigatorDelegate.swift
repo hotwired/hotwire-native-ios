@@ -34,7 +34,7 @@ public protocol NavigatorDelegate: AnyObject {
     /// If not implemented, no action is taken.
     func formSubmissionDidFinish(at url: URL)
     
-    /// Optional. Called after a request.
+    /// Optional. Called after a request has completed.
     /// If not implemented, no action is taken.
     func requestDidFinish(at url: URL)
 }
