@@ -222,11 +222,10 @@ extension Navigator: SessionDelegate {
 
     public func sessionDidFinishRequest(_ session: Session) {
         guard let url = session.activeVisitable?.visitableURL else { return }
-        
-        delegate.requestDidFinish(at: url)
 
         WKWebsiteDataStore.default().httpCookieStore.getAllCookies { cookies in
             HTTPCookieStorage.shared.setCookies(cookies, for: url, mainDocumentURL: url)
+            self.delegate.requestDidFinish(at: url)
         }
     }
 
