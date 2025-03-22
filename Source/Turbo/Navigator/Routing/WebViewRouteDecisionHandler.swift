@@ -1,7 +1,7 @@
 import Foundation
 import WebKit
 
-protocol WebViewRouteDecisionHandler {
+public protocol WebViewRouteDecisionHandler {
     var name: String { get }
 
     func matches(navigationAction: WKNavigationAction,
