@@ -47,7 +47,7 @@ open class VisitableViewController: UIViewController, Visitable {
     // MARK: Visitable
 
     open func visitableDidRender() {
-        title = visitableView.webView?.title
+        navigationItem.title = visitableView.webView?.title
     }
 
     open func showVisitableActivityIndicator() {
