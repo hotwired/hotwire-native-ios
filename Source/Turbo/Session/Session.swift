@@ -458,7 +458,7 @@ extension Session: WKNavigationDelegate {
         }
 
         let decision = delegate.session(self, decidePolicyFor: navigationAction)
-        decisionHandler(decision)
+        decisionHandler(.init(decision: decision))
     }
 
     public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
@@ -469,4 +469,15 @@ extension Session: WKNavigationDelegate {
 
 private func log(_ name: String, _ arguments: [String: Any] = [:]) {
     logger.debug("[Session] \(name) \(arguments)")
+}
+
+extension WKNavigationActionPolicy {
+    public init(decision: Router.Decision) {
+        switch decision {
+        case .navigate:
+            self = .allow
+        case .cancel:
+            self = .cancel
+        }
+    }
 }
