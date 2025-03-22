@@ -5,9 +5,12 @@ import WebKit
 /// provided in `RouteDecisionHandler` instances.
 public final class Router {
     let decisionHandlers: [RouteDecisionHandler]
+    let webViewDecisionHandlers: [WebViewRouteDecisionHandler]
 
-    init(decisionHandlers: [RouteDecisionHandler]) {
+    init(decisionHandlers: [RouteDecisionHandler],
+         webViewDecisionHandlers: [WebViewRouteDecisionHandler]) {
         self.decisionHandlers = decisionHandlers
+        self.webViewDecisionHandlers = webViewDecisionHandlers
     }
 
     func decideRoute(for location: URL,
@@ -15,11 +18,10 @@ public final class Router {
                      navigator: Navigator) -> Decision {
         for handler in decisionHandlers {
             if handler.matches(location: location, configuration: configuration) {
-                handler.handle(location: location,
+                logger.debug("[Router] handler match found handler: \(handler.name) location: \(location)")
+                return handler.handle(location: location,
                                configuration: configuration,
                                navigator: navigator)
-                logger.debug("[Router] handler match found handler: \(handler.name) location: \(location)")
-                return handler.decision
             }
         }
 
@@ -29,27 +31,24 @@ public final class Router {
 
     func decidePolicy(for navigationAction: WKNavigationAction,
                       configuration: Navigator.Configuration,
-                      navigator: Navigator) -> WKNavigationActionPolicy {
-        for handler in decisionHandlers {
+                      navigator: Navigator) -> Decision {
+        for handler in webViewDecisionHandlers {
             if handler.matches(navigationAction: navigationAction, configuration: configuration) {
-                handler.handle(navigationAction: navigationAction,
+                logger.debug("[Router] web handler match found handler: \(handler.name) navigation action:\(navigationAction)")
+                return handler.handle(navigationAction: navigationAction,
                                configuration: configuration,
                                navigator: navigator)
-                logger.debug("[Router] handler match found handler: \(handler.name) navigation action: \(navigationAction)")
-                return handler.navigationActionPolicy
             }
         }
 
-        logger.warning("[Router] no handler for navigation action: \(navigationAction)")
-        return .allow
+        logger.warning("[Router] no web handler for navigation action: \(navigationAction)")
+        return .navigate
     }
 }
 
 public extension Router {
     enum Decision {
-        /// Permit in-app navigation with your app's domain urls.
         case navigate
-        /// Prevent in-app navigation. Always use this for external domain urls.
         case cancel
     }
 }
