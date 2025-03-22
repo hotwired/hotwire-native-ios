@@ -99,10 +99,17 @@ public struct HotwireConfig {
 
     private let sharedProcessPool = WKProcessPool()
 
-    var router = Router(decisionHandlers: [
-        AppNavigationRouteDecisionHandler(),
-        BrowserRouteDecisionHandler()
-    ]
+    var router = Router(
+        decisionHandlers: [
+            AppNavigationRouteDecisionHandler(),
+            BrowserRouteDecisionHandler()
+        ],
+        webViewDecisionHandlers: [
+            ReloadWebViewRouteDecisionHandler(),
+            NewWindowWebViewRouteDecisionHandler(),
+            ExternalNavigationWebViewRouteDecisionHandler(),
+            LinkActivatedWebViewRouteDecisionHandler()
+        ]
     )
 
     // A method (not a property) because we need a new instance for each web view.
