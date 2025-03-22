@@ -4,8 +4,6 @@ import SafariServices
 
 final class BrowserRouteDecisionHandler: RouteDecisionHandler {
     let name: String = "browser"
-    let decision: Router.Decision = .cancel
-    let navigationActionPolicy: WKNavigationActionPolicy = .cancel
 
     func matches(location: URL,
                  configuration: Navigator.Configuration) -> Bool {
@@ -18,31 +16,11 @@ final class BrowserRouteDecisionHandler: RouteDecisionHandler {
 
     func handle(location: URL,
                 configuration: Navigator.Configuration,
-                navigator: Navigator) {
+                navigator: Navigator) -> Router.Decision {
         open(externalURL: location,
              activeNavigationController: navigator.activeNavigationController)
-    }
 
-    func matches(navigationAction: WKNavigationAction,
-                 configuration: Navigator.Configuration) -> Bool {
-        guard let url = navigationAction.request.url else {
-            return false
-        }
-
-        return navigationAction.shouldOpenURLExternally &&
-        matches(location: url, configuration: configuration)
-    }
-
-    func handle(navigationAction: WKNavigationAction,
-                configuration: Navigator.Configuration,
-                navigator: Navigator) {
-        guard let url = navigationAction.request.url else {
-            return
-        }
-
-        handle(location: url,
-               configuration: configuration,
-               navigator: navigator)
+        return .cancel
     }
 
     /// Navigate to an external URL.
@@ -71,12 +49,5 @@ final class BrowserRouteDecisionHandler: RouteDecisionHandler {
         case .reject:
             return
         }
-    }
-}
-
-private extension WKNavigationAction {
-    var shouldOpenURLExternally: Bool {
-        return navigationType == .linkActivated ||
-        (isMainFrameNavigation && navigationType == .other)
     }
 }
