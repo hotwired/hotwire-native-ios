@@ -28,7 +28,9 @@ public final class Router {
 
 public extension Router {
     enum Decision {
+        // Permit in-app navigation with your app's domain urls.
         case navigate
+        // Prevent in-app navigation. Always use this for external domain urls.
         case cancel
     }
 }
