@@ -1,7 +1,7 @@
 import Foundation
 import WebKit
 
-public protocol WebViewRouteDecisionHandler {
+public protocol WebViewPolicyDecisionHandler {
     var name: String { get }
 
     func matches(navigationAction: WKNavigationAction,
@@ -12,7 +12,7 @@ public protocol WebViewRouteDecisionHandler {
                 navigator: Navigator) -> Router.Decision
 }
 
-struct NewWindowWebViewRouteDecisionHandler: WebViewRouteDecisionHandler {
+struct NewWindowWebViewRouteDecisionHandler: WebViewPolicyDecisionHandler {
     var name: String = "new window navigation"
 
     func matches(navigationAction: WKNavigationAction,
@@ -35,7 +35,7 @@ struct NewWindowWebViewRouteDecisionHandler: WebViewRouteDecisionHandler {
     }
 }
 
-struct ReloadWebViewRouteDecisionHandler: WebViewRouteDecisionHandler {
+struct ReloadWebViewRouteDecisionHandler: WebViewPolicyDecisionHandler {
     var name: String = "reload"
 
     func matches(navigationAction: WKNavigationAction,
@@ -52,7 +52,7 @@ struct ReloadWebViewRouteDecisionHandler: WebViewRouteDecisionHandler {
     }
 }
 
-struct ExternalNavigationWebViewRouteDecisionHandler: WebViewRouteDecisionHandler {
+struct ExternalNavigationWebViewRouteDecisionHandler: WebViewPolicyDecisionHandler {
     var name: String = "external navigation"
 
     func matches(navigationAction: WKNavigationAction,
@@ -74,7 +74,7 @@ struct ExternalNavigationWebViewRouteDecisionHandler: WebViewRouteDecisionHandle
     }
 }
 
-struct LinkActivatedWebViewRouteDecisionHandler: WebViewRouteDecisionHandler {
+struct LinkActivatedWebViewRouteDecisionHandler: WebViewPolicyDecisionHandler {
     var name: String = "link activated"
 
     func matches(navigationAction: WKNavigationAction,
