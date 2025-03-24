@@ -9,30 +9,7 @@ public protocol WebViewPolicyDecisionHandler {
 
     func handle(navigationAction: WKNavigationAction,
                 configuration: Navigator.Configuration,
-                navigator: Navigator) -> Router.Decision
-}
-
-struct NewWindowWebViewRouteDecisionHandler: WebViewPolicyDecisionHandler {
-    var name: String = "new window navigation"
-
-    func matches(navigationAction: WKNavigationAction,
-                 configuration: Navigator.Configuration) -> Bool {
-        return navigationAction.request.url != nil &&
-        navigationAction.navigationType == .linkActivated &&
-        navigationAction.requestsNewWindow
-    }
-
-    func handle(navigationAction: WKNavigationAction,
-                configuration: Navigator.Configuration,
-                navigator: Navigator) -> Router.Decision {
-        guard let url = navigationAction.request.url else {
-            return .cancel
-        }
-
-        navigator.route(url)
-
-        return .cancel
-    }
+                navigator: Navigator) -> WebViewPolicyManager.Decision
 }
 
 struct ReloadWebViewRouteDecisionHandler: WebViewPolicyDecisionHandler {
