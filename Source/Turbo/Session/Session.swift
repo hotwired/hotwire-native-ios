@@ -478,9 +478,9 @@ private func log(_ name: String, _ arguments: [String: Any] = [:]) {
 }
 
 extension WKNavigationActionPolicy {
-    public init(decision: Router.Decision) {
+    public init(decision: WebViewPolicyManager.Decision) {
         switch decision {
-        case .navigate:
+        case .allow:
             self = .allow
         case .cancel:
             self = .cancel

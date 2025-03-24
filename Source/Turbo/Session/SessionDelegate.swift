@@ -7,7 +7,7 @@ public protocol SessionDelegate: AnyObject {
     func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, error: Error)
 
     func session(_ session: Session, didReceiveAuthenticationChallenge challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
-    func session(_ session: Session, decidePolicyFor navigationAction: WKNavigationAction) -> Router.Decision
+    func session(_ session: Session, decidePolicyFor navigationAction: WKNavigationAction) -> WebViewPolicyManager.Decision
 
     func sessionDidLoadWebView(_ session: Session)
     func sessionDidStartRequest(_ session: Session)

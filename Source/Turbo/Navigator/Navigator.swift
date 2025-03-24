@@ -195,8 +195,8 @@ extension Navigator: SessionDelegate {
         }
     }
 
-    public func session(_ session: Session, decidePolicyFor navigationAction: WKNavigationAction) -> Router.Decision {
-        return Hotwire.config.router.decidePolicy(
+    public func session(_ session: Session, decidePolicyFor navigationAction: WKNavigationAction) -> WebViewPolicyManager.Decision {
+        return Hotwire.config.webViewPolicyManager.decidePolicy(
             for: navigationAction,
             configuration: configuration,
             navigator: self
