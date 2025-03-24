@@ -14,27 +14,7 @@ public protocol WebViewPolicyDecisionHandler {
 
 
 
-struct ExternalNavigationWebViewRouteDecisionHandler: WebViewPolicyDecisionHandler {
-    var name: String = "external navigation"
 
-    func matches(navigationAction: WKNavigationAction,
-                 configuration: Navigator.Configuration) -> Bool {
-        return navigationAction.request.url != nil &&
-        navigationAction.shouldOpenURLExternally
-    }
-
-    func handle(navigationAction: WKNavigationAction,
-                configuration: Navigator.Configuration,
-                navigator: Navigator) -> Router.Decision {
-        guard let url = navigationAction.request.url else {
-            return .cancel
-        }
-
-        navigator.route(url)
-
-        return .cancel
-    }
-}
 
 struct LinkActivatedWebViewRouteDecisionHandler: WebViewPolicyDecisionHandler {
     var name: String = "link activated"
