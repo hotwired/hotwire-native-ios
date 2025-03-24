@@ -1,5 +1,4 @@
 import Foundation
-import WebKit
 
 final class AppNavigationRouteDecisionHandler: RouteDecisionHandler {
     let name: String = "app-navigation"

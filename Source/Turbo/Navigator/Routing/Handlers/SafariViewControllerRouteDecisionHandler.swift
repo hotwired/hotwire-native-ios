@@ -1,5 +1,4 @@
 import Foundation
-import WebKit
 import SafariServices
 
 final class SafariViewControllerRouteDecisionHandler: RouteDecisionHandler {
