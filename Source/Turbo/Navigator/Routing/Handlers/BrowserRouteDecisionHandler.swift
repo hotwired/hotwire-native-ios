@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 
+/// Opens external URLs via `openURL(_:options:completionHandler)`.
 final class BrowserRouteDecisionHandler: RouteDecisionHandler {
     let name: String = "browser"
 

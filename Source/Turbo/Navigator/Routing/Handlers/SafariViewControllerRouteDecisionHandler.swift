@@ -1,6 +1,8 @@
 import Foundation
 import SafariServices
 
+/// Opens external URLs via an embedded `SafariViewController` so the user stays in-app.
+/// NOTE: This will silently fail for a URL that's not `http` or `https`.
 final class SafariViewControllerRouteDecisionHandler: RouteDecisionHandler {
     let name: String = "safari"
 
