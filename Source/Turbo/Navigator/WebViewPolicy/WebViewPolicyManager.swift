@@ -1,6 +1,8 @@
 import Foundation
 import WebKit
 
+/// Manages web view policy.
+/// You can provide custom behaviors in `WebViewPolicyDecisionHandler` instances.
 public final class WebViewPolicyManager {
     let policyDecisionHandlers: [WebViewPolicyDecisionHandler]
 
@@ -27,7 +29,9 @@ public final class WebViewPolicyManager {
 
 public extension WebViewPolicyManager {
     enum Decision {
+        // Cancel navigation to a webpage. Always use this when handling navigation yourself.
         case cancel
+        // Allow navigation to a webpage.
         case allow
     }
 }
