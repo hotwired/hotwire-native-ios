@@ -12,26 +12,6 @@ public protocol WebViewPolicyDecisionHandler {
                 navigator: Navigator) -> WebViewPolicyManager.Decision
 }
 
-
-
-
-
-struct LinkActivatedWebViewRouteDecisionHandler: WebViewPolicyDecisionHandler {
-    var name: String = "link activated"
-
-    func matches(navigationAction: WKNavigationAction,
-                 configuration: Navigator.Configuration) -> Bool {
-        navigationAction.navigationType == .linkActivated &&
-        navigationAction.isMainFrameNavigation
-    }
-
-    func handle(navigationAction: WKNavigationAction,
-                configuration: Navigator.Configuration,
-                navigator: Navigator) -> Router.Decision {
-        return .cancel
-    }
-}
-
 extension WKNavigationAction {
     var shouldNavigateInApp: Bool {
         navigationType == .linkActivated ||
