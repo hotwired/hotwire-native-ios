@@ -12,22 +12,7 @@ public protocol WebViewPolicyDecisionHandler {
                 navigator: Navigator) -> WebViewPolicyManager.Decision
 }
 
-struct ReloadWebViewRouteDecisionHandler: WebViewPolicyDecisionHandler {
-    var name: String = "reload"
 
-    func matches(navigationAction: WKNavigationAction,
-                 configuration: Navigator.Configuration) -> Bool {
-        return navigationAction.shouldReloadPage
-    }
-
-    func handle(navigationAction: WKNavigationAction,
-                configuration: Navigator.Configuration,
-                navigator: Navigator) -> Router.Decision {
-        navigator.reload()
-
-        return .cancel
-    }
-}
 
 struct ExternalNavigationWebViewRouteDecisionHandler: WebViewPolicyDecisionHandler {
     var name: String = "external navigation"
