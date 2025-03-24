@@ -69,6 +69,7 @@ public struct HotwireConfig {
         WKWebView.debugInspectable(configuration: configuration)
     }
 
+    // create explicit decision handlers for external urls
     public var defaultExternalURLOpeningOption: ExternalURLOpeningOption = .safari
 
     // MARK: Bridge
@@ -103,12 +104,17 @@ public struct HotwireConfig {
         decisionHandlers: [
             AppNavigationRouteDecisionHandler(),
             BrowserRouteDecisionHandler()
-        ],
-        webViewDecisionHandlers: [
-            ReloadWebViewRouteDecisionHandler(),
-            NewWindowWebViewRouteDecisionHandler(),
-            ExternalNavigationWebViewRouteDecisionHandler(),
-            LinkActivatedWebViewRouteDecisionHandler()
+//            safariViewController
+//            browser
+        ]
+    )
+
+    var webViewPolicyManager = WebViewPolicyManager(
+        policyDecisionHandlers: [
+            ReloadWebViewPolicyDecisionHandler(),
+            NewWindowWebViewPolicyDecisionHandler(),
+            ExternalNavigationWebViewPolicyDecisionHandler(),
+            LinkActivatedWebViewPolicyDecisionHandler()
         ]
     )
 
