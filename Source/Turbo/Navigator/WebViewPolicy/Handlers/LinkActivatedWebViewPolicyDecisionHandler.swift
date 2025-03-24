@@ -2,7 +2,7 @@ import Foundation
 import WebKit
 
 struct LinkActivatedWebViewPolicyDecisionHandler: WebViewPolicyDecisionHandler {
-    let name: String = "link activated policy"
+    let name: String = "link-activated-policy"
 
     func matches(navigationAction: WKNavigationAction,
                  configuration: Navigator.Configuration) -> Bool {

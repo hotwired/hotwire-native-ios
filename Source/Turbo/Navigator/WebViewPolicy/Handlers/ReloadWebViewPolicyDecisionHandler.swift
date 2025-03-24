@@ -2,7 +2,7 @@ import Foundation
 import WebKit
 
 struct ReloadWebViewPolicyDecisionHandler: WebViewPolicyDecisionHandler {
-    let name: String = "reload policy"
+    let name: String = "reload-policy"
 
     func matches(navigationAction: WKNavigationAction,
                  configuration: Navigator.Configuration) -> Bool {

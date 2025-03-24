@@ -2,7 +2,7 @@ import Foundation
 import WebKit
 
 struct NewWindowWebViewPolicyDecisionHandler: WebViewPolicyDecisionHandler {
-    let name: String = "new window policy"
+    let name: String = "new-window-policy"
 
     func matches(navigationAction: WKNavigationAction,
                  configuration: Navigator.Configuration) -> Bool {

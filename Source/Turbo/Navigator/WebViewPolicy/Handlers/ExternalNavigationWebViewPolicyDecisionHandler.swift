@@ -2,7 +2,7 @@ import Foundation
 import WebKit
 
 struct ExternalNavigationWebViewPolicyDecisionHandler: WebViewPolicyDecisionHandler {
-    let name: String = "external navigation policy"
+    let name: String = "external-navigation-policy"
 
     func matches(navigationAction: WKNavigationAction,
                  configuration: Navigator.Configuration) -> Bool {
