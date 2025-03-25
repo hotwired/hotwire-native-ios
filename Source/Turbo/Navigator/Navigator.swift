@@ -44,6 +44,17 @@ public class Navigator {
         self.init(session: session, modalSession: modalSession, delegate: delegate, configuration: configuration)
     }
 
+    /// Routes to the start location provided in the `Navigator.Configuration`.
+    public func start() {
+        guard rootViewController.viewControllers.isEmpty,
+        modalRootViewController.viewControllers.isEmpty else {
+            logger.warning("Start can only be run when there are no view controllers on the stack.")
+            return
+        }
+
+        route(configuration.startLocation)
+    }
+
     /// Transforms `URL` -> `VisitProposal` -> `UIViewController`.
     /// Convenience function to routing a proposal directly.
     ///
