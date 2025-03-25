@@ -28,7 +28,7 @@ extension SceneController: UIWindowSceneDelegate {
         window?.rootViewController = navigator.rootViewController
         window?.makeKeyAndVisible()
 
-        navigator.route(rootURL)
+        navigator.start()
     }
 }
 
