@@ -21,6 +21,23 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         loadNavigationControllerInWindow()
     }
 
+    func test_start_succeeds_when_no_view_controllers_on_stack() {
+        navigator.start()
+
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        XCTAssert(navigator.rootViewController.viewControllers.last is VisitableViewController)
+        assertVisited(url: oneURL, on: .main)
+    }
+
+    func test_start_fails_when_view_controllers_on_stack() {
+        navigator.route(twoURL)
+        navigator.start()
+
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        XCTAssert(navigator.rootViewController.viewControllers.last is VisitableViewController)
+        assertVisited(url: twoURL, on: .main)
+    }
+
     func test_default_default_default_defaultOptionsParamater_pushesOnMainStack() {
         navigator.route(oneURL)
         XCTAssertEqual(navigationController.viewControllers.count, 1)
