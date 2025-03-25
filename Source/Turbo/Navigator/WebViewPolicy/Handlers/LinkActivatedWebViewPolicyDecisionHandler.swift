@@ -1,6 +1,11 @@
 import Foundation
 import WebKit
 
+/// A web view policy decision handler that intercepts navigation actions
+/// triggered by link activation in the main frame.
+///
+/// When such an action is detected, the handler cancels the navigation,
+/// preventing the web view from following the link.
 struct LinkActivatedWebViewPolicyDecisionHandler: WebViewPolicyDecisionHandler {
     let name: String = "link-activated-policy"
 
