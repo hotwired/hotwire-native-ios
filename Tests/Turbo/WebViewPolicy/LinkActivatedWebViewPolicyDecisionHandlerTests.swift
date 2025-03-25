@@ -2,38 +2,16 @@
 @preconcurrency import WebKit
 import XCTest
 
-final class LinkActivatedWebViewPolicyDecisionHandlerTests: XCTestCase {
-    var webView: WKWebView!
-    var navigationManager: ClickSimulatorNavigationManager!
+final class LinkActivatedWebViewPolicyDecisionHandlerTests: BaseWebViewPolicyDecisionHandlerTests {
     var policyHandler: LinkActivatedWebViewPolicyDecisionHandler!
-    var navigatorSpy: NavigationSpy!
-    let navigatorConfiguration = Navigator.Configuration(
-        name: "test",
-        startLocation: URL(string: "https://my.app.com")!
-    )
 
     override func setUp() {
-        navigatorSpy = NavigationSpy(configuration: navigatorConfiguration)
+        super.setUp()
         policyHandler = LinkActivatedWebViewPolicyDecisionHandler()
-        webView = WKWebView()
-        navigationManager = ClickSimulatorNavigationManager()
-        navigationManager.expectation = expectation(description: "Waiting for navigation action triggered by JS click")
-        webView.navigationDelegate = navigationManager
-    }
-
-    override func tearDown() {
-        webView.navigationDelegate = nil
-        webView = nil
-        navigationManager = nil
     }
 
     func test_link_activated_matches() {
-        navigationManager.simulateLinkClickElementId = "link"
-        webView.loadHTMLString(.linkActivated, baseURL: nil)
-
-        waitForExpectations(timeout: 10)
-
-        guard let action = navigationManager.capturedNavigationAction else {
+        guard let action = performNavigationTest(withHTML: .simpleLink, elementId: "link") else {
             XCTFail("No navigation action captured")
             return
         }
@@ -47,12 +25,7 @@ final class LinkActivatedWebViewPolicyDecisionHandlerTests: XCTestCase {
     }
 
     func test_handling_matching_result_cancels_web_navigation() {
-        navigationManager.simulateLinkClickElementId = "link"
-        webView.loadHTMLString(.linkActivated, baseURL: nil)
-
-        waitForExpectations(timeout: 10)
-
-        guard let action = navigationManager.capturedNavigationAction else {
+        guard let action = performNavigationTest(withHTML: .simpleLink, elementId: "link") else {
             XCTFail("No navigation action captured")
             return
         }
@@ -65,14 +38,4 @@ final class LinkActivatedWebViewPolicyDecisionHandlerTests: XCTestCase {
 
         XCTAssertEqual(result, WebViewPolicyManager.Decision.cancel)
     }
-}
-
-extension String {
-    static var linkActivated = """
-        <html>
-          <body>
-            <a id="link" href="https://example.com">Example Link</a>
-          </body>
-        </html>
-        """
 }

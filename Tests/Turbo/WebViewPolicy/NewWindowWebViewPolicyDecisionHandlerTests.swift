@@ -2,38 +2,16 @@
 @preconcurrency import WebKit
 import XCTest
 
-final class NewWindowWebViewPolicyDecisionHandlerTests: XCTestCase {
-    var webView: WKWebView!
-    var navigationManager: ClickSimulatorNavigationManager!
+final class NewWindowWebViewPolicyDecisionHandlerTests: BaseWebViewPolicyDecisionHandlerTests {
     var policyHandler: NewWindowWebViewPolicyDecisionHandler!
-    var navigatorSpy: NavigationSpy!
-    let navigatorConfiguration = Navigator.Configuration(
-        name: "test",
-        startLocation: URL(string: "https://my.app.com")!
-    )
-
+    
     override func setUp() {
-        navigatorSpy = NavigationSpy(configuration: navigatorConfiguration)
+        super.setUp()
         policyHandler = NewWindowWebViewPolicyDecisionHandler()
-        webView = WKWebView()
-        navigationManager = ClickSimulatorNavigationManager()
-        navigationManager.expectation = expectation(description: "Waiting for navigation action triggered by JS click")
-        webView.navigationDelegate = navigationManager
-    }
-
-    override func tearDown() {
-        webView.navigationDelegate = nil
-        webView = nil
-        navigationManager = nil
     }
 
     func test_target_blank_matches() {
-        navigationManager.simulateLinkClickElementId = "externalLink"
-        webView.loadHTMLString(.targetBlank, baseURL: nil)
-
-        waitForExpectations(timeout: 10)
-
-        guard let action = navigationManager.capturedNavigationAction else {
+        guard let action = performNavigationTest(withHTML: .targetBlank, elementId: "externalLink") else {
             XCTFail("No navigation action captured")
             return
         }
@@ -47,12 +25,7 @@ final class NewWindowWebViewPolicyDecisionHandlerTests: XCTestCase {
     }
 
     func test_handling_matching_result_cancels_web_navigation_and_routes_internally() {
-        navigationManager.simulateLinkClickElementId = "externalLink"
-        webView.loadHTMLString(.targetBlank, baseURL: nil)
-
-        waitForExpectations(timeout: 10)
-
-        guard let action = navigationManager.capturedNavigationAction else {
+        guard let action = performNavigationTest(withHTML: .targetBlank, elementId: "externalLink") else {
             XCTFail("No navigation action captured")
             return
         }
@@ -67,14 +40,4 @@ final class NewWindowWebViewPolicyDecisionHandlerTests: XCTestCase {
         XCTAssertTrue(navigatorSpy.routeWasCalled)
         XCTAssertEqual(action.request.url, navigatorSpy.routeURL)
     }
-}
-
-extension String {
-    static var targetBlank = """
-        <html>
-          <body>
-            <a id="externalLink" href="https://example.com" target="_blank">External Link</a>
-          </body>
-        </html>
-        """
 }

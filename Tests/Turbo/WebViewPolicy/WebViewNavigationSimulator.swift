@@ -2,12 +2,19 @@ import Foundation
 import XCTest
 @preconcurrency import WebKit
 
-class ClickSimulatorNavigationManager: NSObject, WKNavigationDelegate {
+class WebViewNavigationSimulator: NSObject, WKNavigationDelegate {
     var expectation: XCTestExpectation?
     var capturedNavigationAction: WKNavigationAction?
     var simulateLinkClickElementId: String?
 
     private var didSimulateLinkClick: Bool = false
+    let webView: WKWebView
+
+    override init() {
+        webView = WKWebView()
+        super.init()
+        webView.navigationDelegate = self
+    }
 
     // MARK: WKNavigationDelegate
 
@@ -16,9 +23,11 @@ class ClickSimulatorNavigationManager: NSObject, WKNavigationDelegate {
         guard let simulateLinkClickElementId else { return }
         didSimulateLinkClick = true
         let js = "document.getElementById('\(simulateLinkClickElementId)').click();"
-        webView.evaluateJavaScript(js) { (_, error) in
-            if let error = error {
+        webView.evaluateJavaScript(js) { [weak self] (_, error) in
+            if let error {
                 XCTFail("Error evaluating JS: \(error)")
+                self?.capturedNavigationAction = nil
+                self?.expectation?.fulfill()
             }
         }
     }
