@@ -1,5 +1,4 @@
 @testable import HotwireNative
-import WebKit
 import XCTest
 
 final class BrowserRouteDecisionHandlerTest: XCTestCase {
