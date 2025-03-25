@@ -2,16 +2,19 @@
 @preconcurrency import WebKit
 import XCTest
 
+@MainActor
 final class NewWindowWebViewPolicyDecisionHandlerTests: BaseWebViewPolicyDecisionHandlerTests {
     var policyHandler: NewWindowWebViewPolicyDecisionHandler!
-    
-    override func setUp() {
-        super.setUp()
+
+    override func setUp() async throws {
+        try await super.setUp()
         policyHandler = NewWindowWebViewPolicyDecisionHandler()
     }
 
-    func test_target_blank_matches() {
-        guard let action = performNavigationTest(withHTML: .targetBlank, elementId: "externalLink") else {
+    func test_target_blank_matches() async throws {
+        guard let action = try await webNavigationSimulator.simulateNavigation(
+            withHTML: .targetBlank,
+            simulateLinkClickElementId: "externalLink") else {
             XCTFail("No navigation action captured")
             return
         }
@@ -24,8 +27,10 @@ final class NewWindowWebViewPolicyDecisionHandlerTests: BaseWebViewPolicyDecisio
         XCTAssertTrue(result)
     }
 
-    func test_handling_matching_result_cancels_web_navigation_and_routes_internally() {
-        guard let action = performNavigationTest(withHTML: .targetBlank, elementId: "externalLink") else {
+    func test_handling_matching_result_cancels_web_navigation_and_routes_internally() async throws {
+        guard let action = try await webNavigationSimulator.simulateNavigation(
+            withHTML: .targetBlank,
+            simulateLinkClickElementId: "externalLink") else {
             XCTFail("No navigation action captured")
             return
         }

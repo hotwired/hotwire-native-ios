@@ -2,6 +2,7 @@
 import XCTest
 import WebKit
 
+@MainActor
 final class WebViewPolicyManagerTests: XCTestCase {
     let navigatorConfiguration = Navigator.Configuration(
         name: "test",
@@ -11,24 +12,32 @@ final class WebViewPolicyManagerTests: XCTestCase {
     var policyManager: WebViewPolicyManager!
     var webNavigationSimulator: WebViewNavigationSimulator!
     var navigator: Navigator!
-    var navigationAction: WKNavigationAction?
+    static var navigationAction: WKNavigationAction!
 
-    override func setUp() {
+    override func setUp() async throws {
         navigator = Navigator(configuration: navigatorConfiguration)
 
-        webNavigationSimulator = WebViewNavigationSimulator()
-        webNavigationSimulator.expectation = expectation(description: "Waiting for navigation action triggered by JS click")
+        // We can't instantiate a `WKNavigationAction`, so we load HTML and retrieve one.
+        // In these tests, the navigation action is not actually evaluated, but we need it as an argument
+        // when calling `decidePolicy` on the handlers.
+        if Self.navigationAction == nil {
+            webNavigationSimulator = WebViewNavigationSimulator()
+            Self.navigationAction = try await webNavigationSimulator.simulateNavigation(
+                withHTML: .simpleLink,
+                simulateLinkClickElementId: "link"
+            )!
+        }
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         webNavigationSimulator = nil
     }
 
-    func test_no_handlers_allows_navigation() {
+    func test_no_handlers_allows_navigation() async throws {
         policyManager = WebViewPolicyManager(policyDecisionHandlers: [])
 
         let result = policyManager.decidePolicy(
-            for: getNavigationAction(),
+            for: Self.navigationAction,
             configuration: navigatorConfiguration,
             navigator: navigator
         )
@@ -36,7 +45,7 @@ final class WebViewPolicyManagerTests: XCTestCase {
         XCTAssertEqual(result, WebViewPolicyManager.Decision.allow)
     }
 
-    func test_no_matching_handlers_allows_navigation() {
+    func test_no_matching_handlers_allows_navigation() async throws {
         let noMatchSpy1 = NoMatchWebViewPolicyDecisionHandler()
         let noMatchSpy2 = NoMatchWebViewPolicyDecisionHandler()
 
@@ -48,7 +57,7 @@ final class WebViewPolicyManagerTests: XCTestCase {
         )
 
         let result = policyManager.decidePolicy(
-            for: getNavigationAction(),
+            for: Self.navigationAction,
             configuration: navigatorConfiguration,
             navigator: navigator
         )
@@ -60,7 +69,7 @@ final class WebViewPolicyManagerTests: XCTestCase {
         XCTAssertEqual(result, WebViewPolicyManager.Decision.allow)
     }
 
-    func test_only_first_matching_handler_is_executed() {
+    func test_only_first_matching_handler_is_executed() async throws {
         let noMatchSpy = NoMatchWebViewPolicyDecisionHandler()
         let matchSpy1 = MatchWebViewPolicyDecisionHandler()
         let matchSpy2 = MatchWebViewPolicyDecisionHandler()
@@ -74,7 +83,7 @@ final class WebViewPolicyManagerTests: XCTestCase {
         )
 
         let result = policyManager.decidePolicy(
-            for: getNavigationAction(),
+            for: Self.navigationAction,
             configuration: navigatorConfiguration,
             navigator: navigator
         )
@@ -86,13 +95,6 @@ final class WebViewPolicyManagerTests: XCTestCase {
         XCTAssertFalse(matchSpy2.matchesWasCalled)
         XCTAssertFalse(matchSpy2.handleWasCalled)
         XCTAssertEqual(result, WebViewPolicyManager.Decision.cancel)
-    }
-
-    func getNavigationAction() -> WKNavigationAction {
-        webNavigationSimulator.simulateLinkClickElementId = "link"
-        webNavigationSimulator.webView.loadHTMLString(.simpleLink, baseURL: nil)
-        waitForExpectations(timeout: 5)
-        return webNavigationSimulator.capturedNavigationAction!
     }
 }
 
