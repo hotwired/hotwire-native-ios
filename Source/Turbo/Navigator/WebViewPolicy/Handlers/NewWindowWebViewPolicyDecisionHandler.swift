@@ -1,6 +1,8 @@
 import Foundation
 import WebKit
 
+/// A web view policy decision handler that intercepts navigation actions requesting a new window.
+/// When such an action is detected, it routes the URL via the provided navigator and cancels the default navigation action.
 struct NewWindowWebViewPolicyDecisionHandler: WebViewPolicyDecisionHandler {
     let name: String = "new-window-policy"
 
