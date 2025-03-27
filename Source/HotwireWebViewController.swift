@@ -48,10 +48,12 @@ open class HotwireWebViewController: VisitableViewController, BridgeDestination 
     // MARK: Visitable
 
     override open func visitableDidActivateWebView(_ webView: WKWebView) {
+        super.visitableDidActivateWebView(webView)
         bridgeDelegate.webViewDidBecomeActive(webView)
     }
 
     override open func visitableDidDeactivateWebView() {
+        super.visitableDidDeactivateWebView()
         bridgeDelegate.webViewDidBecomeDeactivated()
     }
 

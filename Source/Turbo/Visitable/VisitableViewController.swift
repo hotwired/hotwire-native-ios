@@ -3,15 +3,23 @@ import WebKit
 
 open class VisitableViewController: UIViewController, Visitable {
     open weak var visitableDelegate: VisitableDelegate?
-    open var visitableURL: URL!
     open var appearReason: AppearReason = .pushedOntoNavigationStack
     open var disappearReason: DisappearReason = .poppedFromNavigationStack
-
-    public convenience init(url: URL) {
-        self.init()
-        self.visitableURL = url
+    public let visitableURL: URL
+    public var currentVisitableURL: URL {
+        resolveVisitableLocation()
     }
 
+    public init(url: URL) {
+        visitableURL = url
+        visitableLocationState = .unresolved(url)
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required public init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: View Lifecycle
 
     override open func viewDidLoad() {
@@ -48,6 +56,7 @@ open class VisitableViewController: UIViewController, Visitable {
 
     open func visitableDidRender() {
         title = visitableView.webView?.title
+        visitableLocationState = .resolved
     }
 
     open func showVisitableActivityIndicator() {
@@ -62,9 +71,22 @@ open class VisitableViewController: UIViewController, Visitable {
         // No-op
     }
 
+    open func visitableWillDeactivateWebView() {
+        visitableLocationState = .deactivated(visitableView.webView?.url ?? visitableURL)
+    }
+
     open func visitableDidDeactivateWebView() {
         // No-op
     }
+
+    // MARK: Private
+    enum VisitableLocationState {
+        case resolved
+        case unresolved(URL)
+        case deactivated(URL)
+    }
+
+    private var visitableLocationState: VisitableLocationState
 
     // MARK: Visitable View
 
@@ -82,6 +104,17 @@ open class VisitableViewController: UIViewController, Visitable {
             visitableView.topAnchor.constraint(equalTo: view.topAnchor),
             visitableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+    }
+
+    private func resolveVisitableLocation() -> URL {
+        switch visitableLocationState {
+        case .resolved:
+            return visitableView.webView?.url ?? visitableURL
+        case .unresolved(let url):
+            return url
+        case .deactivated(let url):
+            return url
+        }
     }
 }
 
