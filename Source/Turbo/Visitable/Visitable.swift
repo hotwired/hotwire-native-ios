@@ -13,7 +13,7 @@ public protocol VisitableDelegate: AnyObject {
 public protocol Visitable: AnyObject {
     var visitableViewController: UIViewController { get }
     var visitableDelegate: VisitableDelegate? { get set }
-    var visitableView: VisitableView! { get }
+    var visitableView: VisitableView { get }
     var visitableURL: URL { get }
     var currentVisitableURL: URL { get }
 

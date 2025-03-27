@@ -13,7 +13,7 @@ class TestVisitable: UIViewController, Visitable {
     // MARK: - Visitable
 
     var visitableDelegate: VisitableDelegate?
-    var visitableView: VisitableView!
+    var visitableView: VisitableView
     var visitableURL: URL
     var currentVisitableURL: URL
 
