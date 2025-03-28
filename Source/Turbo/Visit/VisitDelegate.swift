@@ -15,6 +15,7 @@ protocol VisitDelegate: AnyObject {
     func visitRequestDidStart(_ visit: Visit)
     func visit(_ visit: Visit, requestDidFailWithError error: Error)
     func visitRequestDidFinish(_ visit: Visit)
-    
+    func visitDidProposeVisitToLocation(_ location: URL)
+
     func visit(_ visit: Visit, didReceiveAuthenticationChallenge challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
 }

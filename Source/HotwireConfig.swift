@@ -97,6 +97,22 @@ public struct HotwireConfig {
 
     private let sharedProcessPool = WKProcessPool()
 
+    var router = Router(
+        decisionHandlers: [
+            AppNavigationRouteDecisionHandler(),
+            BrowserRouteDecisionHandler()
+        ]
+    )
+
+    var webViewPolicyManager = WebViewPolicyManager(
+        policyDecisionHandlers: [
+            ReloadWebViewPolicyDecisionHandler(),
+            NewWindowWebViewPolicyDecisionHandler(),
+            ExternalNavigationWebViewPolicyDecisionHandler(),
+            LinkActivatedWebViewPolicyDecisionHandler()
+        ]
+    )
+
     // A method (not a property) because we need a new instance for each web view.
     private func makeWebViewConfiguration() -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
