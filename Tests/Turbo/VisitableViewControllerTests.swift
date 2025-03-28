@@ -14,7 +14,7 @@ class VisitableViewControllerTests: XCTestCase {
     }
 
     func test_visitableURL_and_currentURL_match_on_init() {
-        XCTAssertEqual(viewController.visitableURL, originalURL)
+        XCTAssertEqual(viewController.initialVisitableURL, originalURL)
         XCTAssertEqual(viewController.currentVisitableURL, originalURL)
     }
 
@@ -22,13 +22,13 @@ class VisitableViewControllerTests: XCTestCase {
         viewController.visitableView.activateWebView(webView, forVisitable: viewController)
         viewController.visitableDidRender()
 
-        XCTAssertEqual(viewController.visitableURL, originalURL)
+        XCTAssertEqual(viewController.initialVisitableURL, originalURL)
         XCTAssertEqual(viewController.currentVisitableURL, originalURL)
 
         let overriddenURL = URL(string: "https://example.com?tab=a")!
         webView.overriddenURL = overriddenURL
 
-        XCTAssertEqual(viewController.visitableURL, originalURL)
+        XCTAssertEqual(viewController.initialVisitableURL, originalURL)
         XCTAssertEqual(viewController.currentVisitableURL, overriddenURL)
     }
 
@@ -36,7 +36,7 @@ class VisitableViewControllerTests: XCTestCase {
         viewController.visitableView.activateWebView(webView, forVisitable: viewController)
         viewController.visitableDidRender()
 
-        XCTAssertEqual(viewController.visitableURL, originalURL)
+        XCTAssertEqual(viewController.initialVisitableURL, originalURL)
         XCTAssertEqual(viewController.currentVisitableURL, originalURL)
 
         let overriddenURL = URL(string: "https://example.com?tab=a")!
@@ -44,7 +44,7 @@ class VisitableViewControllerTests: XCTestCase {
         viewController.visitableWillDeactivateWebView()
         viewController.visitableDidDeactivateWebView()
 
-        XCTAssertEqual(viewController.visitableURL, originalURL)
+        XCTAssertEqual(viewController.initialVisitableURL, originalURL)
         XCTAssertEqual(viewController.currentVisitableURL, overriddenURL)
     }
 }

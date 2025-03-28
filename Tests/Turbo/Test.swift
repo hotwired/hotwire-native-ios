@@ -14,11 +14,11 @@ class TestVisitable: UIViewController, Visitable {
 
     var visitableDelegate: VisitableDelegate?
     var visitableView: VisitableView
-    var visitableURL: URL
+    var initialVisitableURL: URL
     var currentVisitableURL: URL
 
     init(url: URL) {
-        self.visitableURL = url
+        self.initialVisitableURL = url
         self.visitableView = VisitableView(frame: .zero)
         self.currentVisitableURL = url
         super.init(nibName: nil, bundle: nil)

@@ -5,13 +5,13 @@ open class VisitableViewController: UIViewController, Visitable {
     open weak var visitableDelegate: VisitableDelegate?
     open var appearReason: AppearReason = .pushedOntoNavigationStack
     open var disappearReason: DisappearReason = .poppedFromNavigationStack
-    public let visitableURL: URL
+    public let initialVisitableURL: URL
     public var currentVisitableURL: URL {
         resolveVisitableLocation()
     }
 
     public init(url: URL) {
-        visitableURL = url
+        initialVisitableURL = url
         visitableLocationState = .initialized(url)
         super.init(nibName: nil, bundle: nil)
     }
@@ -72,7 +72,7 @@ open class VisitableViewController: UIViewController, Visitable {
     }
 
     open func visitableWillDeactivateWebView() {
-        visitableLocationState = .deactivated(visitableView.webView?.url ?? visitableURL)
+        visitableLocationState = .deactivated(visitableView.webView?.url ?? initialVisitableURL)
     }
 
     open func visitableDidDeactivateWebView() {
@@ -109,7 +109,7 @@ open class VisitableViewController: UIViewController, Visitable {
     private func resolveVisitableLocation() -> URL {
         switch visitableLocationState {
         case .resolved:
-            return visitableView.webView?.url ?? visitableURL
+            return visitableView.webView?.url ?? initialVisitableURL
         case .initialized(let url):
             return url
         case .deactivated(let url):
