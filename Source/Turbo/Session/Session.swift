@@ -272,6 +272,7 @@ extension Session: VisitableDelegate {
         // Navigating backward from a web view screen to a web view screen.
         if visitable !== topmostVisit.visitable {
             visit(visitable, action: .restore)
+            completeNavigationForCurrentVisit()
             return
         }
         
@@ -283,6 +284,7 @@ extension Session: VisitableDelegate {
         // Navigating backward from a native to a web view screen.
         if visitable === previousVisit?.visitable {
             visit(visitable, action: .restore)
+            completeNavigationForCurrentVisit()
         }
     }
 
