@@ -12,7 +12,7 @@ open class VisitableViewController: UIViewController, Visitable {
 
     public init(url: URL) {
         visitableURL = url
-        visitableLocationState = .unresolved(url)
+        visitableLocationState = .initialized(url)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -82,7 +82,7 @@ open class VisitableViewController: UIViewController, Visitable {
     // MARK: Private
     enum VisitableLocationState {
         case resolved
-        case unresolved(URL)
+        case initialized(URL)
         case deactivated(URL)
     }
 
@@ -110,7 +110,7 @@ open class VisitableViewController: UIViewController, Visitable {
         switch visitableLocationState {
         case .resolved:
             return visitableView.webView?.url ?? visitableURL
-        case .unresolved(let url):
+        case .initialized(let url):
             return url
         case .deactivated(let url):
             return url
