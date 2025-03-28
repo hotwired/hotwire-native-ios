@@ -225,6 +225,7 @@ extension Navigator: SessionDelegate {
 
         WKWebsiteDataStore.default().httpCookieStore.getAllCookies { cookies in
             HTTPCookieStorage.shared.setCookies(cookies, for: url, mainDocumentURL: url)
+            self.delegate.requestDidFinish(at: url)
         }
     }
 
