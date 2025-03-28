@@ -72,4 +72,8 @@ public extension PathProperties {
     var animated: Bool {
         self["animated"] as? Bool ?? true
     }
+
+    internal var historicalLocation: Bool {
+        self["historical_location"] as? Bool ?? false
+    }
 }
