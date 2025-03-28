@@ -5,7 +5,7 @@ import WebKit
 /// Use `Hotwire.registerBridgeComponents(_:)` to register bridge components.
 open class HotwireWebViewController: VisitableViewController, BridgeDestination {
     public lazy var bridgeDelegate = BridgeDelegate(
-        location: visitableURL.absoluteString,
+        location: initialVisitableURL.absoluteString,
         destination: self,
         componentTypes: Hotwire.bridgeComponentTypes
     )
@@ -48,10 +48,12 @@ open class HotwireWebViewController: VisitableViewController, BridgeDestination 
     // MARK: Visitable
 
     override open func visitableDidActivateWebView(_ webView: WKWebView) {
+        super.visitableDidActivateWebView(webView)
         bridgeDelegate.webViewDidBecomeActive(webView)
     }
 
     override open func visitableDidDeactivateWebView() {
+        super.visitableDidDeactivateWebView()
         bridgeDelegate.webViewDidBecomeDeactivated()
     }
 
