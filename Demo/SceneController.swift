@@ -40,7 +40,7 @@ extension SceneController: NavigatorDelegate {
             )
 
         default:
-            return .acceptCustom(HotwireWebViewController(url: proposal.url))
+            return .accept
         }
     }
 
