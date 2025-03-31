@@ -52,7 +52,7 @@ open class HotwireTabBarController: UITabBarController {
         navigator.rootViewController.tabBarItem = UITabBarItem(
             title: tab.title,
             image: tab.image,
-            selectedImage: nil
+            selectedImage: tab.selectedImage
         )
 
         navigatorsByTab[tab] = navigator
@@ -66,14 +66,21 @@ open class HotwireTabBarController: UITabBarController {
 public struct HotwireTab: Hashable {
     /// The title of the tab.
     public let title: String
-    /// The image used for the tab's tab bar item.
+    /// The image the tab item uses.
     public let image: UIImage
+    ///The image the tab item uses when the user selects it.
+    ///If you don’t provide `selectedImage`, the `image` is used for both selection states.
+    public let selectedImage: UIImage?
     /// The URL associated with the tab, used for routing.
     public let url: URL
 
-    public init(title: String, image: UIImage, url: URL) {
+    public init(title: String,
+                image: UIImage,
+                selectedImage: UIImage?,
+                url: URL) {
         self.title = title
         self.image = image
+        self.selectedImage = selectedImage
         self.url = url
     }
 }
