@@ -1,16 +1,16 @@
 @testable import HotwireNative
 import XCTest
 
-final class BrowserRouteDecisionHandlerTest: XCTestCase {
+final class SystemNavigationRouteDecisionHandlerTests: XCTestCase {
     let navigatorConfiguration = Navigator.Configuration(
         name: "test",
         startLocation: URL(string: "https://my.app.com")!
     )
     var navigator: Navigator!
-    var route: BrowserRouteDecisionHandler!
+    var route: SystemNavigationRouteDecisionHandler!
 
     override func setUp() {
-        route = BrowserRouteDecisionHandler()
+        route = SystemNavigationRouteDecisionHandler()
         navigator = Navigator(configuration: navigatorConfiguration)
     }
 
@@ -39,5 +39,19 @@ final class BrowserRouteDecisionHandlerTest: XCTestCase {
         let result = route.matches(location: url, configuration: navigatorConfiguration)
 
         XCTAssertFalse(result)
+    }
+
+    func test_non_http_urls_match() {
+        let url = URL(string: "file:///path/to/file")!
+        let result = route.matches(location: url, configuration: navigatorConfiguration)
+
+        XCTAssertTrue(result)
+    }
+
+    func test_sms_urls_match() {
+        let url = URL(string: "sms:1-408-555-1212")!
+        let result = route.matches(location: url, configuration: navigatorConfiguration)
+
+        XCTAssertTrue(result)
     }
 }

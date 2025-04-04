@@ -100,7 +100,7 @@ public struct HotwireConfig {
     var router = Router(
         decisionHandlers: [
             AppNavigationRouteDecisionHandler(),
-            BrowserRouteDecisionHandler()
+            SystemNavigationRouteDecisionHandler()
         ]
     )
 
