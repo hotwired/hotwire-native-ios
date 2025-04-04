@@ -3,11 +3,13 @@ import SafariServices
 
 /// Opens external URLs via an embedded `SafariViewController` so the user stays in-app.
 /// NOTE: This will silently fail for a URL that's not `http` or `https`.
-final class SafariViewControllerRouteDecisionHandler: RouteDecisionHandler {
-    let name: String = "safari"
+public final class SafariViewControllerRouteDecisionHandler: RouteDecisionHandler {
+    public let name: String = "safari"
 
-    func matches(location: URL,
-                 configuration: Navigator.Configuration) -> Bool {
+    public init() {}
+
+    public func matches(location: URL,
+                        configuration: Navigator.Configuration) -> Bool {
         if #available(iOS 16, *) {
             return configuration.startLocation.host() != location.host()
         }
@@ -15,9 +17,9 @@ final class SafariViewControllerRouteDecisionHandler: RouteDecisionHandler {
         return configuration.startLocation.host != location.host
     }
 
-    func handle(location: URL,
-                configuration: Navigator.Configuration,
-                navigator: Navigator) -> Router.Decision {
+    public func handle(location: URL,
+                       configuration: Navigator.Configuration,
+                       navigator: Navigator) -> Router.Decision {
         open(externalURL: location,
              viewController: navigator.activeNavigationController)
 

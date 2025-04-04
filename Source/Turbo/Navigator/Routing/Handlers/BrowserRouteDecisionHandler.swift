@@ -2,11 +2,13 @@ import Foundation
 import UIKit
 
 /// Opens external URLs via `openURL(_:options:completionHandler)`.
-final class BrowserRouteDecisionHandler: RouteDecisionHandler {
-    let name: String = "browser"
+public final class BrowserRouteDecisionHandler: RouteDecisionHandler {
+    public let name: String = "browser"
 
-    func matches(location: URL,
-                 configuration: Navigator.Configuration) -> Bool {
+    public init() {}
+
+    public func matches(location: URL,
+                        configuration: Navigator.Configuration) -> Bool {
         if #available(iOS 16, *) {
             return configuration.startLocation.host() != location.host()
         }
@@ -14,9 +16,9 @@ final class BrowserRouteDecisionHandler: RouteDecisionHandler {
         return configuration.startLocation.host != location.host
     }
 
-    func handle(location: URL,
-                configuration: Navigator.Configuration,
-                navigator: Navigator) -> Router.Decision {
+    public func handle(location: URL,
+                       configuration: Navigator.Configuration,
+                       navigator: Navigator) -> Router.Decision {
         UIApplication.shared.open(location)
 
         return .cancel
