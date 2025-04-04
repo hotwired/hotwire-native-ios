@@ -2,7 +2,6 @@ import Foundation
 import SafariServices
 
 /// Opens external URLs via an embedded `SafariViewController` so the user stays in-app.
-/// NOTE: This will silently fail for a URL that's not `http` or `https`.
 public final class SafariViewControllerRouteDecisionHandler: RouteDecisionHandler {
     public let name: String = "safari"
 
@@ -10,6 +9,11 @@ public final class SafariViewControllerRouteDecisionHandler: RouteDecisionHandle
 
     public func matches(location: URL,
                         configuration: Navigator.Configuration) -> Bool {
+        /// SFSafariViewController will crash if we pass along a URL that's not valid.
+        guard location.scheme == "http" || location.scheme == "https" else {
+            return false
+        }
+
         if #available(iOS 16, *) {
             return configuration.startLocation.host() != location.host()
         }
@@ -28,10 +32,6 @@ public final class SafariViewControllerRouteDecisionHandler: RouteDecisionHandle
 
     func open(externalURL: URL,
               viewController: UIViewController) {
-
-        /// SFSafariViewController will crash if we pass along a URL that's not valid.
-        guard externalURL.scheme == "http" || externalURL.scheme == "https" else { return }
-
         let safariViewController = SFSafariViewController(url: externalURL)
         safariViewController.modalPresentationStyle = .pageSheet
         if #available(iOS 15.0, *) {

@@ -7,10 +7,10 @@ final class SafariViewControllerRouteDecisionHandlerTests: XCTestCase {
         startLocation: URL(string: "https://my.app.com")!
     )
     var navigator: Navigator!
-    var route: BrowserRouteDecisionHandler!
+    var route: SafariViewControllerRouteDecisionHandler!
 
     override func setUp() {
-        route = BrowserRouteDecisionHandler()
+        route = SafariViewControllerRouteDecisionHandler()
         navigator = Navigator(configuration: navigatorConfiguration)
     }
 
@@ -38,6 +38,13 @@ final class SafariViewControllerRouteDecisionHandlerTests: XCTestCase {
         let url = URL(string: "https://my.app.com/page")!
         let result = route.matches(location: url, configuration: navigatorConfiguration)
 
+        XCTAssertFalse(result)
+    }
+
+    func test_non_http_urls_do_not_match() {
+        let url = URL(string: "file:///path/to/file")!
+        let result = route.matches(location: url, configuration: navigatorConfiguration)
+        
         XCTAssertFalse(result)
     }
 }
