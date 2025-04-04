@@ -6,18 +6,20 @@ import WebKit
 ///
 /// When such an action is detected, the handler cancels the navigation,
 /// preventing the web view from following the link.
-struct LinkActivatedWebViewPolicyDecisionHandler: WebViewPolicyDecisionHandler {
-    let name: String = "link-activated-policy"
+public struct LinkActivatedWebViewPolicyDecisionHandler: WebViewPolicyDecisionHandler {
+    public let name: String = "link-activated-policy"
 
-    func matches(navigationAction: WKNavigationAction,
-                 configuration: Navigator.Configuration) -> Bool {
+    public init() {}
+
+    public func matches(navigationAction: WKNavigationAction,
+                        configuration: Navigator.Configuration) -> Bool {
         navigationAction.navigationType == .linkActivated &&
         navigationAction.isMainFrameNavigation
     }
 
-    func handle(navigationAction: WKNavigationAction,
-                configuration: Navigator.Configuration,
-                navigator: Navigator) -> WebViewPolicyManager.Decision {
+    public func handle(navigationAction: WKNavigationAction,
+                       configuration: Navigator.Configuration,
+                       navigator: Navigator) -> WebViewPolicyManager.Decision {
         return .cancel
     }
 }
