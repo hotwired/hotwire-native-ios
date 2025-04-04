@@ -100,6 +100,7 @@ public struct HotwireConfig {
     var router = Router(
         decisionHandlers: [
             AppNavigationRouteDecisionHandler(),
+            SafariViewControllerRouteDecisionHandler(),
             SystemNavigationRouteDecisionHandler()
         ]
     )
