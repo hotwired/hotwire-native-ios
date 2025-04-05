@@ -159,7 +159,7 @@ public class Navigator {
     private var appInBackground = false
 
     private func controller(for proposal: VisitProposal) -> UIViewController? {
-        switch delegate.handle(proposal: proposal) {
+        switch delegate.handle(proposal: proposal, from: self) {
         case .accept:
             Hotwire.config.defaultViewController(proposal.url)
         case .acceptCustom(let customViewController):
