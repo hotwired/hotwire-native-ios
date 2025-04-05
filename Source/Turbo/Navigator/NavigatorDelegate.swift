@@ -12,8 +12,9 @@ public protocol NavigatorDelegate: AnyObject {
     ///    - term `reject`: No changes to navigation occur.
     ///
     /// - Parameter proposal: `VisitProposal` navigation destination
+    /// - Parameter from: the `Navigator` receiving the proposal
     /// - Returns:`ProposalResult` - how to react to the visit proposal
-    func handle(proposal: VisitProposal) -> ProposalResult
+    func handle(proposal: VisitProposal, from: Navigator) -> ProposalResult
 
     func handle(externalURL: URL) -> ExternalURLNavigationAction
 
@@ -36,7 +37,7 @@ public protocol NavigatorDelegate: AnyObject {
 }
 
 public extension NavigatorDelegate {
-    func handle(proposal: VisitProposal) -> ProposalResult {
+    func handle(proposal: VisitProposal, from: Navigator) -> ProposalResult {
         .accept
     }
 
