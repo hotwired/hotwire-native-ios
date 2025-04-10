@@ -4,7 +4,7 @@ import UIKit
 ///
 /// This controller loads tabs defined by `HotwireTab` and configures each one with its own `Navigator`.
 /// The currently selected tab's navigator is exposed via the `activeNavigator` property.
-open class HotwireTabBarController: UITabBarController {
+open class HotwireTabBarController: UITabBarController, Router {
     /// The active navigator corresponding to the currently selected tab.
     ///
     /// - Returns: A `Navigator` instance for the currently selected tab.
@@ -30,6 +30,16 @@ open class HotwireTabBarController: UITabBarController {
         viewControllers = tabs.map {
             setupViewControllerForTab($0, navigatorDelegate: navigatorDelegate)
         }
+    }
+
+    // MARK: Router
+
+    open func route(_ url: URL) {
+        activeNavigator.route(url)
+    }
+
+    open func route(_ proposal: VisitProposal) {
+        activeNavigator.route(proposal)
     }
 
     // MARK: - Private
