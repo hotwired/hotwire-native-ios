@@ -40,6 +40,9 @@ open class HotwireTabBarController: UITabBarController, Router {
         viewControllers = tabs.map {
             setupViewControllerForTab($0, navigatorDelegate: navigatorDelegate)
         }
+        navigatorsByTab.forEach { tab, navigator in
+            navigator.route(tab.url)
+        }
     }
 
     // MARK: Router
@@ -77,7 +80,6 @@ open class HotwireTabBarController: UITabBarController, Router {
         )
 
         navigatorsByTab[tab] = navigator
-        navigator.route(tab.url)
 
         return navigator.rootViewController
     }
