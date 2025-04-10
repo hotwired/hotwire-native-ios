@@ -76,7 +76,7 @@ public struct HotwireTab: Hashable {
 
     public init(title: String,
                 image: UIImage,
-                selectedImage: UIImage?,
+                selectedImage: UIImage? = nil,
                 url: URL) {
         self.title = title
         self.image = image
