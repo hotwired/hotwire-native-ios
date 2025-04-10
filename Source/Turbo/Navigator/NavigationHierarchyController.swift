@@ -63,7 +63,7 @@ class NavigationHierarchyController {
     }
 
     func pop(animated: Bool) {
-        if navigationController.presentedViewController != nil {
+        if navigationController.presentedViewController != nil && !modalNavigationController.isBeingDismissed {
             if modalNavigationController.viewControllers.count == 1 {
                 navigationController.dismiss(animated: animated)
             } else {
