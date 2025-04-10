@@ -459,7 +459,7 @@ private class EmptyNavigationDelegate: NavigationHierarchyControllerDelegate {
 
 // MARK: - VisitProposal extension
 
-private extension VisitProposal {
+extension VisitProposal {
     init(path: String = "",
          action: VisitAction = .advance,
          context: Navigation.Context = .default,
@@ -471,7 +471,7 @@ private extension VisitProposal {
             "context": context.rawValue,
             "presentation": presentation.rawValue
         ]
-        let properties = defaultProperties.merging(additionalProperties) { (current, _) in current }
+        let properties = defaultProperties.merging(additionalProperties) { (_, new) in new }
 
         self.init(url: url, options: options, properties: properties)
     }
