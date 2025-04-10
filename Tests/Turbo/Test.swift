@@ -8,19 +8,16 @@ class TestVisitable: UIViewController, Visitable {
     var visitableDidRenderCalled = false
     var visitableDidActivateWebViewWasCalled = false
     var visitableDidDeactivateWebViewWasCalled = false
-    var visitableWillDeactivateWebViewWasCalled = false
 
     // MARK: - Visitable
 
     var visitableDelegate: VisitableDelegate?
-    var visitableView: VisitableView
-    var initialVisitableURL: URL
-    var currentVisitableURL: URL
+    var visitableView: VisitableView!
+    var visitableURL: URL!
 
     init(url: URL) {
-        self.initialVisitableURL = url
+        self.visitableURL = url
         self.visitableView = VisitableView(frame: .zero)
-        self.currentVisitableURL = url
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -31,10 +28,6 @@ class TestVisitable: UIViewController, Visitable {
 
     func visitableDidRender() {
         visitableDidRenderCalled = true
-    }
-
-    func visitableWillDeactivateWebView() {
-        visitableWillDeactivateWebViewWasCalled = true
     }
 
     func visitableDidActivateWebView(_ webView: WKWebView) {
@@ -93,8 +86,6 @@ class TestSessionDelegate: NSObject, SessionDelegate {
 
 class TestVisitDelegate {
     var methodsCalled: Set<String> = []
-    var visitDidStartWasCalled = false
-    var visitDidStartVisit: Visit?
 
     func didCall(_ method: String) -> Bool {
         methodsCalled.contains(method)
@@ -116,8 +107,6 @@ extension TestVisitDelegate: VisitDelegate {
 
     func visitDidStart(_ visit: Visit) {
         record()
-        visitDidStartWasCalled = true
-        visitDidStartVisit = visit
     }
 
     func visitDidComplete(_ visit: Visit) {

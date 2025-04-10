@@ -23,7 +23,7 @@ class Visit: NSObject {
 
     init(visitable: Visitable, options: VisitOptions, bridge: WebViewBridge) {
         self.visitable = visitable
-        self.location = visitable.currentVisitableURL
+        self.location = visitable.visitableURL!
         self.options = options
         self.bridge = bridge
         self.state = .initialized
