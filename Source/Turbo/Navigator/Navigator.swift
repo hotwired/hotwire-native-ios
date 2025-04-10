@@ -187,7 +187,7 @@ extension Navigator: SessionDelegate {
     }
 
     public func sessionDidStartFormSubmission(_ session: Session) {
-        if let url = session.topmostVisitable?.initialVisitableURL {
+        if let url = session.topmostVisitable?.visitableURL {
             delegate.formSubmissionDidStart(to: url)
         }
     }
@@ -196,7 +196,7 @@ extension Navigator: SessionDelegate {
         if session == modalSession {
             self.session.markSnapshotCacheAsStale()
         }
-        if let url = session.topmostVisitable?.initialVisitableURL {
+        if let url = session.topmostVisitable?.visitableURL {
             delegate.formSubmissionDidFinish(at: url)
         }
     }
@@ -221,7 +221,7 @@ extension Navigator: SessionDelegate {
     }
 
     public func sessionDidFinishRequest(_ session: Session) {
-        guard let url = session.activeVisitable?.initialVisitableURL else { return }
+        guard let url = session.activeVisitable?.visitableURL else { return }
 
         WKWebsiteDataStore.default().httpCookieStore.getAllCookies { cookies in
             HTTPCookieStorage.shared.setCookies(cookies, for: url, mainDocumentURL: url)
@@ -312,7 +312,7 @@ extension Navigator {
             return
         }
 
-        guard let _ = session.topmostVisitable?.initialVisitableURL else {
+        guard let _ = session.topmostVisitable?.visitableURL else {
             return
         }
 
@@ -327,7 +327,7 @@ extension Navigator {
     /// - Parameter session: The session to recreate.
     private func recreateWebView(for session: Session) {
         guard let _ = session.activeVisitable?.visitableViewController,
-              let url = session.activeVisitable?.initialVisitableURL else { return }
+              let url = session.activeVisitable?.visitableURL else { return }
 
         let newSession = Session(webView: Hotwire.config.makeWebView())
         newSession.pathConfiguration = session.pathConfiguration

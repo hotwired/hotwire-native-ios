@@ -13,16 +13,14 @@ public protocol VisitableDelegate: AnyObject {
 public protocol Visitable: AnyObject {
     var visitableViewController: UIViewController { get }
     var visitableDelegate: VisitableDelegate? { get set }
-    var visitableView: VisitableView { get }
-    var initialVisitableURL: URL { get }
-    var currentVisitableURL: URL { get }
+    var visitableView: VisitableView! { get }
+    var visitableURL: URL! { get }
 
     func visitableDidRender()
     func showVisitableActivityIndicator()
     func hideVisitableActivityIndicator()
 
     func visitableDidActivateWebView(_ webView: WKWebView)
-    func visitableWillDeactivateWebView()
     func visitableDidDeactivateWebView()
 }
 
@@ -53,7 +51,6 @@ extension Visitable {
     }
 
     func deactivateVisitableWebView() {
-        visitableWillDeactivateWebView()
         visitableView.deactivateWebView()
         visitableDidDeactivateWebView()
     }
