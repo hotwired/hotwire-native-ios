@@ -116,7 +116,7 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         navigator.route(proposal)
         
         let visitable = navigator.session.activeVisitable as! VisitableViewController
-        XCTAssertEqual(visitable.visitableURL, oneURL)
+        XCTAssertEqual(visitable.initialVisitableURL, oneURL)
         XCTAssertEqual(navigator.rootViewController.viewControllers.count, 1)
     }
     
@@ -136,7 +136,7 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         navigator.route(proposal)
         
         let visitable = navigator.modalSession.activeVisitable as! VisitableViewController
-        XCTAssertEqual(visitable.visitableURL, oneURL)
+        XCTAssertEqual(visitable.initialVisitableURL, oneURL)
         XCTAssertEqual(modalNavigationController.viewControllers.count, 1)
     }
     
@@ -153,7 +153,7 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         navigator.route(proposal)
         
         let visitable = navigator.session.activeVisitable as! VisitableViewController
-        XCTAssertEqual(visitable.visitableURL, oneURL)
+        XCTAssertEqual(visitable.initialVisitableURL, oneURL)
         
         XCTAssertNil(navigationController.presentedViewController)
         XCTAssertEqual(navigator.rootViewController.viewControllers.count, 1)
@@ -234,6 +234,36 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         XCTAssertEqual(modalNavigationController.viewControllers.count, 1)
         XCTAssert(modalNavigationController.viewControllers.last is VisitableViewController)
         assertVisited(url: proposal.url, on: .modal)
+    }
+    
+    func test_modal_default_default_replaceAction_pushesOnMainStack_ifDifferentDestination() {
+        navigator.route(VisitProposal(path: "/one", context: .default))
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        
+        navigator.route(VisitProposal(path: "/two", context: .modal))
+        XCTAssertEqual(modalNavigationController.viewControllers.count, 1)
+
+        let proposal = VisitProposal(path: "/three", action: .replace, context: .default)
+        navigator.route(proposal)
+        
+        XCTAssertNil(navigationController.presentedViewController)
+        XCTAssertEqual(navigationController.viewControllers.count, 2)
+        assertVisited(url: proposal.url, on: .main)
+    }
+    
+    func test_modal_default_default_replaceAction_replacesOnMainStack_ifSameDestination() {
+        navigator.route(VisitProposal(path: "/one", context: .default))
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        
+        navigator.route(VisitProposal(path: "/two", context: .modal))
+        XCTAssertEqual(modalNavigationController.viewControllers.count, 1)
+
+        let proposal = VisitProposal(path: "/one", action: .replace, context: .default)
+        navigator.route(proposal)
+        
+        XCTAssertNil(navigationController.presentedViewController)
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        assertVisited(url: proposal.url, on: .main)
     }
 
     func test_modal_modal_replace_pushesOnModalStack() {
@@ -325,7 +355,7 @@ final class NavigationHierarchyControllerTests: XCTestCase {
 
         XCTAssertEqual(navigationController.viewControllers.count, 1)
         XCTAssert(navigationController.topViewController == topViewController)
-        XCTAssertNotEqual(navigator.session.activeVisitable?.visitableURL, proposal.url)
+        XCTAssertNotEqual(navigator.session.activeVisitable?.initialVisitableURL, proposal.url)
     }
 
     func test_modalStyle_isCorrectlySet() throws {
@@ -419,9 +449,9 @@ final class NavigationHierarchyControllerTests: XCTestCase {
     private func assertVisited(url: URL, on context: Context) {
         switch context {
         case .main:
-            XCTAssertEqual(navigator.session.activeVisitable?.visitableURL, url)
+            XCTAssertEqual(navigator.session.activeVisitable?.initialVisitableURL, url)
         case .modal:
-            XCTAssertEqual(navigator.modalSession.activeVisitable?.visitableURL, url)
+            XCTAssertEqual(navigator.modalSession.activeVisitable?.initialVisitableURL, url)
         }
     }
 }
@@ -435,7 +465,7 @@ private class EmptyNavigationDelegate: NavigationHierarchyControllerDelegate {
 
 // MARK: - VisitProposal extension
 
-private extension VisitProposal {
+extension VisitProposal {
     init(path: String = "",
          action: VisitAction = .advance,
          context: Navigation.Context = .default,
@@ -447,7 +477,7 @@ private extension VisitProposal {
             "context": context.rawValue,
             "presentation": presentation.rawValue
         ]
-        let properties = defaultProperties.merging(additionalProperties) { (current, _) in current }
+        let properties = defaultProperties.merging(additionalProperties) { (_, new) in new }
 
         self.init(url: url, options: options, properties: properties)
     }

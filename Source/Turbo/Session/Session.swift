@@ -55,10 +55,6 @@ public class Session: NSObject {
     }
 
     public func visit(_ visitable: Visitable, options: VisitOptions? = nil, reload: Bool = false) {
-        guard visitable.visitableURL != nil else {
-            fatalError("Visitable must provide a url!")
-        }
-
         visitable.visitableDelegate = self
 
         if reload {
@@ -278,6 +274,11 @@ extension Session: VisitableDelegate {
         // Navigating backward from a web view screen to a web view screen.
         if visitable !== topmostVisit.visitable {
             visit(visitable, action: .restore)
+            return
+        }
+        
+        // If the topmost visitable is already the active visitable, nothing needs to be done
+        if topmostVisitable === activeVisitable {
             return
         }
 

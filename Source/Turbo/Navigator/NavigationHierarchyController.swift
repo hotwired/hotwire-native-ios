@@ -41,6 +41,8 @@ class NavigationHierarchyController {
                 visitable.visitableView.allowsPullToRefresh = proposal.pullToRefreshEnabled
             }
 
+            dismissModalIfNeeded(for: proposal)
+
             switch proposal.presentation {
             case .default:
                 navigate(with: controller, via: proposal)
@@ -61,7 +63,7 @@ class NavigationHierarchyController {
     }
 
     func pop(animated: Bool) {
-        if navigationController.presentedViewController != nil {
+        if navigationController.presentedViewController != nil && !modalNavigationController.isBeingDismissed {
             if modalNavigationController.viewControllers.count == 1 {
                 navigationController.dismiss(animated: animated)
             } else {
@@ -94,6 +96,11 @@ class NavigationHierarchyController {
             navigationController.present(alert, animated: proposal.animated)
         }
     }
+    
+    private var isInModalContext: Bool {
+        navigationController.presentedViewController != nil
+        && !modalNavigationController.isBeingDismissed
+    }
 
     private func navigate(with controller: UIViewController, via proposal: VisitProposal) {
         switch proposal.context {
@@ -101,15 +108,19 @@ class NavigationHierarchyController {
             if let visitable = controller as? Visitable {
                 delegate.visit(visitable, on: .main, with: proposal.options)
             }
+            let willReplaceModalContext = isInModalContext
             navigationController.dismiss(animated: proposal.animated)
-            pushOrReplace(on: navigationController, with: controller, via: proposal)
+            pushOrReplace(on: navigationController,
+                          with: controller,
+                          via: proposal,
+                          didReplaceModalContext: willReplaceModalContext)
         case .modal:
             if let visitable = controller as? Visitable {
                 delegate.visit(visitable, on: .modal, with: proposal.options)
             }
             controller.configureModalBehaviour(with: proposal)
 
-            if navigationController.presentedViewController != nil, !modalNavigationController.isBeingDismissed {
+            if isInModalContext {
                 pushOrReplace(on: modalNavigationController, with: controller, via: proposal)
             } else {
                 modalNavigationController.setViewControllers([controller], animated: proposal.animated)
@@ -119,12 +130,16 @@ class NavigationHierarchyController {
         }
     }
 
-    private func pushOrReplace(on navigationController: UINavigationController, with controller: UIViewController, via proposal: VisitProposal) {
+    private func pushOrReplace(on navigationController: UINavigationController,
+                               with controller: UIViewController,
+                               via proposal: VisitProposal,
+                               didReplaceModalContext: Bool = false) {
+        
         if visitingSamePage(on: navigationController, with: controller, via: proposal.url) {
             navigationController.replaceLastViewController(with: controller)
         } else if visitingPreviousPage(on: navigationController, with: controller, via: proposal.url) {
             navigationController.popViewController(animated: proposal.animated)
-        } else if proposal.options.action == .advance {
+        } else if proposal.options.action == .advance || didReplaceModalContext {
             navigationController.pushViewController(controller, animated: proposal.animated)
         } else {
             navigationController.replaceLastViewController(with: controller)
@@ -133,7 +148,7 @@ class NavigationHierarchyController {
 
     private func visitingSamePage(on navigationController: UINavigationController, with controller: UIViewController, via url: URL) -> Bool {
         if let visitable = navigationController.topViewController as? Visitable {
-            return visitable.visitableURL == url
+            return visitable.initialVisitableURL == url
         } else if let topViewController = navigationController.topViewController {
             return topViewController.isMember(of: type(of: controller))
         }
@@ -145,7 +160,7 @@ class NavigationHierarchyController {
 
         let previousController = navigationController.viewControllers[navigationController.viewControllers.count - 2]
         if let previousVisitable = previousController as? VisitableViewController {
-            return previousVisitable.visitableURL == url
+            return previousVisitable.initialVisitableURL == url
         }
         return type(of: previousController) == type(of: controller)
     }
@@ -175,6 +190,11 @@ class NavigationHierarchyController {
     }
 
     private func refresh(via proposal: VisitProposal) {
+        if proposal.isHistoricalLocation {
+            refreshIfTopViewControllerIsVisitable(from: .main)
+            return
+        }
+
         if navigationController.presentedViewController != nil {
             if modalNavigationController.viewControllers.count == 1 {
                 navigationController.dismiss(animated: proposal.animated)
@@ -183,10 +203,11 @@ class NavigationHierarchyController {
                 modalNavigationController.popViewController(animated: proposal.animated)
                 refreshIfTopViewControllerIsVisitable(from: .modal)
             }
-        } else {
-            navigationController.popViewController(animated: proposal.animated)
-            refreshIfTopViewControllerIsVisitable(from: .main)
+            return
         }
+
+        navigationController.popViewController(animated: proposal.animated)
+        refreshIfTopViewControllerIsVisitable(from: .main)
     }
 
     private func replaceRoot(with controller: UIViewController, via proposal: VisitProposal) {
@@ -203,5 +224,14 @@ class NavigationHierarchyController {
             delegate.refreshVisitable(navigationStack: stack,
                                                   newTopmostVisitable: navControllerTopmostVisitable)
         }
+    }
+
+    private func dismissModalIfNeeded(for visit: VisitProposal) {
+        // The desired behaviour for historical location visits is
+        // to always dismiss the "modal" stack.
+        let dismissModal = visit.isHistoricalLocation && navigationController.presentedViewController != nil
+        guard dismissModal else { return }
+
+        navigationController.dismiss(animated: visit.animated)
     }
 }

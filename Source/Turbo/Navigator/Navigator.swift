@@ -19,6 +19,8 @@ public class Navigator {
         }
         return modalSession.webView
     }
+    public private(set) var session: Session
+    public private(set) var modalSession: Session
     
     /// Set to handle customize behavior of the `WKUIDelegate`.
     ///
@@ -113,8 +115,6 @@ public class Navigator {
 
     // MARK: Internal
 
-    var session: Session
-    var modalSession: Session
     /// Modifies a UINavigationController according to visit proposals.
     lazy var hierarchyController = NavigationHierarchyController(delegate: self)
 
@@ -186,7 +186,7 @@ extension Navigator: SessionDelegate {
     }
 
     public func sessionDidStartFormSubmission(_ session: Session) {
-        if let url = session.topmostVisitable?.visitableURL {
+        if let url = session.topmostVisitable?.initialVisitableURL {
             delegate.formSubmissionDidStart(to: url)
         }
     }
@@ -195,7 +195,7 @@ extension Navigator: SessionDelegate {
         if session == modalSession {
             self.session.markSnapshotCacheAsStale()
         }
-        if let url = session.topmostVisitable?.visitableURL {
+        if let url = session.topmostVisitable?.initialVisitableURL {
             delegate.formSubmissionDidFinish(at: url)
         }
     }
@@ -223,7 +223,7 @@ extension Navigator: SessionDelegate {
     }
 
     public func sessionDidFinishRequest(_ session: Session) {
-        guard let url = session.activeVisitable?.visitableURL else { return }
+        guard let url = session.activeVisitable?.initialVisitableURL else { return }
 
         WKWebsiteDataStore.default().httpCookieStore.getAllCookies { cookies in
             HTTPCookieStorage.shared.setCookies(cookies, for: url, mainDocumentURL: url)
@@ -314,7 +314,7 @@ extension Navigator {
             return
         }
 
-        guard let _ = session.topmostVisitable?.visitableURL else {
+        guard let _ = session.topmostVisitable?.initialVisitableURL else {
             return
         }
 
@@ -329,7 +329,7 @@ extension Navigator {
     /// - Parameter session: The session to recreate.
     private func recreateWebView(for session: Session) {
         guard let _ = session.activeVisitable?.visitableViewController,
-              let url = session.activeVisitable?.visitableURL else { return }
+              let url = session.activeVisitable?.initialVisitableURL else { return }
 
         let newSession = Session(webView: Hotwire.config.makeWebView())
         newSession.pathConfiguration = session.pathConfiguration

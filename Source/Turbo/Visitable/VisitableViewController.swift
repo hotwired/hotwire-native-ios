@@ -3,15 +3,23 @@ import WebKit
 
 open class VisitableViewController: UIViewController, Visitable {
     open weak var visitableDelegate: VisitableDelegate?
-    open var visitableURL: URL!
-    var appearReason: AppearReason = .pushedOntoNavigationStack
-    var disappearReason: DisappearReason = .poppedFromNavigationStack
-
-    public convenience init(url: URL) {
-        self.init()
-        self.visitableURL = url
+    open var appearReason: AppearReason = .pushedOntoNavigationStack
+    open var disappearReason: DisappearReason = .poppedFromNavigationStack
+    public let initialVisitableURL: URL
+    public var currentVisitableURL: URL {
+        resolveVisitableLocation()
     }
 
+    public init(url: URL) {
+        initialVisitableURL = url
+        visitableLocationState = .initialized(url)
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required public init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: View Lifecycle
 
     override open func viewDidLoad() {
@@ -47,7 +55,8 @@ open class VisitableViewController: UIViewController, Visitable {
     // MARK: Visitable
 
     open func visitableDidRender() {
-        title = visitableView.webView?.title
+        navigationItem.title = visitableView.webView?.title
+        visitableLocationState = .resolved
     }
 
     open func showVisitableActivityIndicator() {
@@ -62,13 +71,26 @@ open class VisitableViewController: UIViewController, Visitable {
         // No-op
     }
 
+    open func visitableWillDeactivateWebView() {
+        visitableLocationState = .deactivated(visitableView.webView?.url ?? initialVisitableURL)
+    }
+
     open func visitableDidDeactivateWebView() {
         // No-op
     }
 
+    // MARK: Private
+    enum VisitableLocationState {
+        case resolved
+        case initialized(URL)
+        case deactivated(URL)
+    }
+
+    private var visitableLocationState: VisitableLocationState
+
     // MARK: Visitable View
 
-    open private(set) lazy var visitableView: VisitableView! = {
+    open private(set) lazy var visitableView: VisitableView = {
         let view = VisitableView(frame: CGRect.zero)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -83,6 +105,17 @@ open class VisitableViewController: UIViewController, Visitable {
             visitableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
+
+    private func resolveVisitableLocation() -> URL {
+        switch visitableLocationState {
+        case .resolved:
+            return visitableView.webView?.url ?? initialVisitableURL
+        case .initialized(let url):
+            return url
+        case .deactivated(let url):
+            return url
+        }
+    }
 }
 
 extension VisitableViewController {
@@ -90,11 +123,13 @@ extension VisitableViewController {
         case pushedOntoNavigationStack
         case revealedByPop
         case tabSelected
+        case revealedByModalDismiss
     }
 
     public enum DisappearReason {
         case coveredByPush
         case poppedFromNavigationStack
         case tabDeselected
+        case coveredByModal
     }
 }

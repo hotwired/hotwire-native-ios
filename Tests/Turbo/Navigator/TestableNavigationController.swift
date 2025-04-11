@@ -1,9 +1,10 @@
 import UIKit
+@testable import HotwireNative
 
 /// Manipulate a navigation controller under test.
 /// Ensures `viewControllers` is updated synchronously.
 /// Manages `presentedViewController` directly because it isn't updated on the same thread.
-class TestableNavigationController: UINavigationController {
+class TestableNavigationController: HotwireNavigationController {
     override var presentedViewController: UIViewController? {
         get { _presentedViewController }
         set { _presentedViewController = newValue }
