@@ -7,7 +7,14 @@ final class NavigationHierarchyControllerHistoricalLocationTests: XCTestCase {
         navigationController = TestableNavigationController()
         modalNavigationController = TestableNavigationController()
 
-        navigator = Navigator(session: session, modalSession: modalSession)
+        navigator = Navigator(
+            session: session,
+            modalSession: modalSession,
+            configuration: .init(
+                name: "test",
+                startLocation: URL(string: "https://example.com/default_one")!
+            )
+        )
         hierarchyController = NavigationHierarchyController(
             delegate: navigator,
             navigationController: navigationController,
