@@ -8,16 +8,19 @@ class TestVisitable: UIViewController, Visitable {
     var visitableDidRenderCalled = false
     var visitableDidActivateWebViewWasCalled = false
     var visitableDidDeactivateWebViewWasCalled = false
+    var visitableWillDeactivateWebViewWasCalled = false
 
     // MARK: - Visitable
 
     var visitableDelegate: VisitableDelegate?
-    var visitableView: VisitableView!
-    var visitableURL: URL!
+    var visitableView: VisitableView
+    var initialVisitableURL: URL
+    var currentVisitableURL: URL
 
     init(url: URL) {
-        self.visitableURL = url
+        self.initialVisitableURL = url
         self.visitableView = VisitableView(frame: .zero)
+        self.currentVisitableURL = url
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -30,6 +33,10 @@ class TestVisitable: UIViewController, Visitable {
         visitableDidRenderCalled = true
     }
 
+    func visitableWillDeactivateWebView() {
+        visitableWillDeactivateWebViewWasCalled = true
+    }
+
     func visitableDidActivateWebView(_ webView: WKWebView) {
         visitableDidActivateWebViewWasCalled = true
     }
@@ -40,6 +47,10 @@ class TestVisitable: UIViewController, Visitable {
 }
 
 class TestSessionDelegate: NSObject, SessionDelegate {
+    func session(_ session: HotwireNative.Session,
+                 decidePolicyFor navigationAction: WKNavigationAction) -> WebViewPolicyManager.Decision {
+        .cancel
+    }
     var sessionDidLoadWebViewCalled = false { didSet { didChange?() }}
     var sessionDidStartRequestCalled = false
     var sessionDidFinishRequestCalled = false
@@ -86,6 +97,8 @@ class TestSessionDelegate: NSObject, SessionDelegate {
 
 class TestVisitDelegate {
     var methodsCalled: Set<String> = []
+    var visitDidStartWasCalled = false
+    var visitDidStartVisit: Visit?
 
     func didCall(_ method: String) -> Bool {
         methodsCalled.contains(method)
@@ -97,6 +110,10 @@ class TestVisitDelegate {
 }
 
 extension TestVisitDelegate: VisitDelegate {
+    func visitDidProposeVisitToLocation(_ location: URL) {
+        record()
+    }
+    
     func visitDidInitializeWebView(_ visit: Visit) {
         record()
     }
@@ -107,6 +124,8 @@ extension TestVisitDelegate: VisitDelegate {
 
     func visitDidStart(_ visit: Visit) {
         record()
+        visitDidStartWasCalled = true
+        visitDidStartVisit = visit
     }
 
     func visitDidComplete(_ visit: Visit) {

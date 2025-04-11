@@ -6,12 +6,16 @@ class ColdBootVisitTests: XCTestCase {
     private let webView = WKWebView()
     private let visitDelegate = TestVisitDelegate()
     private var visit: ColdBootVisit!
+    private var visitable: TestVisitable!
+    let url = URL(string: "http://localhost/")!
 
     override func setUp() {
-        let url = URL(string: "http://localhost/")!
-        let bridge = WebViewBridge(webView: webView)
 
-        visit = ColdBootVisit(visitable: TestVisitable(url: url), options: VisitOptions(), bridge: bridge)
+        let bridge = WebViewBridge(webView: webView)
+        visitable = TestVisitable(url: url)
+        visitable.currentVisitableURL = URL(string: "http://localhost/new")!
+
+        visit = ColdBootVisit(visitable: visitable, options: VisitOptions(), bridge: bridge)
         visit.delegate = visitDelegate
     }
 
@@ -48,5 +52,11 @@ class ColdBootVisitTests: XCTestCase {
         visitDelegate.methodsCalled.remove("visitDidStart(_:)")
         visit.start()
         XCTAssertFalse(visitDelegate.didCall("visitDidStart(_:)"))
+    }
+
+    func test_visit_takesTheCurrentVisitableURL() {
+        visit.start()
+        XCTAssertTrue(visitDelegate.visitDidStartWasCalled)
+        XCTAssertEqual(URL(string: "http://localhost/new")!, visitDelegate.visitDidStartVisit?.location)
     }
 }

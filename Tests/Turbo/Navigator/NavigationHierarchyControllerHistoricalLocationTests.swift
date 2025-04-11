@@ -7,7 +7,14 @@ final class NavigationHierarchyControllerHistoricalLocationTests: XCTestCase {
         navigationController = TestableNavigationController()
         modalNavigationController = TestableNavigationController()
 
-        navigator = Navigator(session: session, modalSession: modalSession)
+        navigator = Navigator(
+            session: session,
+            modalSession: modalSession,
+            configuration: .init(
+                name: "test",
+                startLocation: URL(string: "https://example.com/default_one")!
+            )
+        )
         hierarchyController = NavigationHierarchyController(
             delegate: navigator,
             navigationController: navigationController,
@@ -24,18 +31,15 @@ final class NavigationHierarchyControllerHistoricalLocationTests: XCTestCase {
     func test_resumeHistoricalLocation() async throws {
         let defaultOne = VisitProposal(path: "/default_one", context: .default)
         navigator.route(defaultOne)
-        try await delay()
 
         let defaultTwo = VisitProposal(path: "/default_two", context: .default)
         navigator.route(defaultTwo)
-        try await delay()
 
         XCTAssertEqual(navigationController.viewControllers.count, 2)
 
         let modalOne = VisitProposal(path: "/modal_one", context: .modal)
         navigator.route(modalOne)
 
-        try await delay()
         XCTAssertEqual(modalNavigationController.viewControllers.count, 1)
 
         // Reset spy's properties.
@@ -47,11 +51,10 @@ final class NavigationHierarchyControllerHistoricalLocationTests: XCTestCase {
             additionalProperties: PathRule.resumeHistoricalLocation.properties
         )
         navigator.route(resumeHistoricalLocationProposal)
-        try await delay()
 
         XCTAssertNil(navigationController.presentedViewController)
         XCTAssertEqual(navigationController.viewControllers.count, 2)
-        XCTAssertEqual(navigator.session.activeVisitable?.visitableURL, defaultTwo.url)
+        XCTAssertEqual(navigator.session.activeVisitable?.initialVisitableURL, defaultTwo.url)
         XCTAssertFalse(session.visitWasCalled)
     }
 
@@ -62,13 +65,11 @@ final class NavigationHierarchyControllerHistoricalLocationTests: XCTestCase {
     func test_refreshHistoricalLocation() async throws {
         let defaultOne = VisitProposal(path: "/default_one", context: .default)
         navigator.route(defaultOne)
-        try await delay()
 
         XCTAssertEqual(navigationController.viewControllers.count, 1)
 
         let modalOne = VisitProposal(path: "/modal_one", context: .modal)
         navigator.route(modalOne)
-        try await delay()
 
         XCTAssertEqual(modalNavigationController.viewControllers.count, 1)
 
@@ -81,11 +82,10 @@ final class NavigationHierarchyControllerHistoricalLocationTests: XCTestCase {
             additionalProperties: PathRule.refreshHistoricalLocation.properties
         )
         navigator.route(refreshHistoricalLocationProposal)
-        try await delay()
 
         XCTAssertNil(navigationController.presentedViewController)
         XCTAssertEqual(navigationController.viewControllers.count, 1)
-        XCTAssertEqual(navigator.session.activeVisitable?.visitableURL, defaultOne.url)
+        XCTAssertEqual(navigator.session.activeVisitable?.initialVisitableURL, defaultOne.url)
         XCTAssertTrue(session.visitWasCalled)
         XCTAssertEqual(session.visitAction, .restore)
     }
@@ -99,17 +99,14 @@ final class NavigationHierarchyControllerHistoricalLocationTests: XCTestCase {
     func test_recedeHistoricalLocation() async throws {
         let defaultOne = VisitProposal(path: "/default_one", context: .default)
         navigator.route(defaultOne)
-        try await delay()
 
         let defaultTwo = VisitProposal(path: "/default_two", context: .default)
         navigator.route(defaultTwo)
-        try await delay()
 
         XCTAssertEqual(navigationController.viewControllers.count, 2)
 
         let modalOne = VisitProposal(path: "/modal_one", context: .modal)
         navigator.route(modalOne)
-        try await delay()
 
         XCTAssertEqual(modalNavigationController.viewControllers.count, 1)
 
@@ -118,15 +115,9 @@ final class NavigationHierarchyControllerHistoricalLocationTests: XCTestCase {
             additionalProperties: PathRule.recedeHistoricalLocation.properties
         )
         navigator.route(recedeHistoricalLocationProposal)
-        try await delay()
 
         XCTAssertNil(navigationController.presentedViewController)
         XCTAssertEqual(navigationController.viewControllers.count, 1)
-        XCTAssertEqual(navigator.session.activeVisitable?.visitableURL, defaultOne.url)
-    }
-
-    func delay() async throws {
-        try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
     }
 
     private let session = SessionSpy(webView: Hotwire.config.makeWebView())

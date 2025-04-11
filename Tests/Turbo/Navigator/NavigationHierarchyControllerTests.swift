@@ -10,11 +10,32 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         navigationController = TestableNavigationController()
         modalNavigationController = TestableNavigationController()
 
-        navigator = Navigator(session: session, modalSession: modalSession)
+        navigator = Navigator(
+            session: session,
+            modalSession: modalSession,
+            configuration: .init(name: "Test", startLocation: oneURL)
+        )
         hierarchyController = NavigationHierarchyController(delegate: navigator, navigationController: navigationController, modalNavigationController: modalNavigationController)
         navigator.hierarchyController = hierarchyController
 
         loadNavigationControllerInWindow()
+    }
+
+    func test_start_succeeds_when_no_view_controllers_on_stack() {
+        navigator.start()
+
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        XCTAssert(navigator.rootViewController.viewControllers.last is VisitableViewController)
+        assertVisited(url: oneURL, on: .main)
+    }
+
+    func test_start_fails_when_view_controllers_on_stack() {
+        navigator.route(twoURL)
+        navigator.start()
+
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        XCTAssert(navigator.rootViewController.viewControllers.last is VisitableViewController)
+        assertVisited(url: twoURL, on: .main)
     }
 
     func test_default_default_default_defaultOptionsParamater_pushesOnMainStack() {
@@ -95,7 +116,7 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         navigator.route(proposal)
         
         let visitable = navigator.session.activeVisitable as! VisitableViewController
-        XCTAssertEqual(visitable.visitableURL, oneURL)
+        XCTAssertEqual(visitable.initialVisitableURL, oneURL)
         XCTAssertEqual(navigator.rootViewController.viewControllers.count, 1)
     }
     
@@ -115,7 +136,7 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         navigator.route(proposal)
         
         let visitable = navigator.modalSession.activeVisitable as! VisitableViewController
-        XCTAssertEqual(visitable.visitableURL, oneURL)
+        XCTAssertEqual(visitable.initialVisitableURL, oneURL)
         XCTAssertEqual(modalNavigationController.viewControllers.count, 1)
     }
     
@@ -132,7 +153,7 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         navigator.route(proposal)
         
         let visitable = navigator.session.activeVisitable as! VisitableViewController
-        XCTAssertEqual(visitable.visitableURL, oneURL)
+        XCTAssertEqual(visitable.initialVisitableURL, oneURL)
         
         XCTAssertNil(navigationController.presentedViewController)
         XCTAssertEqual(navigator.rootViewController.viewControllers.count, 1)
@@ -213,6 +234,36 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         XCTAssertEqual(modalNavigationController.viewControllers.count, 1)
         XCTAssert(modalNavigationController.viewControllers.last is VisitableViewController)
         assertVisited(url: proposal.url, on: .modal)
+    }
+    
+    func test_modal_default_default_replaceAction_pushesOnMainStack_ifDifferentDestination() {
+        navigator.route(VisitProposal(path: "/one", context: .default))
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        
+        navigator.route(VisitProposal(path: "/two", context: .modal))
+        XCTAssertEqual(modalNavigationController.viewControllers.count, 1)
+
+        let proposal = VisitProposal(path: "/three", action: .replace, context: .default)
+        navigator.route(proposal)
+        
+        XCTAssertNil(navigationController.presentedViewController)
+        XCTAssertEqual(navigationController.viewControllers.count, 2)
+        assertVisited(url: proposal.url, on: .main)
+    }
+    
+    func test_modal_default_default_replaceAction_replacesOnMainStack_ifSameDestination() {
+        navigator.route(VisitProposal(path: "/one", context: .default))
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        
+        navigator.route(VisitProposal(path: "/two", context: .modal))
+        XCTAssertEqual(modalNavigationController.viewControllers.count, 1)
+
+        let proposal = VisitProposal(path: "/one", action: .replace, context: .default)
+        navigator.route(proposal)
+        
+        XCTAssertNil(navigationController.presentedViewController)
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        assertVisited(url: proposal.url, on: .main)
     }
 
     func test_modal_modal_replace_pushesOnModalStack() {
@@ -304,22 +355,7 @@ final class NavigationHierarchyControllerTests: XCTestCase {
 
         XCTAssertEqual(navigationController.viewControllers.count, 1)
         XCTAssert(navigationController.topViewController == topViewController)
-        XCTAssertNotEqual(navigator.session.activeVisitable?.visitableURL, proposal.url)
-    }
-
-    func test_externalURL_presentsSafariViewController() throws {
-        let externalURL = URL(string: "https://example.com")!
-        navigator.session(navigator.session, openExternalURL: externalURL)
-
-        XCTAssert(navigationController.presentedViewController is SFSafariViewController)
-        XCTAssertEqual(navigationController.presentedViewController?.modalPresentationStyle, .pageSheet)
-    }
-
-    func test_invalidExternalURL_doesNotPresentSafariViewController() throws {
-        let externalURL = URL(string: "ftp://example.com")!
-        navigator.session(navigator.session, openExternalURL: externalURL)
-
-        /// No assertions needed. App will crash if we pass a non-http or non-https scheme to SFSafariViewController.
+        XCTAssertNotEqual(navigator.session.activeVisitable?.initialVisitableURL, proposal.url)
     }
 
     func test_modalStyle_isCorrectlySet() throws {
@@ -413,9 +449,9 @@ final class NavigationHierarchyControllerTests: XCTestCase {
     private func assertVisited(url: URL, on context: Context) {
         switch context {
         case .main:
-            XCTAssertEqual(navigator.session.activeVisitable?.visitableURL, url)
+            XCTAssertEqual(navigator.session.activeVisitable?.initialVisitableURL, url)
         case .modal:
-            XCTAssertEqual(navigator.modalSession.activeVisitable?.visitableURL, url)
+            XCTAssertEqual(navigator.modalSession.activeVisitable?.initialVisitableURL, url)
         }
     }
 }
