@@ -7,13 +7,13 @@
       "patterns": [
         "/new$",
         "/edit$",
-        "/signin$",
-        "/strada-form$"
+        "/modal"
       ],
       "properties": {
         "context": "modal",
         "pull_to_refresh_enabled": false
-      }
+      },
+      "comment": "Present forms and custom modal path as modals."
     },
     {
       "patterns": [
@@ -21,24 +21,17 @@
       ],
       "properties": {
         "view_controller": "numbers"
-      }
-    },
-    {
-      "patterns": [
-        "/numbers/[0-9]+$"
-      ],
-      "properties": {
-        "view_controller": "numbers_detail",
-        "context": "modal"
-      }
+      },
+      "comment": "Intercept with a native view."
     },
     {
       "patterns": [
         "^/$"
       ],
       "properties": {
-        "presentation": "replace_root"
-      }
-    },
+        "presentation": "clear_all"
+      },
+      "comment": "Reset navigation stacks when visiting root page."
+    }
   ]
 }
