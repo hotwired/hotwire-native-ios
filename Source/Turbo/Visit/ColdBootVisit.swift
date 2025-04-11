@@ -65,7 +65,7 @@ extension ColdBootVisit: WKNavigationDelegate {
         if navigationAction.navigationType == .linkActivated {
             decisionHandler(.cancel)
             if let url = navigationAction.request.url {
-                UIApplication.shared.open(url)
+                delegate?.visitDidProposeVisitToLocation(url)
             }
             return
         }
@@ -88,7 +88,7 @@ extension ColdBootVisit: WKNavigationDelegate {
         if redirectIsCrossOrigin {
             log("Cross-origin redirect detected: \(location) -> \(url).")
             decisionHandler(.cancel)
-            UIApplication.shared.open(url)
+            delegate?.visitDidProposeVisitToLocation(url)
             return
         }
 

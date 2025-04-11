@@ -221,6 +221,12 @@ extension Session: VisitDelegate {
     func visit(_ visit: Visit, didReceiveAuthenticationChallenge challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         delegate?.session(self, didReceiveAuthenticationChallenge: challenge, completionHandler: completionHandler)
     }
+
+    func visitDidProposeVisitToLocation(_ location: URL) {
+        let properties = pathConfiguration?.properties(for: location) ?? [:]
+        let proposal = VisitProposal(url: location, options: VisitOptions(), properties: properties)
+        delegate?.session(self, didProposeVisit: proposal)
+    }
 }
 
 extension Session: VisitableDelegate {
@@ -453,57 +459,32 @@ extension Session: WebViewDelegate {
 
 extension Session: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        let navigationDecision = NavigationDecision(navigationAction: navigationAction)
-        decisionHandler(navigationDecision.policy)
-
-        if let url = navigationDecision.externallyOpenableURL {
-            openExternalURL(url)
-        } else if navigationDecision.shouldReloadPage {
-            reload()
+        guard let delegate else {
+            decisionHandler(.allow)
+            return
         }
+
+        let decision = delegate.session(self, decidePolicyFor: navigationAction)
+        decisionHandler(.init(decision: decision))
     }
 
     public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
         log("webViewWebContentProcessDidTerminate")
         delegate?.sessionWebViewProcessDidTerminate(self)
     }
-
-    private func openExternalURL(_ url: URL) {
-        log("openExternalURL", ["url": url])
-        delegate?.session(self, openExternalURL: url)
-    }
-
-    private struct NavigationDecision {
-        let navigationAction: WKNavigationAction
-
-        var policy: WKNavigationActionPolicy {
-            navigationAction.navigationType == .linkActivated || isMainFrameNavigation ? .cancel : .allow
-        }
-
-        var externallyOpenableURL: URL? {
-            if let url = navigationAction.request.url, shouldOpenURLExternally {
-                return url
-            } else {
-                return nil
-            }
-        }
-
-        var shouldOpenURLExternally: Bool {
-            let type = navigationAction.navigationType
-            return type == .linkActivated || (isMainFrameNavigation && type == .other)
-        }
-
-        var shouldReloadPage: Bool {
-            let type = navigationAction.navigationType
-            return isMainFrameNavigation && type == .reload
-        }
-
-        var isMainFrameNavigation: Bool {
-            navigationAction.targetFrame?.isMainFrame ?? false
-        }
-    }
 }
 
 private func log(_ name: String, _ arguments: [String: Any] = [:]) {
     logger.debug("[Session] \(name) \(arguments)")
+}
+
+extension WKNavigationActionPolicy {
+    public init(decision: WebViewPolicyManager.Decision) {
+        switch decision {
+        case .allow:
+            self = .allow
+        case .cancel:
+            self = .cancel
+        }
+    }
 }

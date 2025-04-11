@@ -10,11 +10,32 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         navigationController = TestableNavigationController()
         modalNavigationController = TestableNavigationController()
 
-        navigator = Navigator(session: session, modalSession: modalSession)
+        navigator = Navigator(
+            session: session,
+            modalSession: modalSession,
+            configuration: .init(name: "Test", startLocation: oneURL)
+        )
         hierarchyController = NavigationHierarchyController(delegate: navigator, navigationController: navigationController, modalNavigationController: modalNavigationController)
         navigator.hierarchyController = hierarchyController
 
         loadNavigationControllerInWindow()
+    }
+
+    func test_start_succeeds_when_no_view_controllers_on_stack() {
+        navigator.start()
+
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        XCTAssert(navigator.rootViewController.viewControllers.last is VisitableViewController)
+        assertVisited(url: oneURL, on: .main)
+    }
+
+    func test_start_fails_when_view_controllers_on_stack() {
+        navigator.route(twoURL)
+        navigator.start()
+
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        XCTAssert(navigator.rootViewController.viewControllers.last is VisitableViewController)
+        assertVisited(url: twoURL, on: .main)
     }
 
     func test_default_default_default_defaultOptionsParamater_pushesOnMainStack() {
@@ -335,21 +356,6 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         XCTAssertEqual(navigationController.viewControllers.count, 1)
         XCTAssert(navigationController.topViewController == topViewController)
         XCTAssertNotEqual(navigator.session.activeVisitable?.initialVisitableURL, proposal.url)
-    }
-
-    func test_externalURL_presentsSafariViewController() throws {
-        let externalURL = URL(string: "https://example.com")!
-        navigator.session(navigator.session, openExternalURL: externalURL)
-
-        XCTAssert(navigationController.presentedViewController is SFSafariViewController)
-        XCTAssertEqual(navigationController.presentedViewController?.modalPresentationStyle, .pageSheet)
-    }
-
-    func test_invalidExternalURL_doesNotPresentSafariViewController() throws {
-        let externalURL = URL(string: "ftp://example.com")!
-        navigator.session(navigator.session, openExternalURL: externalURL)
-
-        /// No assertions needed. App will crash if we pass a non-http or non-https scheme to SFSafariViewController.
     }
 
     func test_modalStyle_isCorrectlySet() throws {

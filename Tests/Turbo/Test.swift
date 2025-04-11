@@ -47,6 +47,10 @@ class TestVisitable: UIViewController, Visitable {
 }
 
 class TestSessionDelegate: NSObject, SessionDelegate {
+    func session(_ session: HotwireNative.Session,
+                 decidePolicyFor navigationAction: WKNavigationAction) -> WebViewPolicyManager.Decision {
+        .cancel
+    }
     var sessionDidLoadWebViewCalled = false { didSet { didChange?() }}
     var sessionDidStartRequestCalled = false
     var sessionDidFinishRequestCalled = false
@@ -106,6 +110,10 @@ class TestVisitDelegate {
 }
 
 extension TestVisitDelegate: VisitDelegate {
+    func visitDidProposeVisitToLocation(_ location: URL) {
+        record()
+    }
+    
     func visitDidInitializeWebView(_ visit: Visit) {
         record()
     }
