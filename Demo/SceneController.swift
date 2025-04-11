@@ -7,17 +7,13 @@ final class SceneController: UIResponder {
     var window: UIWindow?
 
     private let rootURL = Demo.current
-    private var navigators = [Navigator]()
-    private let tabBarController = UITabBarController()
-    private var activeNavigator: Navigator {
-        navigators[tabBarController.selectedIndex]
-    }
+    private lazy var tabBarController = HotwireTabBarController(navigatorDelegate: self)
 
     // MARK: - Authentication
 
     private func promptForAuthentication() {
         let authURL = rootURL.appendingPathComponent("/signin")
-        navigators[tabBarController.selectedIndex].route(authURL)
+        tabBarController.activeNavigator.route(authURL)
     }
 }
 
@@ -29,21 +25,7 @@ extension SceneController: UIWindowSceneDelegate {
         window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
 
-        loadTabs()
-    }
-
-    private func loadTabs() {
-        tabBarController.viewControllers = Tab.all.map { tab in
-            let navigator = Navigator(delegate: self)
-            navigator.rootViewController.tabBarItem = UITabBarItem(
-                title: tab.title,
-                image: UIImage(systemName: tab.imageName),
-                selectedImage: nil
-            )
-            navigators.append(navigator)
-            navigator.route(tab.url)
-            return navigator.rootViewController
-        }
+        tabBarController.load(HotwireTab.all)
     }
 }
 
@@ -51,10 +33,14 @@ extension SceneController: NavigatorDelegate {
     func handle(proposal: VisitProposal) -> ProposalResult {
         switch proposal.viewController {
         case NumbersViewController.pathConfigurationIdentifier:
-            return .acceptCustom(NumbersViewController(url: proposal.url, navigator: activeNavigator))
+            return .acceptCustom(NumbersViewController(
+                url: proposal.url,
+                navigator: tabBarController.activeNavigator
+                )
+            )
 
         default:
-            return .acceptCustom(HotwireWebViewController(url: proposal.url))
+            return .accept
         }
     }
 
@@ -77,7 +63,7 @@ extension SceneController: NavigatorDelegate {
         } else {
             let alert = UIAlertController(title: "Visit failed!", message: error.localizedDescription, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            activeNavigator.activeNavigationController.present(alert, animated: true)
+            tabBarController.activeNavigator.present(alert, animated: true)
         }
     }
 }
