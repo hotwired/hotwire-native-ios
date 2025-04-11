@@ -55,10 +55,6 @@ public class Session: NSObject {
     }
 
     public func visit(_ visitable: Visitable, options: VisitOptions? = nil, reload: Bool = false) {
-        guard visitable.visitableURL != nil else {
-            fatalError("Visitable must provide a url!")
-        }
-
         visitable.visitableDelegate = self
 
         if reload {
