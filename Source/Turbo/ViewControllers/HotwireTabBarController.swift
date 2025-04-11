@@ -4,7 +4,7 @@ import UIKit
 ///
 /// This controller loads tabs defined by `HotwireTab` and configures each one with its own `Navigator`.
 /// The currently selected tab's navigator is exposed via the `activeNavigator` property.
-open class HotwireTabBarController: UITabBarController, Router {
+open class HotwireTabBarController: UITabBarController, NavigationHandler {
     public init(navigatorDelegate: NavigatorDelegate? = nil) {
         self.navigatorDelegate = navigatorDelegate
         super.init(nibName: nil, bundle: nil)
@@ -45,7 +45,7 @@ open class HotwireTabBarController: UITabBarController, Router {
         }
     }
 
-    // MARK: Router
+    // MARK: NavigationHandler
 
     open func route(_ url: URL) {
         activeNavigator.route(url)
@@ -72,7 +72,14 @@ open class HotwireTabBarController: UITabBarController, Router {
     /// stores the navigator in an internal dictionary, and routes the navigator to the tab's URL.
     private func setupViewControllerForTab(_ tab: HotwireTab,
                                            navigatorDelegate: NavigatorDelegate? = nil) -> UIViewController {
-        let navigator = Navigator(delegate: navigatorDelegate)
+        let navigator = Navigator(
+            configuration: .init(
+                name: tab.title,
+                startLocation: tab.url
+            ),
+            delegate: navigatorDelegate
+        )
+        
         navigator.rootViewController.tabBarItem = UITabBarItem(
             title: tab.title,
             image: tab.image,
