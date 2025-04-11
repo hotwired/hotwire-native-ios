@@ -148,7 +148,7 @@ class NavigationHierarchyController {
 
     private func visitingSamePage(on navigationController: UINavigationController, with controller: UIViewController, via url: URL) -> Bool {
         if let visitable = navigationController.topViewController as? Visitable {
-            return visitable.visitableURL == url
+            return visitable.initialVisitableURL == url
         } else if let topViewController = navigationController.topViewController {
             return topViewController.isMember(of: type(of: controller))
         }
@@ -160,7 +160,7 @@ class NavigationHierarchyController {
 
         let previousController = navigationController.viewControllers[navigationController.viewControllers.count - 2]
         if let previousVisitable = previousController as? VisitableViewController {
-            return previousVisitable.visitableURL == url
+            return previousVisitable.initialVisitableURL == url
         }
         return type(of: previousController) == type(of: controller)
     }
