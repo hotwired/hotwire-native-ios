@@ -7,7 +7,7 @@ final class NavigationDelegateTests: Navigator {
         let url = URL(string: "https://example.com")!
 
         let proposal = VisitProposal(url: url, options: VisitOptions())
-        let result = delegate.handle(proposal: proposal)
+        let result = delegate.handle(proposal: proposal, from: self)
 
         XCTAssertEqual(result, .accept)
     }
