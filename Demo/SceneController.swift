@@ -7,7 +7,7 @@ final class SceneController: UIResponder {
     var window: UIWindow?
 
     private let rootURL = Demo.current
-    private let tabBarController = HotwireTabBarController()
+    private lazy var tabBarController = HotwireTabBarController(navigatorDelegate: self)
 
     // MARK: - Authentication
 
@@ -25,7 +25,7 @@ extension SceneController: UIWindowSceneDelegate {
         window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
 
-        tabBarController.load(HotwireTab.all, navigatorDelegate: self)
+        tabBarController.load(HotwireTab.all)
     }
 }
 

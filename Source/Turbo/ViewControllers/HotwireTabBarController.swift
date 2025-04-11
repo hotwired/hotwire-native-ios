@@ -4,7 +4,17 @@ import UIKit
 ///
 /// This controller loads tabs defined by `HotwireTab` and configures each one with its own `Navigator`.
 /// The currently selected tab's navigator is exposed via the `activeNavigator` property.
-open class HotwireTabBarController: UITabBarController {
+open class HotwireTabBarController: UITabBarController, Router {
+    public init(navigatorDelegate: NavigatorDelegate? = nil) {
+        self.navigatorDelegate = navigatorDelegate
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    public required init?(coder: NSCoder) {
+        fatalError("Use init(navigatorDelegate:) instead.")
+    }
+
     /// The active navigator corresponding to the currently selected tab.
     ///
     /// - Returns: A `Navigator` instance for the currently selected tab.
@@ -25,17 +35,31 @@ open class HotwireTabBarController: UITabBarController {
     ///   used to handle `Navigator`'s requests and actions.
     ///
     /// This method assigns the provided tabs to the controller and sets up each tab's view controller.
-    public func load(_ tabs: [HotwireTab], navigatorDelegate: NavigatorDelegate? = nil) {
+    public func load(_ tabs: [HotwireTab]) {
         hotwireTabs = tabs
         viewControllers = tabs.map {
             setupViewControllerForTab($0, navigatorDelegate: navigatorDelegate)
         }
+        navigatorsByTab.forEach { tab, navigator in
+            navigator.route(tab.url)
+        }
+    }
+
+    // MARK: Router
+
+    open func route(_ url: URL) {
+        activeNavigator.route(url)
+    }
+
+    open func route(_ proposal: VisitProposal) {
+        activeNavigator.route(proposal)
     }
 
     // MARK: - Private
 
     private var hotwireTabs: [HotwireTab] = []
     private var navigatorsByTab: [HotwireTab: Navigator] = [:]
+    private let navigatorDelegate: NavigatorDelegate?
 
     /// Configures a navigator instance for the given tab and returns its root view controller.
     ///
@@ -56,7 +80,6 @@ open class HotwireTabBarController: UITabBarController {
         )
 
         navigatorsByTab[tab] = navigator
-        navigator.route(tab.url)
 
         return navigator.rootViewController
     }
@@ -76,7 +99,7 @@ public struct HotwireTab: Hashable {
 
     public init(title: String,
                 image: UIImage,
-                selectedImage: UIImage?,
+                selectedImage: UIImage? = nil,
                 url: URL) {
         self.title = title
         self.image = image
