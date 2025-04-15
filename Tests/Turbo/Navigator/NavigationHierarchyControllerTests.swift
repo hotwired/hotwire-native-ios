@@ -486,7 +486,7 @@ extension VisitProposal {
 // MARK: - AlertControllerDelegate
 
 private class AlertControllerDelegate: NavigatorDelegate {
-    func handle(proposal: VisitProposal) -> ProposalResult {
+    func handle(proposal: VisitProposal, from: Navigator) -> ProposalResult {
         if proposal.url.path == "/alert" {
             return .acceptCustom(UIAlertController(title: "Alert", message: nil, preferredStyle: .alert))
         }
