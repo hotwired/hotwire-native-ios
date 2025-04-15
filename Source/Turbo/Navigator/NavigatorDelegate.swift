@@ -15,8 +15,6 @@ public protocol NavigatorDelegate: AnyObject {
     /// - Returns:`ProposalResult` - how to react to the visit proposal
     func handle(proposal: VisitProposal) -> ProposalResult
 
-    func handle(externalURL: URL) -> ExternalURLNavigationAction
-
     /// An error occurred loading the request, present it to the user.
     /// Retry the request by executing the closure.
     /// - Important: If not implemented, will present the error's localized description and a Retry button.
@@ -42,10 +40,6 @@ public protocol NavigatorDelegate: AnyObject {
 public extension NavigatorDelegate {
     func handle(proposal: VisitProposal) -> ProposalResult {
         .accept
-    }
-
-    func handle(externalURL: URL) -> ExternalURLNavigationAction {
-        .openViaSafariController
     }
 
     func visitableDidFailRequest(_ visitable: Visitable, error: Error, retryHandler: RetryBlock?) {

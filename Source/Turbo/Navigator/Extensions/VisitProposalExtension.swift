@@ -28,4 +28,8 @@ public extension VisitProposal {
     var animated: Bool {
         properties.animated
     }
+
+    internal var isHistoricalLocation: Bool {
+        properties.historicalLocation
+    }
 }
