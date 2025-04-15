@@ -36,14 +36,25 @@ public class Navigator {
     /// Convenience initializer that doesn't require manually creating `Session` instances.
     /// - Parameters:
     ///   - delegate: _optional:_ delegate to handle custom view controllers
-    public convenience init(delegate: NavigatorDelegate? = nil) {
+    public convenience init(configuration: Navigator.Configuration, delegate: NavigatorDelegate? = nil) {
         let session = Session(webView: Hotwire.config.makeWebView())
         session.pathConfiguration = Hotwire.config.pathConfiguration
 
         let modalSession = Session(webView: Hotwire.config.makeWebView())
         modalSession.pathConfiguration = Hotwire.config.pathConfiguration
 
-        self.init(session: session, modalSession: modalSession, delegate: delegate)
+        self.init(session: session, modalSession: modalSession, delegate: delegate, configuration: configuration)
+    }
+
+    /// Routes to the start location provided in the `Navigator.Configuration`.
+    public func start() {
+        guard rootViewController.viewControllers.isEmpty,
+        modalRootViewController.viewControllers.isEmpty else {
+            logger.warning("Start can only be run when there are no view controllers on the stack.")
+            return
+        }
+
+        route(configuration.startLocation)
     }
 
     /// Transforms `URL` -> `VisitProposal` -> `UIViewController`.
@@ -62,6 +73,10 @@ public class Navigator {
     ///
     /// - Parameter proposal: the proposal to visit
     public func route(_ proposal: VisitProposal) {
+        if routeDecision(for: proposal.url) == .cancel {
+            return
+        }
+
         guard let controller = controller(for: proposal) else { return }
         hierarchyController.route(controller: controller, proposal: proposal)
     }
@@ -89,33 +104,6 @@ public class Navigator {
         modalSession.reload()
     }
 
-    /// Navigate to an external URL.
-    ///
-    /// - Parameters:
-    ///   - externalURL: the URL to navigate to
-    ///   - via: navigation action
-    public func open(externalURL: URL, _ via: ExternalURLNavigationAction) {
-        switch via {
-        case .openViaSystem:
-            UIApplication.shared.open(externalURL)
-
-        case .openViaSafariController:
-            /// SFSafariViewController will crash if we pass along a URL that's not valid.
-            guard externalURL.scheme == "http" || externalURL.scheme == "https" else { return }
-
-            let safariViewController = SFSafariViewController(url: externalURL)
-            safariViewController.modalPresentationStyle = .pageSheet
-            if #available(iOS 15.0, *) {
-                safariViewController.preferredControlTintColor = .tintColor
-            }
-
-            activeNavigationController.present(safariViewController, animated: true)
-
-        case .reject:
-            return
-        }
-    }
-
     public func appDidBecomeActive() {
         appInBackground = false
         inspectAllSessions()
@@ -137,9 +125,13 @@ public class Navigator {
     ///   - session: the main `Session`
     ///   - modalSession: the `Session` used for the modal navigation controller
     ///   - delegate: _optional:_ delegate to handle custom view controllers
-    init(session: Session, modalSession: Session, delegate: NavigatorDelegate? = nil) {
+    init(session: Session,
+         modalSession: Session,
+         delegate: NavigatorDelegate? = nil,
+         configuration: Navigator.Configuration) {
         self.session = session
         self.modalSession = modalSession
+        self.configuration = configuration
 
         self.delegate = delegate ?? navigatorDelegate
 
@@ -157,6 +149,7 @@ public class Navigator {
     private let navigatorDelegate = DefaultNavigatorDelegate()
     private var backgroundTerminatedWebViewSessions = [Session]()
     private var appInBackground = false
+    private let configuration: Navigator.Configuration
 
     private func controller(for proposal: VisitProposal) -> UIViewController? {
         switch delegate.handle(proposal: proposal, from: self) {
@@ -168,26 +161,32 @@ public class Navigator {
             nil
         }
     }
+
+    private func routeDecision(for location: URL) -> Router.Decision {
+        return Hotwire.config.router.decideRoute(
+            for: location,
+            configuration: configuration,
+            navigator: self
+        )
+    }
 }
 
 // MARK: - SessionDelegate
 
 extension Navigator: SessionDelegate {
     public func session(_ session: Session, didProposeVisit proposal: VisitProposal) {
-        guard let controller = controller(for: proposal) else { return }
-        hierarchyController.route(controller: controller, proposal: proposal)
+        route(proposal)
     }
 
     public func session(_ session: Session, didProposeVisitToCrossOriginRedirect location: URL) {
         // Pop the current destination from the backstack since it
         // resulted in a visit failure due to a cross-origin redirect.
         pop(animated: false)
-        let decision = delegate.handle(externalURL: location)
-        open(externalURL: location, decision)
+        route(location)
     }
 
     public func sessionDidStartFormSubmission(_ session: Session) {
-        if let url = session.topmostVisitable?.visitableURL {
+        if let url = session.topmostVisitable?.initialVisitableURL {
             delegate.formSubmissionDidStart(to: url)
         }
     }
@@ -196,20 +195,23 @@ extension Navigator: SessionDelegate {
         if session == modalSession {
             self.session.markSnapshotCacheAsStale()
         }
-        if let url = session.topmostVisitable?.visitableURL {
+        if let url = session.topmostVisitable?.initialVisitableURL {
             delegate.formSubmissionDidFinish(at: url)
         }
-    }
-
-    public func session(_ session: Session, openExternalURL externalURL: URL) {
-        let decision = delegate.handle(externalURL: externalURL)
-        open(externalURL: externalURL, decision)
     }
 
     public func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, error: Error) {
         delegate.visitableDidFailRequest(visitable, error: error) {
             session.reload()
         }
+    }
+
+    public func session(_ session: Session, decidePolicyFor navigationAction: WKNavigationAction) -> WebViewPolicyManager.Decision {
+        return Hotwire.config.webViewPolicyManager.decidePolicy(
+            for: navigationAction,
+            configuration: configuration,
+            navigator: self
+        )
     }
 
     public func sessionWebViewProcessDidTerminate(_ session: Session) {
@@ -221,7 +223,7 @@ extension Navigator: SessionDelegate {
     }
 
     public func sessionDidFinishRequest(_ session: Session) {
-        guard let url = session.activeVisitable?.visitableURL else { return }
+        guard let url = session.activeVisitable?.initialVisitableURL else { return }
 
         WKWebsiteDataStore.default().httpCookieStore.getAllCookies { cookies in
             HTTPCookieStorage.shared.setCookies(cookies, for: url, mainDocumentURL: url)
@@ -312,7 +314,7 @@ extension Navigator {
             return
         }
 
-        guard let _ = session.topmostVisitable?.visitableURL else {
+        guard let _ = session.topmostVisitable?.initialVisitableURL else {
             return
         }
 
@@ -327,7 +329,7 @@ extension Navigator {
     /// - Parameter session: The session to recreate.
     private func recreateWebView(for session: Session) {
         guard let _ = session.activeVisitable?.visitableViewController,
-              let url = session.activeVisitable?.visitableURL else { return }
+              let url = session.activeVisitable?.initialVisitableURL else { return }
 
         let newSession = Session(webView: Hotwire.config.makeWebView())
         newSession.pathConfiguration = session.pathConfiguration
