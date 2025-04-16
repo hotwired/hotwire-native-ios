@@ -225,8 +225,10 @@ extension Navigator: SessionDelegate {
     public func sessionDidFinishRequest(_ session: Session) {
         guard let url = session.activeVisitable?.initialVisitableURL else { return }
 
-        WKWebsiteDataStore.default().httpCookieStore.getAllCookies { cookies in
+        Task { @MainActor in
+            let cookies = await WKWebsiteDataStore.default().httpCookieStore.allCookies()
             HTTPCookieStorage.shared.setCookies(cookies, for: url, mainDocumentURL: url)
+            delegate.requestDidFinish(at: url)
         }
     }
 
