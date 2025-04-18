@@ -64,7 +64,7 @@ open class HotwireWebViewController: VisitableViewController, BridgeDestination 
             let action = UIAction { [unowned self] _ in
                 dismiss(animated: true)
             }
-            navigationItem.leftBarButtonItem = UIBarButtonItem(systemItem: .done, primaryAction: action)
+            navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .done, primaryAction: action)
         }
     }
 }
