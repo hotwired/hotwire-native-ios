@@ -14,7 +14,7 @@ public protocol NavigatorDelegate: AnyObject {
     /// - Parameter proposal: `VisitProposal` navigation destination
     /// - Parameter from: the `Navigator` receiving the proposal
     /// - Returns:`ProposalResult` - how to react to the visit proposal
-    func handle(proposal: VisitProposal, from: Navigator) -> ProposalResult
+    func handle(proposal: VisitProposal, from navigator: Navigator) -> ProposalResult
 
     /// An error occurred loading the request, present it to the user.
     /// Retry the request by executing the closure.
@@ -39,7 +39,7 @@ public protocol NavigatorDelegate: AnyObject {
 }
 
 public extension NavigatorDelegate {
-    func handle(proposal: VisitProposal, from: Navigator) -> ProposalResult {
+    func handle(proposal: VisitProposal, from navigator: Navigator) -> ProposalResult {
         .accept
     }
 

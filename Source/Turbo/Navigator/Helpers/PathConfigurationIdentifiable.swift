@@ -5,7 +5,7 @@ import UIKit
 /// Use a view controller's `pathConfigurationIdentifier` property instead of `proposal.url` when deciding how to handle a proposal.
 ///
 /// ```swift
-/// func handle(proposal: VisitProposal) -> ProposalResult {
+/// func handle(proposal: VisitProposal, from navigator: Navigator) -> ProposalResult {
 ///    switch proposal.viewController {
 ///    case RecipeViewController.pathConfigurationIdentifier:
 ///        return .acceptCustom(RecipeViewController())

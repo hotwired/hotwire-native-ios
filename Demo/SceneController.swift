@@ -33,7 +33,7 @@ extension SceneController: UIWindowSceneDelegate {
 }
 
 extension SceneController: NavigatorDelegate {
-    func handle(proposal: VisitProposal) -> ProposalResult {
+    func handle(proposal: VisitProposal, from navigator: Navigator) -> ProposalResult {
         switch proposal.viewController {
         case NumbersViewController.pathConfigurationIdentifier:
             return .acceptCustom(NumbersViewController(url: proposal.url, navigator: navigator))
