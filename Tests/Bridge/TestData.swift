@@ -1,7 +1,15 @@
 import Foundation
 @testable import HotwireNative
 
-final class AppBridgeDestination: BridgeDestination {}
+final class AppBridgeDestination: BridgeDestination {
+    var onBridgeComponentInitializedWasCalled = false
+    var initializedBridgeComponent: BridgeComponent?
+
+    func onBridgeComponentInitialized(_ component: BridgeComponent) {
+        onBridgeComponentInitializedWasCalled = true
+        initializedBridgeComponent = component
+    }
+}
 
 final class OneBridgeComponent: BridgeComponent {
     override static var name: String { "one" }

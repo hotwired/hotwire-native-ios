@@ -81,4 +81,20 @@ class BridgeDelegateDestinationTests: XCTestCase {
         let component: BridgeComponentSpy? = delegate.component()
         XCTAssertNil(component)
     }
+
+    func testBridgeDestinationIsNotifiedWhenComponentIsInitialized() {
+        delegate.onViewDidLoad()
+        delegate.bridgeDidReceiveMessage(.test)
+
+        XCTAssertTrue(destination.onBridgeComponentInitializedWasCalled)
+        XCTAssertTrue(destination.initializedBridgeComponent is BridgeComponentSpy)
+
+        destination.onBridgeComponentInitializedWasCalled = false
+        destination.initializedBridgeComponent = nil
+
+        delegate.bridgeDidReceiveMessage(.test)
+
+        XCTAssertFalse(destination.onBridgeComponentInitializedWasCalled)
+        XCTAssertNil(destination.initializedBridgeComponent)
+    }
 }
