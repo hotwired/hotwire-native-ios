@@ -35,7 +35,7 @@ extension SceneController: NavigatorDelegate {
         case NumbersViewController.pathConfigurationIdentifier:
             return .acceptCustom(NumbersViewController(
                 url: proposal.url,
-                navigator: tabBarController.activeNavigator
+                navigator: navigator
                 )
             )
 
