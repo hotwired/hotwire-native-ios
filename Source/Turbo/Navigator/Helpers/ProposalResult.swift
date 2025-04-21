@@ -1,6 +1,6 @@
 import UIKit
 
-/// Return from `NavigatorDelegate.handle(proposal:)` to route a custom controller.
+/// Return from `NavigatorDelegate.handle(proposal:from:)` to route a custom controller.
 public enum ProposalResult: Equatable {
     /// Route a `VisitableViewController`.
     case accept
