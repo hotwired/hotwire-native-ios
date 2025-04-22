@@ -1,7 +1,13 @@
 import Foundation
 import WebKit
 
-public protocol BridgeDestination: AnyObject {}
+public protocol BridgeDestination: AnyObject {
+    func onBridgeComponentInitialized(_ component: BridgeComponent)
+}
+
+public extension BridgeDestination {
+    func onBridgeComponentInitialized(_ component: BridgeComponent) {}
+}
 
 @MainActor
 public protocol BridgingDelegate: AnyObject {
@@ -162,7 +168,8 @@ public final class BridgeDelegate: BridgingDelegate {
         
         let component = componentType.init(destination: destination, delegate: self)
         initializedComponents[name] = component
-        
+        destination.onBridgeComponentInitialized(component)
+
         return component
     }
 }
