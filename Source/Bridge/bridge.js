@@ -68,13 +68,13 @@
     }
 
     get isWebBridgeAvailable() {
-        // Fallback to Strada for legacy Strada web JavaScript.
-      return window.Bridge ?? window.Strada
+      // Fallback to Strada for legacy Strada web JavaScript.
+      return window.HotwireNative ?? window.Strada
     }
 
     get webBridge() {
       // Fallback to Strada for legacy Strada web JavaScript.
-      return window.Bridge?.web ?? window.Strada.web
+      return window.HotwireNative?.web ?? window.Strada.web
     }
   }
 
