@@ -7,16 +7,13 @@ final class SceneController: UIResponder {
     var window: UIWindow?
 
     private let rootURL = Demo.current
-    private lazy var navigator = Navigator(
-        configuration: .init(name: "main", startLocation: rootURL),
-        delegate: self
-    )
+    private lazy var tabBarController = HotwireTabBarController(navigatorDelegate: self)
 
     // MARK: - Authentication
 
     private func promptForAuthentication() {
         let authURL = rootURL.appendingPathComponent("/signin")
-        navigator.route(authURL)
+        tabBarController.activeNavigator.route(authURL)
     }
 }
 
@@ -25,10 +22,10 @@ extension SceneController: UIWindowSceneDelegate {
         guard let windowScene = scene as? UIWindowScene else { return }
 
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = navigator.rootViewController
+        window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
 
-        navigator.start()
+        tabBarController.load(HotwireTab.all)
     }
 }
 
@@ -36,15 +33,14 @@ extension SceneController: NavigatorDelegate {
     func handle(proposal: VisitProposal, from navigator: Navigator) -> ProposalResult {
         switch proposal.viewController {
         case NumbersViewController.pathConfigurationIdentifier:
-            return .acceptCustom(NumbersViewController(url: proposal.url, navigator: navigator))
-
-        case "numbers_detail":
-            let alertController = UIAlertController(title: "Number", message: "\(proposal.url.lastPathComponent)", preferredStyle: .alert)
-            alertController.addAction(.init(title: "OK", style: .default, handler: nil))
-            return .acceptCustom(alertController)
+            return .acceptCustom(NumbersViewController(
+                url: proposal.url,
+                navigator: navigator
+                )
+            )
 
         default:
-            return .acceptCustom(HotwireWebViewController(url: proposal.url))
+            return .accept
         }
     }
 
@@ -58,7 +54,7 @@ extension SceneController: NavigatorDelegate {
         } else {
             let alert = UIAlertController(title: "Visit failed!", message: error.localizedDescription, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            navigator.rootViewController.present(alert, animated: true)
+            tabBarController.activeNavigator.present(alert, animated: true)
         }
     }
 }
