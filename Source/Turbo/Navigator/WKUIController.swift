@@ -6,7 +6,7 @@ public protocol WKUIControllerDelegate: AnyObject {
 }
 
 open class WKUIController: NSObject, WKUIDelegate {
-    private unowned var delegate: WKUIControllerDelegate
+    private weak var delegate: WKUIControllerDelegate?
 
     public init(delegate: WKUIControllerDelegate!) {
         self.delegate = delegate
@@ -17,7 +17,7 @@ open class WKUIController: NSObject, WKUIDelegate {
         alert.addAction(UIAlertAction(title: "Close", style: .default) { _ in
             completionHandler()
         })
-        delegate.present(alert, animated: true)
+        delegate?.present(alert, animated: true)
     }
 
     open func webView(_ webView: WKWebView, runJavaScriptConfirmPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (Bool) -> Void) {
@@ -28,6 +28,6 @@ open class WKUIController: NSObject, WKUIDelegate {
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
             completionHandler(false)
         })
-        delegate.present(alert, animated: true)
+        delegate?.present(alert, animated: true)
     }
 }
