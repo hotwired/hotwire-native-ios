@@ -5,7 +5,7 @@ import Foundation
 ///
 /// When responding to `NavigatorDelegate.handle(proposal:navigator:)`, to
 /// route a native view controller, pass in an instance of `Navigator` typed
-/// as this protocol with an unowned reference. This ensures you avoid a
+/// as this protocol with a weak reference. This ensures you avoid a
 /// circular dependency between the two.
 ///
 /// - Note: See `NumbersViewController` in the demo app for an example.

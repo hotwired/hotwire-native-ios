@@ -12,8 +12,8 @@ final class NumbersViewController: UITableViewController, PathConfigurationIdent
         self.navigator = navigator
     }
 
-    private var url: URL!
-    private unowned var navigator: NavigationHandler?
+    private var url: URL
+    private weak var navigator: NavigationHandler?
 
     override func viewDidLoad() {
         super.viewDidLoad()
