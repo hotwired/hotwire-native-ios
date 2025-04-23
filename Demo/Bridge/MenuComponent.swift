@@ -21,7 +21,7 @@ final class MenuComponent: BridgeComponent {
     // MARK: Private
 
     private var viewController: UIViewController? {
-        delegate.destination as? UIViewController
+        delegate?.destination as? UIViewController
     }
 
     private func handleDisplayEvent(message: Message) {

@@ -21,7 +21,7 @@ final class OverflowMenuComponent: BridgeComponent {
     // MARK: Private
 
     private var viewController: UIViewController? {
-        delegate.destination as? UIViewController
+        delegate?.destination as? UIViewController
     }
 
     private func handleConnectEvent(message: Message) {
