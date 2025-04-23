@@ -12,7 +12,7 @@ public extension BridgeDestination {
 @MainActor
 public protocol BridgingDelegate: AnyObject {
     var location: String { get }
-    var destination: BridgeDestination { get }
+    var destination: BridgeDestination? { get }
     var webView: WKWebView? { get }
     
     func webViewDidBecomeActive(_ webView: WKWebView)
@@ -34,7 +34,7 @@ public protocol BridgingDelegate: AnyObject {
 @MainActor
 public final class BridgeDelegate: BridgingDelegate {
     public let location: String
-    public unowned let destination: BridgeDestination
+    public weak var destination: BridgeDestination?
     public var webView: WKWebView? {
         bridge?.webView
     }
@@ -165,7 +165,12 @@ public final class BridgeDelegate: BridgingDelegate {
         guard let componentType = componentTypes.first(where: { $0.name == name }) else {
             return nil
         }
-        
+
+        guard let destination else {
+            logger.warning("bridgeDidFailToInitializeComponent: destination is nil")
+            return nil
+        }
+
         let component = componentType.init(destination: destination, delegate: self)
         initializedComponents[name] = component
         destination.onBridgeComponentInitialized(component)
