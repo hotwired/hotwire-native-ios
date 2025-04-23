@@ -60,7 +60,8 @@ open class BridgeComponent: BridgingComponent {
     /// - Returns: `true` if the reply was successful, `false` if the bridge is not available.
     public func reply(with message: Message) async throws -> Bool {
         guard let delegate else {
-            throw BridgeComponentError.delegateNil
+            logger.warning("bridgeMessageFailedToReply: delegate is nil")
+            return false
         }
 
         return try await delegate.reply(with: message)
@@ -75,6 +76,7 @@ open class BridgeComponent: BridgingComponent {
     public func reply(with message: Message, completion: ReplyCompletionHandler? = nil) {
         Task {
             guard let delegate else {
+                logger.warning("bridgeMessageFailedToReply: delegate is nil")
                 completion?(.failure(BridgeComponentError.delegateNil))
                 return
             }
