@@ -4,7 +4,7 @@ import WebKit
 
 final class BridgeDelegateSpy: BridgingDelegate {
     let location: String = ""
-    let destination: BridgeDestination = AppBridgeDestination()
+    let destination: BridgeDestination? = AppBridgeDestination()
     var webView: WKWebView? = nil
     
     var replyWithMessageWasCalled = false

@@ -3,8 +3,8 @@ import Foundation
 @MainActor
 protocol BridgingComponent: AnyObject {
     static var name: String { get }
-    var delegate: BridgingDelegate { get }
-    
+    var delegate: BridgingDelegate? { get }
+
     init(destination: BridgeDestination,
          delegate: BridgingDelegate)
     
@@ -23,6 +23,10 @@ protocol BridgingComponent: AnyObject {
     func viewDidDisappear()
 }
 
+public enum BridgeComponentError: Error {
+    case delegateNil
+}
+
 @MainActor
 open class BridgeComponent: BridgingComponent {
     public typealias ReplyCompletionHandler = (Result<Bool, Error>) -> Void
@@ -36,8 +40,8 @@ open class BridgeComponent: BridgingComponent {
         fatalError("BridgeComponent subclass must provide a unique 'name'")
     }
     
-    public unowned let delegate: BridgingDelegate
-    
+    public weak var delegate: BridgingDelegate?
+
     public required init(destination: BridgeDestination, delegate: BridgingDelegate) {
         self.delegate = delegate
     }
@@ -55,7 +59,12 @@ open class BridgeComponent: BridgingComponent {
     /// - Parameter message: The message to be replied with.
     /// - Returns: `true` if the reply was successful, `false` if the bridge is not available.
     public func reply(with message: Message) async throws -> Bool {
-        try await delegate.reply(with: message)
+        guard let delegate else {
+            logger.warning("bridgeMessageFailedToReply: delegate is nil")
+            return false
+        }
+
+        return try await delegate.reply(with: message)
     }
 
     /// Replies to the web with a received message, optionally replacing its `event` or `jsonData`.
@@ -66,6 +75,12 @@ open class BridgeComponent: BridgingComponent {
     ///                   It includes a result indicating whether the reply was successful or not.
     public func reply(with message: Message, completion: ReplyCompletionHandler? = nil) {
         Task {
+            guard let delegate else {
+                logger.warning("bridgeMessageFailedToReply: delegate is nil")
+                completion?(.failure(BridgeComponentError.delegateNil))
+                return
+            }
+
             do {
                 let result = try await delegate.reply(with: message)
                 completion?(.success(result))

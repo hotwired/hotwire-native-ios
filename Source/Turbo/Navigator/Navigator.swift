@@ -8,7 +8,7 @@ class DefaultNavigatorDelegate: NSObject, NavigatorDelegate {}
 /// Handles navigation to new URLs using the following rules:
 /// [Navigator Handled Flows](https://native.hotwired.dev/reference/navigation)
 public class Navigator {
-    public unowned var delegate: NavigatorDelegate
+    public weak var delegate: NavigatorDelegate?
 
     public var rootViewController: UINavigationController { hierarchyController.navigationController }
     public var modalRootViewController: UINavigationController { hierarchyController.modalNavigationController }
@@ -152,13 +152,17 @@ public class Navigator {
     private let configuration: Navigator.Configuration
 
     private func controller(for proposal: VisitProposal) -> UIViewController? {
+        guard let delegate else {
+            return nil
+        }
+
         switch delegate.handle(proposal: proposal, from: self) {
         case .accept:
-            Hotwire.config.defaultViewController(proposal.url)
+            return Hotwire.config.defaultViewController(proposal.url)
         case .acceptCustom(let customViewController):
-            customViewController
+            return customViewController
         case .reject:
-            nil
+            return nil
         }
     }
 
@@ -187,7 +191,7 @@ extension Navigator: SessionDelegate {
 
     public func sessionDidStartFormSubmission(_ session: Session) {
         if let url = session.topmostVisitable?.initialVisitableURL {
-            delegate.formSubmissionDidStart(to: url)
+            delegate?.formSubmissionDidStart(to: url)
         }
     }
 
@@ -196,12 +200,12 @@ extension Navigator: SessionDelegate {
             self.session.markSnapshotCacheAsStale()
         }
         if let url = session.topmostVisitable?.initialVisitableURL {
-            delegate.formSubmissionDidFinish(at: url)
+            delegate?.formSubmissionDidFinish(at: url)
         }
     }
 
     public func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, error: Error) {
-        delegate.visitableDidFailRequest(visitable, error: error) {
+        delegate?.visitableDidFailRequest(visitable, error: error) {
             session.reload()
         }
     }
@@ -219,7 +223,7 @@ extension Navigator: SessionDelegate {
     }
 
     public func session(_ session: Session, didReceiveAuthenticationChallenge challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        delegate.didReceiveAuthenticationChallenge(challenge, completionHandler: completionHandler)
+        delegate?.didReceiveAuthenticationChallenge(challenge, completionHandler: completionHandler)
     }
 
     public func sessionDidFinishRequest(_ session: Session) {
@@ -228,7 +232,7 @@ extension Navigator: SessionDelegate {
         Task { @MainActor in
             let cookies = await WKWebsiteDataStore.default().httpCookieStore.allCookies()
             HTTPCookieStorage.shared.setCookies(cookies, for: url, mainDocumentURL: url)
-            delegate.requestDidFinish(at: url)
+            delegate?.requestDidFinish(at: url)
         }
     }
 
