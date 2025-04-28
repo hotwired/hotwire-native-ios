@@ -24,19 +24,19 @@ extension HotwireTab {
 
     static let bridgeComponents = HotwireTab(
         title: "Bridge Components",
-        image: .init(systemName: "widget.small")!,
-        url: Demo.current.appending(path: "components")
+        image: .init(systemName: "square.grid.2x2")!,
+        url: Demo.current.appendingPathComponent("components")
     )
 
     static let resources = HotwireTab(
         title: "Resources",
-        image: .init(systemName: "questionmark.text.page")!,
-        url: Demo.current.appending(path: "resources")
+        image: .init(systemName: "book.closed")!,
+        url: Demo.current.appendingPathComponent("resources")
     )
 
     static let bugsAndFixes = HotwireTab(
         title: "Bugs & Fixes",
         image: .init(systemName: "ladybug")!,
-        url: Demo.current.appending(path: "bugs")
+        url: Demo.current.appendingPathComponent("bugs")
     )
 }
