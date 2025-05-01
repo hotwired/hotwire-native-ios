@@ -8,7 +8,7 @@ class DefaultNavigatorDelegate: NSObject, NavigatorDelegate {}
 /// Handles navigation to new URLs using the following rules:
 /// [Navigator Handled Flows](https://native.hotwired.dev/reference/navigation)
 public class Navigator {
-    public weak var delegate: NavigatorDelegate?
+    public var delegate: NavigatorDelegate?
 
     public var rootViewController: UINavigationController { hierarchyController.navigationController }
     public var modalRootViewController: UINavigationController { hierarchyController.modalNavigationController }
