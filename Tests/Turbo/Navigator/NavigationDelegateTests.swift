@@ -9,7 +9,7 @@ final class NavigationDelegateTests: XCTestCase {
             session: session,
             modalSession: modalSession,
             delegate: spyDelegate,
-            configuration: .init(name: "test", startLocation: URL(string: "http://example.com")!),
+            configuration: .init(name: "test", startLocation: URL(string: "http://example.com")!)
         )
     }
     
