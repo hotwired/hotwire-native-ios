@@ -88,6 +88,14 @@ class SessionTests: XCTestCase {
         XCTAssertEqual(error as? TurboError, TurboError.http(statusCode: 404))
     }
 
+    func test_coldBootVisit_whenServiceUnavailable_providesServiceUnavailableError() async throws {
+        await visit("/service-unavailable")
+
+        XCTAssertNotNil(sessionDelegate.failedRequestError)
+        let error = try XCTUnwrap(sessionDelegate.failedRequestError)
+        XCTAssertEqual(error as? TurboError, TurboError.serviceUnavailable)
+    }
+
     func test_coldBootVisit_whenVisitFailsFromHTTPError_callsSessionDidFinishRequestDelegateMethod() async {
         await visit("/invalid")
 

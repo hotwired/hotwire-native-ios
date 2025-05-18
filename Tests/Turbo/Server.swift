@@ -33,6 +33,9 @@ extension DefaultHTTPServer {
                 startResponse("200 OK", [("Content-Type", "text/html")])
                 sendBody("<html></html>".data(using: .utf8)!)
                 sendBody(Data())
+            case "/service-unavailable":
+                startResponse("503 Service Unavailable", [("Content-Type", "text/plain")])
+                sendBody(Data())
             default:
                 startResponse("404 Not Found", [("Content-Type", "text/plain")])
                 sendBody(Data())
