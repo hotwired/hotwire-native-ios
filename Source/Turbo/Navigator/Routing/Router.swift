@@ -26,6 +26,11 @@ public final class Router {
             case .handleInApp(let viewController):
                 return viewController
                 
+            case .redirect(let newProposal):
+                return decideRoute(for: newProposal,
+                                   configuration: configuration,
+                                   navigator: navigator)
+                
             case .intercept:
                 return nil
                 
@@ -51,6 +56,9 @@ public extension Router {
         
         // The handler is responsible, but will handle it without Hotwire Native.
         case intercept
+        
+        // The handler modified the proposal to reevaluate.
+        case redirect(VisitProposal)
         
         // The handler is not responsible for this proposal.
         case willNotHandle
