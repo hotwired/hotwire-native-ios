@@ -6,31 +6,37 @@ public final class SafariViewControllerRouteDecisionHandler: RouteDecisionHandle
     public let name: String = "safari"
 
     public init() {}
+    
+    public func destination(for proposal: VisitProposal,
+                            configuration: Navigator.Configuration,
+                            navigator: Navigator) -> Router.Decision {
+        
+        if canHandle(proposal, configuration: configuration) {
+            open(externalURL: proposal.url,
+                 viewController: navigator.activeNavigationController)
+            return .intercept
+        } else {
+            return .willNotHandle
+        }
+    }
+}
 
-    public func matches(location: URL,
-                        configuration: Navigator.Configuration) -> Bool {
+extension SafariViewControllerRouteDecisionHandler {
+    
+    private func canHandle(_ proposal: VisitProposal, configuration: Navigator.Configuration) -> Bool {
         /// SFSafariViewController will crash if we pass along a URL that's not valid.
-        guard location.scheme == "http" || location.scheme == "https" else {
+        guard proposal.url.scheme == "http" || proposal.url.scheme == "https" else {
             return false
         }
 
         if #available(iOS 16, *) {
-            return configuration.startLocation.host() != location.host()
+            return configuration.startLocation.host() != proposal.url.host()
         }
 
-        return configuration.startLocation.host != location.host
+        return configuration.startLocation.host != proposal.url.host
     }
-
-    public func handle(location: URL,
-                       configuration: Navigator.Configuration,
-                       navigator: Navigator) -> Router.Decision {
-        open(externalURL: location,
-             viewController: navigator.activeNavigationController)
-
-        return .cancel
-    }
-
-    func open(externalURL: URL,
+    
+    private func open(externalURL: URL,
               viewController: UIViewController) {
         let safariViewController = SFSafariViewController(url: externalURL)
         safariViewController.modalPresentationStyle = .pageSheet

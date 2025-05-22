@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 /// Routes location urls within in-app navigation or with custom behaviors
 /// provided in `RouteDecisionHandler` instances.
@@ -9,28 +10,49 @@ public final class Router {
         self.decisionHandlers = decisionHandlers
     }
 
-    func decideRoute(for location: URL,
+    func decideRoute(for proposal: VisitProposal,
                      configuration: Navigator.Configuration,
-                     navigator: Navigator) -> Router.Decision {
+                     navigator: Navigator) -> UIViewController? {
+        
         for handler in decisionHandlers {
-            if handler.matches(location: location, configuration: configuration) {
-                logger.debug("[Router] handler match found handler: \(handler.name) location: \(location)")
-                return handler.handle(location: location,
-                               configuration: configuration,
-                               navigator: navigator)
+            let handlerResult = handler.destination(for: proposal,
+                                                    configuration: configuration,
+                                                    navigator: navigator)
+            switch handlerResult {
+                
+            case .handleInAppDefaultWebViewController:
+                return Hotwire.config.defaultViewController(proposal.url)
+                
+            case .handleInApp(let viewController):
+                return viewController
+                
+            case .intercept:
+                return nil
+                
+            case .willNotHandle:
+                break
             }
         }
 
-        logger.warning("[Router] no handler for location: \(location)")
-        return .cancel
+        logger.warning("[Router] no handler for proposal: \(proposal.url)")
+        
+        return nil
     }
 }
 
 public extension Router {
     enum Decision {
-        // Permit in-app navigation with your app's domain urls.
-        case navigate
-        // Prevent in-app navigation. Always use this for external domain urls.
-        case cancel
+        
+        // Handle in app with default controller
+        case handleInAppDefaultWebViewController
+        
+        // The handler provides the next in-app destination.
+        case handleInApp(UIViewController)
+        
+        // The handler is responsible, but will handle it without Hotwire Native.
+        case intercept
+        
+        // The handler is not responsible for this proposal.
+        case willNotHandle
     }
 }

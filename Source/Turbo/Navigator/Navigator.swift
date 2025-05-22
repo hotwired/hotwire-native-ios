@@ -73,12 +73,10 @@ public class Navigator {
     ///
     /// - Parameter proposal: the proposal to visit
     public func route(_ proposal: VisitProposal) {
-        if routeDecision(for: proposal.url) == .cancel {
-            return
+        if let viewController = routeDecision(for: proposal) {
+            hierarchyController.route(controller: viewController,
+                                      proposal: proposal)
         }
-
-        guard let controller = controller(for: proposal) else { return }
-        hierarchyController.route(controller: controller, proposal: proposal)
     }
 
     /// Pops the top controller on the presented navigation stack.
@@ -166,9 +164,9 @@ public class Navigator {
         }
     }
 
-    private func routeDecision(for location: URL) -> Router.Decision {
+    private func routeDecision(for proposal: VisitProposal) -> UIViewController? {
         return Hotwire.config.router.decideRoute(
-            for: location,
+            for: proposal,
             configuration: configuration,
             navigator: self
         )
