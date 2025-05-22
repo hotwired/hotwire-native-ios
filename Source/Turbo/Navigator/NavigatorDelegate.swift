@@ -5,17 +5,6 @@ import Foundation
 public protocol NavigatorDelegate: AnyObject {
     typealias RetryBlock = () -> Void
 
-    /// Accept or reject a visit proposal.
-    /// There are three `ProposalResult` cases:
-    ///    - term `accept`: Proposals are accepted and a new `VisitableViewController` is displayed.
-    ///    - term `acceptCustom(UIViewController)`: You may provide a view controller to be displayed, otherwise a new `VisitableViewController` is displayed.
-    ///    - term `reject`: No changes to navigation occur.
-    ///
-    /// - Parameter proposal: `VisitProposal` navigation destination
-    /// - Parameter from: the `Navigator` receiving the proposal
-    /// - Returns:`ProposalResult` - how to react to the visit proposal
-    func handle(proposal: VisitProposal, from navigator: Navigator) -> ProposalResult
-
     /// An error occurred loading the request, present it to the user.
     /// Retry the request by executing the closure.
     /// - Important: If not implemented, will present the error's localized description and a Retry button.
@@ -39,9 +28,6 @@ public protocol NavigatorDelegate: AnyObject {
 }
 
 public extension NavigatorDelegate {
-    func handle(proposal: VisitProposal, from navigator: Navigator) -> ProposalResult {
-        .accept
-    }
 
     func visitableDidFailRequest(_ visitable: Visitable, error: Error, retryHandler: RetryBlock?) {
         if let errorPresenter = visitable as? ErrorPresenter {
