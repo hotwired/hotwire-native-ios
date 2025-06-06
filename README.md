@@ -18,4 +18,4 @@ We welcome contributions in the form of bug reports, pull requests, or thoughtfu
 
 ---------
 
-© 2024 37signals LLC
+© 2025 37signals LLC
