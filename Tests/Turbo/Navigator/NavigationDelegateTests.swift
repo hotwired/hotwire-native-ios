@@ -4,40 +4,26 @@ import XCTest
 
 final class NavigationDelegateTests: XCTestCase {
     override func setUp() async throws {
-        spyDelegate = NavigatorDelegateSpy()
-        navigator = Navigator(
-            session: session,
-            modalSession: modalSession,
-            delegate: spyDelegate,
-            configuration: .init(name: "test", startLocation: URL(string: "http://example.com")!)
-        )
+        delegate = TestNavigatorDelegate()
     }
-    
-    override func tearDown() async throws {
-        spyDelegate.handlerExecuted = false
-    }
-    
-    func test_controllerForProposal_defaultsToVisitableViewController() throws {
-        let url = URL(string: "http://example.com/testing")!
-        let proposal = VisitProposal(url: url, options: VisitOptions())
-        
-        navigator.route(proposal)
 
-        XCTAssertEqual(spyDelegate.handlerExecuted, true)
+    func test_handleProposalFrom_defaultsDefaultViewController() throws {
+        let url = URL(string: "https://example.com/testing")!
+        let proposal = VisitProposal(url: url, options: VisitOptions())
+
+        let result = delegate.handle(proposal: proposal, from: navigator)
+        XCTAssertEqual(result, .accept)
     }
-    
-    private var navigator: Navigator!
-    private var spyDelegate: NavigatorDelegateSpy!
-    
-    private let session = Session(webView: Hotwire.config.makeWebView())
-    private let modalSession = Session(webView: Hotwire.config.makeWebView())
-    
-    class NavigatorDelegateSpy: NavigatorDelegate {
-        public var handlerExecuted = false
-        
-        func handle(proposal: VisitProposal, from navigator: Navigator) -> ProposalResult {
-            self.handlerExecuted = true
-            return .accept
-        }
-    }
+
+    private var delegate: NavigatorDelegate!
+    private let navigator = Navigator(
+        session: Session(webView: Hotwire.config.makeWebView()),
+        modalSession: Session(webView: Hotwire.config.makeWebView()),
+        configuration: .init(
+            name: "",
+            startLocation: URL(string: "https://example.com")!
+        )
+    )
+
+    private class TestNavigatorDelegate: NavigatorDelegate {}
 }
