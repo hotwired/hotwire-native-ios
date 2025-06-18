@@ -266,6 +266,55 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         assertVisited(url: proposal.url, on: .main)
     }
 
+    /// Verifies that when navigating back to the same path with a different query string,
+    /// and `query_string_presentation` is set to "default", the route is treated as a different location.
+    /// This results in a new view controller being pushed onto the main navigation stack,
+    /// rather than replacing the existing one.
+    func test_modal_default_default_replaceAction_pushesOnMainStack_withDefaultQueryStringPresentation() {
+        navigator.route(VisitProposal(path: "/one", context: .default))
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+
+        navigator.route(VisitProposal(path: "/two", context: .modal))
+        XCTAssertEqual(modalNavigationController.viewControllers.count, 1)
+
+        let proposal = VisitProposal(
+            path: "/one",
+            queryItems: [URLQueryItem(name: "foo", value: "bar")],
+            action: .replace,
+            context: .default,
+            additionalProperties: ["query_string_presentation": "default"]
+        )
+        navigator.route(proposal)
+
+        XCTAssertNil(navigationController.presentedViewController)
+        XCTAssertEqual(navigationController.viewControllers.count, 2)
+        assertVisited(url: proposal.url, on: .main)
+    }
+
+    /// Verifies that when navigating back to the same path with a different query string,
+    /// and `query_string_presentation` is set to "replace", the route is treated as the same location.
+    /// This results in replacing the existing view controller with a new one.
+    func test_modal_default_default_replaceAction_replacesOnMainStack_withReplaceQueryStringPresentation() {
+        navigator.route(VisitProposal(path: "/one", context: .default))
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+
+        navigator.route(VisitProposal(path: "/two", context: .modal))
+        XCTAssertEqual(modalNavigationController.viewControllers.count, 1)
+
+        let proposal = VisitProposal(
+            path: "/one",
+            queryItems: [URLQueryItem(name: "foo", value: "bar")],
+            action: .replace,
+            context: .default,
+            additionalProperties: ["query_string_presentation": "replace"]
+        )
+        navigator.route(proposal)
+
+        XCTAssertNil(navigationController.presentedViewController)
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        assertVisited(url: proposal.url, on: .main)
+    }
+
     func test_modal_modal_replace_pushesOnModalStack() {
         navigator.route(VisitProposal(path: "/one", context: .modal))
         XCTAssertEqual(modalNavigationController.viewControllers.count, 1)
@@ -467,11 +516,16 @@ private class EmptyNavigationDelegate: NavigationHierarchyControllerDelegate {
 
 extension VisitProposal {
     init(path: String = "",
+         queryItems: [URLQueryItem]? = nil,
          action: VisitAction = .advance,
          context: Navigation.Context = .default,
          presentation: Navigation.Presentation = .default,
          additionalProperties: [String: AnyHashable] = [:]) {
-        let url = URL(string: "https://example.com")!.appendingPathComponent(path)
+        let baseURL = URL(string: "https://example.com")!
+        var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
+        components?.path = path.hasPrefix("/") ? path : "/\(path)"
+        components?.queryItems = queryItems
+        let url = components!.url!
         let options = VisitOptions(action: action, response: nil)
         let defaultProperties: PathProperties = [
             "context": context.rawValue,
