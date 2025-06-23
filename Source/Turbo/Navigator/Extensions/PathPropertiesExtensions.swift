@@ -76,4 +76,13 @@ public extension PathProperties {
     internal var historicalLocation: Bool {
         self["historical_location"] as? Bool ?? false
     }
+
+    var queryStringPresentation: Navigation.QueryStringPresentation {
+        guard let rawValue = self["query_string_presentation"] as? String,
+              let presentation = Navigation.QueryStringPresentation(rawValue: rawValue) else {
+            return .default
+        }
+
+        return presentation
+    }
 }
