@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import HotwireNative
 
 extension HotwireTab {
@@ -24,13 +25,25 @@ extension HotwireTab {
 
     static let bridgeComponents = HotwireTab(
         title: "Bridge Components",
-        image: .init(systemName: "square.grid.2x2")!,
+        image: {
+            if #available(iOS 17.4, *) {
+                return UIImage(systemName: "widget.small")!
+            } else {
+                return UIImage(systemName: "square.grid.2x2")!
+            }
+        }(),
         url: Demo.current.appendingPathComponent("components")
     )
 
     static let resources = HotwireTab(
         title: "Resources",
-        image: .init(systemName: "book.closed")!,
+        image: {
+            if #available(iOS 17.4, *) {
+                return UIImage(systemName: "questionmark.text.page")!
+            } else {
+                return UIImage(systemName: "book.closed")!
+            }
+        }(),
         url: Demo.current.appendingPathComponent("resources")
     )
 
