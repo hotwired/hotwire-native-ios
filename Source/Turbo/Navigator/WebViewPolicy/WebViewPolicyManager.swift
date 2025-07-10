@@ -22,7 +22,7 @@ public final class WebViewPolicyManager {
             }
         }
 
-        logger.warning("[WebViewPolicyManager] no handler for navigation action: \(navigationAction)")
+        logger.info("[WebViewPolicyManager] no handler for navigation action: \(navigationAction)")
         return .allow
     }
 }
