@@ -26,7 +26,16 @@ public struct HotwireConfig {
     /// connecting, disconnecting, receiving/sending messages, and more.
     public var debugLoggingEnabled = false {
         didSet {
-            HotwireLogger.debugLoggingEnabled = debugLoggingEnabled
+            HotwireLogger.update(debugLoggingEnabled: debugLoggingEnabled, log: log)
+        }
+    }
+
+    /// Inject your own logger here to override the default ``enabledLogger``.
+    /// This will be used only when ``debugLoggingEnabled``
+    /// is set to `true`.
+    public var log: Logger? = nil {
+        didSet {
+            HotwireLogger.update(debugLoggingEnabled: debugLoggingEnabled, log: log)
         }
     }
     
