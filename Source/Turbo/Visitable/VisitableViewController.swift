@@ -72,6 +72,9 @@ open class VisitableViewController: UIViewController, Visitable {
     }
 
     open func visitableWillDeactivateWebView() {
+        let webViewURL = visitableView.webView?.url
+        let locationStateDescription = webViewURL != nil ? "webView's url: \(webViewURL!.absoluteString)" : "initialVisitableURL: \(initialVisitableURL.absoluteString)"
+        logger.info("visitableWillDeactivateWebView: setting location state to \(locationStateDescription)")
         visitableLocationState = .deactivated(visitableView.webView?.url ?? initialVisitableURL)
     }
 
@@ -109,6 +112,9 @@ open class VisitableViewController: UIViewController, Visitable {
     private func resolveVisitableLocation() -> URL {
         switch visitableLocationState {
         case .resolved:
+            if visitableView.webView?.url == nil {
+                logger.info("Resolving visitable location to initialVisitableURL: \(initialVisitableURL.absoluteString)")
+            }
             return visitableView.webView?.url ?? initialVisitableURL
         case .initialized(let url):
             return url
