@@ -80,8 +80,12 @@ public class Session: NSObject {
     }
 
     public func reload() {
-        guard let visitable = topmostVisitable else { return }
+        guard let visitable = topmostVisitable else {
+            log("Skipping session reload: no visitable found")
+            return
+        }
 
+        log("Reloading session with visitable: \(visitable)")
         initialized = false
         visit(visitable)
         topmostVisit = currentVisit
