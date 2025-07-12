@@ -378,18 +378,21 @@ extension Session: WebViewDelegate {
     ///   - webView: The web view bridge.
     ///   - location: The original visit location requested.
     ///   - identifier: A unique identifier for the visit.
-    func webView(_ webView: WebViewBridge, didFailRequestWithNonHttpStatusToLocation location: URL, identifier: String) {
+    func webView(_ webView: WebViewBridge, didFailRequestWithNonHttpStatusToLocation location: URL, identifier: String, statusCode: Int) {
         log("didFailRequestWithNonHttpStatusToLocation",
-            ["location": location,
-             "visitIdentifier": identifier]
+            [
+                "location": location,
+                "visitIdentifier": identifier,
+                "statusCode": statusCode
+            ]
         )
 
         Task {
-            await resolveRedirect(to: location, identifier: identifier)
+            await resolveRedirect(to: location, identifier: identifier, statusCode: statusCode)
         }
     }
 
-    private func resolveRedirect(to location: URL, identifier: String) async {
+    private func resolveRedirect(to location: URL, identifier: String, statusCode: Int) async {
         do {
             let result = try await RedirectHandler().resolve(location: location)
             switch result {
@@ -399,7 +402,7 @@ extension Session: WebViewDelegate {
                      "visitIdentifier": identifier]
                 )
                 await failCurrentVisit(
-                    with: TurboError.http(statusCode: 0),
+                    with: TurboError(statusCode: statusCode),
                     visitIdentifier: identifier
                 )
             case .sameOriginRedirect(let url):
@@ -411,7 +414,7 @@ extension Session: WebViewDelegate {
                      "visitIdentifier": identifier]
                 )
                 await failCurrentVisit(
-                    with: TurboError.http(statusCode: 0),
+                    with: TurboError(statusCode: statusCode),
                     visitIdentifier: identifier
                 )
             case .crossOriginRedirect(let url):
