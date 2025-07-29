@@ -104,15 +104,6 @@ public class Navigator {
         modalSession.reload()
     }
 
-    public func appDidBecomeActive() {
-        appInBackground = false
-        inspectAllSessions()
-    }
-
-    public func appDidEnterBackground() {
-        appInBackground = true
-    }
-
     // MARK: Internal
 
     /// Modifies a UINavigationController according to visit proposals.
@@ -132,11 +123,13 @@ public class Navigator {
         self.session = session
         self.modalSession = modalSession
         self.configuration = configuration
+        self.appLifecycleObserver = AppLifecycleObserver()
 
         self.delegate = delegate ?? navigatorDelegate
 
         self.session.delegate = self
         self.modalSession.delegate = self
+        self.appLifecycleObserver.delegate = self
 
         self.webkitUIDelegate = WKUIController(delegate: self)
         session.webView.uiDelegate = webkitUIDelegate
@@ -148,8 +141,8 @@ public class Navigator {
     /// A default delegate implementation if none is provided.
     private let navigatorDelegate = DefaultNavigatorDelegate()
     private var backgroundTerminatedWebViewSessions = [Session]()
-    private var appInBackground = false
     private let configuration: Navigator.Configuration
+    private let appLifecycleObserver: AppLifecycleObserver
 
     private func controller(for proposal: VisitProposal) -> UIViewController? {
         guard let delegate else {
@@ -290,10 +283,10 @@ extension Navigator {
             return
         }
 
-        if appInBackground {
-            /// Don't reload the web view if the app is in the background.
-            /// Instead, save the session in `backgroundTerminatedWebViewSessions`
-            /// and reload it when the app is back in foreground.
+        // Don't reload the web view if the app is in the background.
+        // Instead, save the session in `backgroundTerminatedWebViewSessions`
+        // and reload it when the app is back in foreground.
+        if appLifecycleObserver.appState == .background {
             backgroundTerminatedWebViewSessions.append(session)
             return
         }
@@ -351,5 +344,15 @@ extension Navigator {
         let options = VisitOptions(action: .replace, response: nil)
         let properties = session.pathConfiguration?.properties(for: url) ?? PathProperties()
         route(VisitProposal(url: url, options: options, properties: properties))
+    }
+}
+
+extension Navigator: AppLifecycleObserverDelegate {
+    func appDidEnterBackground() {
+        // No-op
+    }
+
+    func appWillEnterForeground() {
+        inspectAllSessions()
     }
 }
