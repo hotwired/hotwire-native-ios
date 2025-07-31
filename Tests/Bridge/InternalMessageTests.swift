@@ -98,7 +98,63 @@ class InternalMessageTests: XCTestCase {
         XCTAssertEqual(message?.id, "1")
         XCTAssertEqual(message?.data, [:])
     }
-    
+
+    func testFromMessageWithArrayData() {
+        let arrayJsonData = """
+        ["item1", "item2", "item3"]
+        """
+
+        let message = Message(id: "1",
+                            component: "page",
+                            event: "connect",
+                            metadata: .init(url: "https://37signals.com"),
+                            jsonData: arrayJsonData)
+
+        let internalMessage = InternalMessage(from: message)
+
+        // Should default to empty dictionary when array data is provided
+        XCTAssertEqual(internalMessage.id, "1")
+        XCTAssertEqual(internalMessage.component, "page")
+        XCTAssertEqual(internalMessage.event, "connect")
+        XCTAssertEqual(internalMessage.data, [:])
+    }
+
+    func testFromJsonObjectWithArrayData() {
+        let jsonObjectWithArray: [String: AnyHashable] = [
+            "id": "1",
+            "component": "page",
+            "event": "connect",
+            "data": ["item1", "item2", "item3"]
+        ]
+
+        let internalMessage = InternalMessage(jsonObject: jsonObjectWithArray)
+
+        // Should default to empty dictionary when array data is provided
+        XCTAssertEqual(internalMessage?.id, "1")
+        XCTAssertEqual(internalMessage?.component, "page")
+        XCTAssertEqual(internalMessage?.event, "connect")
+        XCTAssertEqual(internalMessage?.data, [:])
+    }
+
+    func testFromMessageWithValidDictionaryData() {
+        let dictionaryJsonData = """
+        {"title": "Test Title", "count": 42}
+        """
+        let message = Message(id: "1",
+                            component: "page",
+                            event: "connect",
+                            metadata: .init(url: "https://37signals.com"),
+                            jsonData: dictionaryJsonData)
+
+        let internalMessage = InternalMessage(from: message)
+
+        XCTAssertEqual(internalMessage.id, "1")
+        XCTAssertEqual(internalMessage.component, "page")
+        XCTAssertEqual(internalMessage.event, "connect")
+        XCTAssertEqual(internalMessage.data["title"] as? String, "Test Title")
+        XCTAssertEqual(internalMessage.data["count"] as? Int, 42)
+    }
+
     private func createPage() -> PageData {
         return PageData(
             metadata: InternalMessage.Metadata(url: "https://37signals.com"),

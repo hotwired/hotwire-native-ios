@@ -21,7 +21,9 @@ struct InternalMessage {
     }
     
     init(from message: Message) {
-        let data = (message.jsonData.jsonObject() as? InternalMessageData) ?? [:]
+        let jsonObject = message.jsonData.jsonObject()
+        let data = InternalMessage.safeExtractData(from: jsonObject)
+
         self.init(id: message.id,
                   component: message.component,
                   event: message.event,
@@ -46,7 +48,7 @@ struct InternalMessage {
             return nil
         }
         
-        let data = (jsonObject[CodingKeys.data.rawValue] as? InternalMessageData) ?? [:]
+        let data = InternalMessage.safeExtractData(from: jsonObject[CodingKeys.data.rawValue])
         
         self.init(id: id,
                   component: component,
@@ -82,7 +84,20 @@ struct InternalMessage {
         
         return Message.Metadata(url: internalMetadata.metadata.url)
     }
-    
+
+    private static func safeExtractData(from value: Any?) -> InternalMessageData {
+        guard let value = value else {
+            return [:]
+        }
+
+        if let dictionaryData = value as? InternalMessageData {
+            return dictionaryData
+        }
+
+        logger.warning("[InternalMessage] InternalMessageData expects a dictionary, but received \(type(of: value)). Data will be ignored.)")
+        return [:]
+    }
+
     private func dataAsJSONString() -> String? {
         guard let jsonData = data.jsonData() else { return nil }
         
