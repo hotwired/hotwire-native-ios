@@ -120,6 +120,7 @@ public struct HotwireConfig {
         configuration.defaultWebpagePreferences?.preferredContentMode = .mobile
         configuration.applicationNameForUserAgent = userAgent
         configuration.processPool = sharedProcessPool
+        configuration.allowsInlineMediaPlayback = true
         return configuration
     }
 }
