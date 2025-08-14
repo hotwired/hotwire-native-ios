@@ -37,6 +37,15 @@ public struct HotwireConfig {
         }
     }
     
+    /// Set a custom log destination to receive all Hotwire log messages.
+    /// When set, log messages will only be sent to this destination.
+    /// When nil, messages are sent to OSLog (if debugLoggingEnabled is true).
+    public var logDestination: LogDestination? {
+        didSet {
+            HotwireLogger.customLogDestination = logDestination
+        }
+    }
+    
     /// Gets the user agent that the library builds to identify the app
     /// and its registered bridge components.
     ///
