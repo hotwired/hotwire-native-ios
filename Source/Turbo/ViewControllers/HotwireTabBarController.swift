@@ -42,7 +42,6 @@ open class HotwireTabBarController: UITabBarController, NavigationHandler {
             setupViewControllerForTab($0, navigatorDelegate: navigatorDelegate)
         }
         activeNavigator.start()
-        }
     }
 
     // MARK: NavigationHandler
