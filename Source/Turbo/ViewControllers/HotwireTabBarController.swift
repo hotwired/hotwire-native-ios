@@ -94,8 +94,6 @@ open class HotwireTabBarController: UITabBarController, NavigationHandler {
 
 extension HotwireTabBarController: UITabBarControllerDelegate {
     public func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        guard activeNavigator.rootViewController.viewControllers.isEmpty else { return }
-
         activeNavigator.start()
     }
 }
