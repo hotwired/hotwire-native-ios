@@ -41,8 +41,7 @@ open class HotwireTabBarController: UITabBarController, NavigationHandler {
         viewControllers = tabs.map {
             setupViewControllerForTab($0, navigatorDelegate: navigatorDelegate)
         }
-        if let tab = hotwireTabs.first {
-            navigatorsByTab[tab]?.route(tab.url)
+        activeNavigator.start()
         }
     }
 
