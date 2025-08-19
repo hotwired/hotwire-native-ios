@@ -6,7 +6,7 @@ public extension VisitProposal {
     }
 
     var presentation: Navigation.Presentation {
-        options.action == .replace ? .replace : properties.presentation
+        properties.presentation
     }
 
     var modalStyle: Navigation.ModalStyle {
