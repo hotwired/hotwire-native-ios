@@ -96,8 +96,7 @@ extension HotwireTabBarController: UITabBarControllerDelegate {
     public func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         guard activeNavigator.rootViewController.viewControllers.isEmpty else { return }
 
-        let tab = hotwireTabs[selectedIndex]
-        activeNavigator.route(tab.url)
+        activeNavigator.start()
     }
 }
 
