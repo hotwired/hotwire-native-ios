@@ -8,6 +8,7 @@ open class HotwireTabBarController: UITabBarController, NavigationHandler {
     public init(navigatorDelegate: NavigatorDelegate? = nil) {
         self.navigatorDelegate = navigatorDelegate
         super.init(nibName: nil, bundle: nil)
+        delegate = self
     }
 
     @available(*, unavailable)
@@ -40,8 +41,8 @@ open class HotwireTabBarController: UITabBarController, NavigationHandler {
         viewControllers = tabs.map {
             setupViewControllerForTab($0, navigatorDelegate: navigatorDelegate)
         }
-        navigatorsByTab.forEach { tab, navigator in
-            navigator.route(tab.url)
+        if let tab = hotwireTabs.first {
+            navigatorsByTab[tab]?.route(tab.url)
         }
     }
 
@@ -89,6 +90,15 @@ open class HotwireTabBarController: UITabBarController, NavigationHandler {
         navigatorsByTab[tab] = navigator
 
         return navigator.rootViewController
+    }
+}
+
+extension HotwireTabBarController: UITabBarControllerDelegate {
+    public func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        guard activeNavigator.rootViewController.viewControllers.isEmpty else { return }
+
+        let tab = hotwireTabs[selectedIndex]
+        activeNavigator.route(tab.url)
     }
 }
 
