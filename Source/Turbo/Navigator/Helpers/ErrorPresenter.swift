@@ -15,33 +15,28 @@ public extension ErrorPresenter {
     ///   - error: presents the data in this error
     ///   - retryHandler: a user-triggered action to perform in case the error is recoverable
     func presentError(_ error: Error, retryHandler: Handler?) {
-        let errorView = ErrorView(error: error, shouldShowRetryButton: retryHandler != nil) {
-            retryHandler?()
-            self.removeErrorViewController()
-        }
+        let view = Hotwire.config.makeCustomErrorView(error, retryHandler)
+        let viewController = ErrorViewController(rootView: view)
 
-        let controller = UIHostingController(rootView: errorView)
-        addChild(controller)
-        addFullScreenSubview(controller.view)
-        controller.didMove(toParent: self)
+        addChild(viewController)
+        addFullScreenSubview(viewController.view)
+        viewController.didMove(toParent: self)
     }
 
-    private func removeErrorViewController() {
-        if let child = children.first(where: { $0 is UIHostingController<ErrorView> }) {
-            child.willMove(toParent: nil)
-            child.view.removeFromSuperview()
-            child.removeFromParent()
-        }
+    func removeErrorViewController() {
+        guard let host = children.first(where: { $0 is ErrorViewController }) else { return }
+        host.willMove(toParent: nil)
+        host.view.removeFromSuperview()
+        host.removeFromParent()
     }
 }
 
 extension UIViewController: ErrorPresenter {}
 
-// MARK: Private
+// MARK: Internal
 
-private struct ErrorView: View {
+struct DefaultErrorView: View {
     let error: Error
-    let shouldShowRetryButton: Bool
     let handler: ErrorPresenter.Handler?
 
     var body: some View {
@@ -57,9 +52,9 @@ private struct ErrorView: View {
                 .font(.body)
                 .multilineTextAlignment(.center)
 
-            if shouldShowRetryButton {
+            if let handler {
                 Button("Retry") {
-                    handler?()
+                    handler()
                 }
                 .font(.system(size: 17, weight: .bold))
             }
@@ -68,13 +63,17 @@ private struct ErrorView: View {
     }
 }
 
-private struct ErrorView_Previews: PreviewProvider {
+// MARK: Private
+
+private final class ErrorViewController: UIHostingController<AnyView> {}
+
+private struct DefaultErrorView_Previews: PreviewProvider {
     static var previews: some View {
-        return ErrorView(error: NSError(
+        return DefaultErrorView(error: NSError(
             domain: "com.example.error",
             code: 1001,
             userInfo: [NSLocalizedDescriptionKey: "Could not connect to the server."]
-        ), shouldShowRetryButton: true) {}
+        )) {}
     }
 }
 
