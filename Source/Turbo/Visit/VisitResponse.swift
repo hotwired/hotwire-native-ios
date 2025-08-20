@@ -5,6 +5,12 @@ public struct VisitResponse: Codable {
     public let redirected: Bool
     public let responseHTML: String?
 
+    public init(statusCode: Int, redirected: Bool, responseHTML: String? = nil) {
+        self.statusCode = statusCode
+        self.redirected = redirected
+        self.responseHTML = responseHTML
+    }
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.statusCode = try container.decode(Int.self, forKey: .statusCode)
