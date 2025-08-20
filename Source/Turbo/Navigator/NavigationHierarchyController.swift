@@ -126,10 +126,6 @@ class NavigationHierarchyController {
                 modalNavigationController.setViewControllers([controller], animated: proposal.animated)
                 modalNavigationController.setModalPresentationStyle(via: proposal)
                 navigationController.present(modalNavigationController, animated: proposal.animated)
-
-                if proposal.options.response?.redirected == true {
-                    navigationController.popViewController(animated: false)
-                }
             }
         }
     }
