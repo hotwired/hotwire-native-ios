@@ -172,6 +172,9 @@ public class Navigator {
 
 extension Navigator: SessionDelegate {
     public func session(_ session: Session, didProposeVisit proposal: VisitProposal) {
+        if proposal.isRedirect {
+            pop(animated: false)
+        }
         route(proposal)
     }
 
