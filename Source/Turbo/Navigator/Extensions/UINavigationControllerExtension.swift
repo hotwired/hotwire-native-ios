@@ -2,6 +2,13 @@ import UIKit
 
 extension UINavigationController {
     func replaceLastViewController(with viewController: UIViewController) {
+        if Hotwire.config.animateReplaceActions {
+            let transition = CATransition()
+            transition.type = .fade
+            transition.duration = 0.25
+            view.layer.add(transition, forKey: kCATransition)
+        }
+
         let viewControllers = viewControllers.dropLast()
         setViewControllers(viewControllers + [viewController], animated: false)
     }
