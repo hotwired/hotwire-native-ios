@@ -22,7 +22,7 @@ public struct HotwireConfig {
     /// Sets the back button display mode of `HotwireWebViewController`.
     public var backButtonDisplayMode = UINavigationItem.BackButtonDisplayMode.default
 
-    /// Set to true to fade between content when replacing a screen.
+    /// Set to `true` to fade content when performing a `replace` visit.
     public var animateReplaceActions = false
 
     /// Enable or disable debug logging for Turbo visits and bridge elements

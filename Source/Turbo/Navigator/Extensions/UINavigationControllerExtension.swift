@@ -3,10 +3,7 @@ import UIKit
 extension UINavigationController {
     func replaceLastViewController(with viewController: UIViewController) {
         if Hotwire.config.animateReplaceActions {
-            let transition = CATransition()
-            transition.type = .fade
-            transition.duration = 0.25
-            view.layer.add(transition, forKey: kCATransition)
+            addFadeTransition()
         }
 
         let viewControllers = viewControllers.dropLast()
@@ -31,5 +28,12 @@ extension UINavigationController {
         case .formSheet:
             modalPresentationStyle = .formSheet
         }
+    }
+
+    private func addFadeTransition() {
+        let transition = CATransition()
+        transition.type = .fade
+        transition.duration = 0.25
+        view.layer.add(transition, forKey: kCATransition)
     }
 }
