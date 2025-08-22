@@ -29,6 +29,10 @@ public extension VisitProposal {
         properties.animated
     }
 
+    var isRedirect: Bool {
+        options.response?.redirected == true
+    }
+
     internal var isHistoricalLocation: Bool {
         properties.historicalLocation
     }
