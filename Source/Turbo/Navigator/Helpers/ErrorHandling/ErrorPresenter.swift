@@ -14,17 +14,20 @@ public extension ErrorPresenter {
     /// - Parameters:
     ///   - error: presents the data in this error
     ///   - retryHandler: a user-triggered action to perform in case the error is recoverable
+    ///
     func presentError(_ error: Error, retryHandler: Handler?) {
-        let view = Hotwire.config.makeCustomErrorView(error, retryHandler)
-        let viewController = ErrorViewController(rootView: view)
-
+        let view = Hotwire.config.makeCustomErrorView(error) { [weak self] in
+            retryHandler?()
+            self?.removeErrorViewController()
+        }
+        let viewController = ErrorHostingViewController(rootView: AnyView(view))
         addChild(viewController)
         addFullScreenSubview(viewController.view)
         viewController.didMove(toParent: self)
     }
 
     func removeErrorViewController() {
-        guard let host = children.first(where: { $0 is ErrorViewController }) else { return }
+        guard let host = children.first(where: { $0 is ErrorHostingViewController }) else { return }
         host.willMove(toParent: nil)
         host.view.removeFromSuperview()
         host.removeFromParent()
@@ -33,49 +36,9 @@ public extension ErrorPresenter {
 
 extension UIViewController: ErrorPresenter {}
 
-// MARK: Internal
-
-struct DefaultErrorView: View {
-    let error: Error
-    let handler: ErrorPresenter.Handler?
-
-    var body: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "exclamationmark.triangle")
-                .font(.system(size: 38, weight: .semibold))
-                .foregroundColor(.accentColor)
-
-            Text("Error loading page")
-                .font(.largeTitle)
-
-            Text(error.localizedDescription)
-                .font(.body)
-                .multilineTextAlignment(.center)
-
-            if let handler {
-                Button("Retry") {
-                    handler()
-                }
-                .font(.system(size: 17, weight: .bold))
-            }
-        }
-        .padding(32)
-    }
-}
-
 // MARK: Private
 
-private final class ErrorViewController: UIHostingController<AnyView> {}
-
-private struct DefaultErrorView_Previews: PreviewProvider {
-    static var previews: some View {
-        return DefaultErrorView(error: NSError(
-            domain: "com.example.error",
-            code: 1001,
-            userInfo: [NSLocalizedDescriptionKey: "Could not connect to the server."]
-        )) {}
-    }
-}
+private final class ErrorHostingViewController: UIHostingController<AnyView> {}
 
 private extension UIViewController {
     func addFullScreenSubview(_ subview: UIView) {

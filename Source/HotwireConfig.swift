@@ -71,8 +71,8 @@ public struct HotwireConfig {
     }
 
     /// Optionally customize the native view presented when an error occurs.
-    public var makeCustomErrorView: (Error, ErrorPresenter.Handler?) -> AnyView = { error, handler in
-        AnyView(DefaultErrorView(error: error, handler: handler))
+    public var makeCustomErrorView: (Error, ErrorPresenter.Handler?) -> any ErrorPresentableView = { error, handler in
+        DefaultErrorView(error: error, handler: handler)
     }
 
     // MARK: Bridge
