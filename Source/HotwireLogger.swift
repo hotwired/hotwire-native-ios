@@ -3,7 +3,7 @@ import OSLog
 
 enum HotwireLogger {
     static var customLogDestination: LogDestination?
-    static var debugLoggingEnabled: Bool = false
+    static var debugLoggingEnabled = false
     
     fileprivate static var currentLogger: LogDestination {
         guard debugLoggingEnabled else { return HotwireOSLoggerWrapper(logger: disabledLogger) }
