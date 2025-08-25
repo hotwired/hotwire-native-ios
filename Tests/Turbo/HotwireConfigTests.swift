@@ -5,7 +5,7 @@ final class HotwireConfigTests: XCTestCase {
     override func setUp() {
         super.setUp()
         Hotwire.config.debugLoggingEnabled = false
-        Hotwire.config.logDestination = nil
+        Hotwire.config.logger = nil
     }
     
     func testUserAgent() {
@@ -18,12 +18,12 @@ final class HotwireConfigTests: XCTestCase {
         XCTAssertEqual(config.userAgent, "TestApp/1.0 Hotwire Native iOS; Turbo Native iOS; bridge-components: [MockComponent]")
     }
     
-    func testLogDestination() {
-        let spy = LogDestinationSpy()
+    func testCustomLogger() {
+        let spy = CustomLoggerSpy()
         
-        // Test that messages are captured when logDestination is set and logging is enabled
+        // Test that messages are captured when logger is set and logging is enabled
         Hotwire.config.debugLoggingEnabled = true
-        Hotwire.config.logDestination = spy
+        Hotwire.config.logger = spy
         
         logger.debug("test debug message")
         logger.error("test error message")
@@ -34,12 +34,12 @@ final class HotwireConfigTests: XCTestCase {
         XCTAssertEqual(spy.warningMessages, ["test warning message"])
     }
     
-    func testLogDestinationRequiresDebugLoggingEnabled() {
-        let spy = LogDestinationSpy()
+    func testCustomLoggerRequiresDebugLoggingEnabled() {
+        let spy = CustomLoggerSpy()
         
         // Test that messages are NOT captured when debugLoggingEnabled is false
         Hotwire.config.debugLoggingEnabled = false
-        Hotwire.config.logDestination = spy
+        Hotwire.config.logger = spy
         
         logger.debug("should not be logged")
         logger.error("should not be logged")
@@ -53,7 +53,7 @@ private class MockBridgeComponent: BridgeComponent {
     static override var name: String { "MockComponent" }
 }
 
-private class LogDestinationSpy: LogDestination {
+private class CustomLoggerSpy: HotwireLogger {
     var debugMessages: [String] = []
     var infoMessages: [String] = []
     var noticeMessages: [String] = []

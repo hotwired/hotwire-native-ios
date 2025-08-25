@@ -1,24 +1,24 @@
 import Foundation
 import OSLog
 
-enum HotwireLogger {
-    static var customLogDestination: LogDestination?
+enum Logging {
+    static var customLogger: HotwireLogger?
     static var debugLoggingEnabled = false
     
-    fileprivate static var currentLogger: LogDestination {
-        guard debugLoggingEnabled else { return HotwireOSLoggerWrapper(logger: disabledLogger) }
-        return customLogDestination ?? HotwireOSLoggerWrapper(logger: enabledLogger)
+    fileprivate static var currentLogger: HotwireLogger {
+        guard debugLoggingEnabled else { return OSLogHotwireLogger(logger: disabledLogger) }
+        return customLogger ?? OSLogHotwireLogger(logger: enabledLogger)
     }
 
     private static let enabledLogger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "Hotwire")
     private static let disabledLogger = Logger(.disabled)
 }
 
-var logger: LogDestination {
-    HotwireLogger.currentLogger
+var logger: HotwireLogger {
+    Logging.currentLogger
 }
 
-public protocol LogDestination {
+public protocol HotwireLogger {
     func debug(_ message: String, file: StaticString, function: StaticString, line: UInt)
     func info(_ message: String, file: StaticString, function: StaticString, line: UInt)
     func notice(_ message: String, file: StaticString, function: StaticString, line: UInt)
@@ -27,7 +27,7 @@ public protocol LogDestination {
     func fault(_ message: String, file: StaticString, function: StaticString, line: UInt)
 }
 
-extension LogDestination {
+extension HotwireLogger {
     public func debug(_ message: String, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
         self.debug(message, file: file, function: function, line: line)
     }
@@ -45,7 +45,7 @@ extension LogDestination {
     }
 }
 
-public struct HotwireOSLoggerWrapper: LogDestination {
+public struct OSLogHotwireLogger: HotwireLogger {
     public let logger: Logger
     
     init(logger: Logger) {
