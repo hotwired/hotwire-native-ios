@@ -33,16 +33,16 @@ public struct HotwireConfig {
     /// connecting, disconnecting, receiving/sending messages, and more.
     public var debugLoggingEnabled = false {
         didSet {
-            HotwireLogger.debugLoggingEnabled = debugLoggingEnabled
+            Logging.debugLoggingEnabled = debugLoggingEnabled
         }
     }
     
-    /// Set a custom log destination to receive all Hotwire log messages.
-    /// When set, log messages will only be sent to this destination.
+    /// Set a custom logger to receive all Hotwire log messages.
+    /// When set, log messages will only be sent to this object.
     /// When nil, messages are sent to OSLog (if debugLoggingEnabled is true).
-    public var logDestination: LogDestination? {
+    public var logger: HotwireLogger? {
         didSet {
-            HotwireLogger.customLogDestination = logDestination
+            Logging.customLogger = logger
         }
     }
     
