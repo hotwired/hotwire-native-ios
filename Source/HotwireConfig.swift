@@ -21,18 +21,12 @@ public struct HotwireConfig {
 
     /// Sets the back button display mode of `HotwireWebViewController`.
     public var backButtonDisplayMode = UINavigationItem.BackButtonDisplayMode.default
-
-    /// Enable or disable debug logging for Turbo visits and bridge elements
-    /// connecting, disconnecting, receiving/sending messages, and more.
-    public var debugLoggingEnabled = false {
-        didSet {
-            Logging.debugLoggingEnabled = debugLoggingEnabled
-        }
-    }
     
-    /// Set a custom logger to receive all Hotwire log messages.
-    /// When set, log messages will only be sent to this object.
-    /// When nil, messages are sent to OSLog (if debugLoggingEnabled is true).
+    /// Provide a custom logger to receive all Hotwire log messages and customize logging
+    /// behaviour.
+    ///
+    /// If no custom logger is provided, Hotwire will use the system `OSLog` framework.
+    /// Log messages will stream to Xcode's console and the Console app.
     public var logger: HotwireLogger? {
         didSet {
             Logging.customLogger = logger

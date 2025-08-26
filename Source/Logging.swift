@@ -3,15 +3,12 @@ import OSLog
 
 enum Logging {
     static var customLogger: HotwireLogger?
-    static var debugLoggingEnabled = false
     
     fileprivate static var currentLogger: HotwireLogger {
-        guard debugLoggingEnabled else { return OSLogHotwireLogger(logger: disabledLogger) }
-        return customLogger ?? OSLogHotwireLogger(logger: enabledLogger)
+        customLogger ?? OSLogHotwireLogger(logger: defaultLogger)
     }
 
-    private static let enabledLogger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "Hotwire")
-    private static let disabledLogger = Logger(.disabled)
+    private static let defaultLogger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "Hotwire")
 }
 
 var logger: HotwireLogger {
