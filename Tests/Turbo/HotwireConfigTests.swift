@@ -4,7 +4,6 @@ import XCTest
 final class HotwireConfigTests: XCTestCase {
     override func setUp() {
         super.setUp()
-        Hotwire.config.debugLoggingEnabled = false
         Hotwire.config.logger = nil
     }
     
@@ -21,8 +20,7 @@ final class HotwireConfigTests: XCTestCase {
     func testCustomLogger() {
         let spy = CustomLoggerSpy()
         
-        // Test that messages are captured when logger is set and logging is enabled
-        Hotwire.config.debugLoggingEnabled = true
+        // Test that messages are captured when logger is set
         Hotwire.config.logger = spy
         
         logger.debug("test debug message")
@@ -32,20 +30,6 @@ final class HotwireConfigTests: XCTestCase {
         XCTAssertEqual(spy.debugMessages, ["test debug message"])
         XCTAssertEqual(spy.errorMessages, ["test error message"])
         XCTAssertEqual(spy.warningMessages, ["test warning message"])
-    }
-    
-    func testCustomLoggerRequiresDebugLoggingEnabled() {
-        let spy = CustomLoggerSpy()
-        
-        // Test that messages are NOT captured when debugLoggingEnabled is false
-        Hotwire.config.debugLoggingEnabled = false
-        Hotwire.config.logger = spy
-        
-        logger.debug("should not be logged")
-        logger.error("should not be logged")
-        
-        XCTAssertTrue(spy.debugMessages.isEmpty)
-        XCTAssertTrue(spy.errorMessages.isEmpty)
     }
 }
 
