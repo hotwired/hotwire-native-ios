@@ -33,7 +33,7 @@ extension UINavigationController {
     private func addFadeTransition() {
         let transition = CATransition()
         transition.type = .fade
-        transition.duration = 0.25
+        transition.duration = CATransaction.animationDuration()
         view.layer.add(transition, forKey: kCATransition)
     }
 }
