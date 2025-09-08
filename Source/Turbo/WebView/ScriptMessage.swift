@@ -30,6 +30,10 @@ struct ScriptMessage {
         guard let options = data["options"] as? [String: Any] else { return nil }
         return VisitOptions(json: options)
     }
+    
+    var statusCode: Int? {
+        data["statusCode"] as? Int
+    }
 }
 
 extension ScriptMessage {

@@ -1,6 +1,6 @@
 import Foundation
 
-enum RedirectHandlerError: Error {
+public enum RedirectHandlerError: LocalizedError {
     case requestFailed(Error)
     case responseValidationFailed(reason: ResponseValidationFailureReason)
 
@@ -9,6 +9,22 @@ enum RedirectHandlerError: Error {
         case missingURL
         case invalidResponse
         case unacceptableStatusCode(code: Int)
+    }
+    
+    public var errorDescription: String? {
+        switch self {
+        case .requestFailed(let error):
+            return "Redirect resolution failed: \(error.localizedDescription)"
+        case .responseValidationFailed(let reason):
+            switch reason {
+            case .missingURL:
+                return "Redirect resolution failed: missing URL"
+            case .invalidResponse:
+                return "Redirect resolution response invalid"
+            case .unacceptableStatusCode(let code):
+                return "Redirect resolution failed \(code)"
+            }
+        }
     }
 }
 
