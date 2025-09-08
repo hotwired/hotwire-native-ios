@@ -21,7 +21,7 @@ public protocol NavigatorDelegate: AnyObject {
     /// - Important: If not implemented, will present the error's localized description and a Retry button.
     func visitableDidFailRequest(_ visitable: Visitable, error: Error, retryHandler: RetryBlock?)
 
-    /// Respond to authentication challenge presented by web servers behing basic auth.
+    /// Respond to authentication challenge presented by web servers behind basic auth.
     /// If not implemented, default handling will be performed.
     func didReceiveAuthenticationChallenge(_ challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
 
