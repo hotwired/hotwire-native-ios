@@ -20,6 +20,15 @@ class VisitOptionsTests: XCTestCase {
         XCTAssertNil(options.response)
     }
 
+    func test_Decodable_redirected() throws {
+        let json = """
+        {"response": {"statusCode": 301, "redirected": true}}
+        """.data(using: .utf8)!
+
+        let options = try JSONDecoder().decode(VisitOptions.self, from: json)
+        XCTAssert(options.response?.redirected == true)
+    }
+
     func test_Decodable_canBeInitializedWithResponse() throws {
         _ = try validVisitVisitOptions(responseHTMLString: "<html></html>")
     }
