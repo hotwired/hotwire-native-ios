@@ -22,6 +22,9 @@ public struct HotwireConfig {
     /// Sets the back button display mode of `HotwireWebViewController`.
     public var backButtonDisplayMode = UINavigationItem.BackButtonDisplayMode.default
 
+    /// Set to true to only show the tab bar on the root screens.
+    public var hidesTabBarWhenPushed = false
+
     /// Enable or disable debug logging for Turbo visits and bridge elements
     /// connecting, disconnecting, receiving/sending messages, and more.
     public var debugLoggingEnabled = false {
