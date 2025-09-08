@@ -12,7 +12,10 @@ final class SceneController: UIResponder {
     // MARK: - Authentication
 
     private func promptForAuthentication() {
-        let authURL = rootURL.appendingPathComponent("/signin")
+        // Clean up empty screen from 401 response.
+        tabBarController.activeNavigator.pop(animated: false)
+
+        let authURL = rootURL.appendingPathComponent("/session/new")
         tabBarController.activeNavigator.route(authURL)
     }
 }
