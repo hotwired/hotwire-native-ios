@@ -1,3 +1,4 @@
+import SwiftUI
 import UIKit
 import WebKit
 
@@ -70,6 +71,11 @@ public struct HotwireConfig {
     /// Ensure you return a new instance each time.
     public var makeCustomWebView: WebViewBlock = { (configuration: WKWebViewConfiguration) in
         WKWebView.debugInspectable(configuration: configuration)
+    }
+
+    /// Optionally customize the native view presented when an error occurs.
+    public var makeCustomErrorView: (Error, ErrorPresenter.Handler?) -> any ErrorPresentableView = { error, handler in
+        DefaultErrorView(error: error, handler: handler)
     }
 
     // MARK: Bridge
