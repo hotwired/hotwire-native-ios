@@ -7,7 +7,7 @@ protocol WebViewDelegate: AnyObject {
     func webView(_ webView: WebViewBridge, didFinishFormSubmissionToLocation location: URL)
     func webView(_ webView: WebViewBridge, didFailInitialPageLoadWithError: Error)
     func webView(_ webView: WebViewBridge, didFailJavaScriptEvaluationWithError error: Error)
-    func webView(_ webView: WebViewBridge, didFailRequestWithNonHttpStatusToLocation location: URL, identifier: String)
+    func webView(_ webView: WebViewBridge, didFailRequestWithNonHttpStatusToLocation location: URL, identifier: String, statusCode: Int)
 }
 
 protocol WebViewPageLoadDelegate: AnyObject {
@@ -123,7 +123,7 @@ extension WebViewBridge: ScriptMessageHandlerDelegate {
         case .visitProposed:
             delegate?.webView(self, didProposeVisitToLocation: message.location!, options: message.options!)
         case .visitRequestFailedWithNonHttpStatusCode:
-            delegate?.webView(self, didFailRequestWithNonHttpStatusToLocation: message.location!, identifier: message.identifier!)
+            delegate?.webView(self, didFailRequestWithNonHttpStatusToLocation: message.location!, identifier: message.identifier!, statusCode: message.statusCode!)
         case .visitProposalScrollingToAnchor:
             break
         case .visitProposalRefreshingPage:
@@ -135,7 +135,7 @@ extension WebViewBridge: ScriptMessageHandlerDelegate {
         case .visitRequestCompleted:
             visitDelegate?.webView(self, didCompleteRequestForVisitWithIdentifier: message.identifier!)
         case .visitRequestFailed:
-            visitDelegate?.webView(self, didFailRequestForVisitWithIdentifier: message.identifier!, statusCode: message.data["statusCode"] as! Int)
+            visitDelegate?.webView(self, didFailRequestForVisitWithIdentifier: message.identifier!, statusCode: message.statusCode!)
         case .visitRequestFinished:
             visitDelegate?.webView(self, didFinishRequestForVisitWithIdentifier: message.identifier!, date: message.date)
         case .visitRendered:

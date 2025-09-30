@@ -149,7 +149,7 @@
       // the native side to determine whether a cross-origin redirect visit should
       // be proposed.
       if (statusCode <= 0) {
-        this.postMessage("visitRequestFailedWithNonHttpStatusCode", { location: location, identifier: visit.identifier })
+        this.postMessage("visitRequestFailedWithNonHttpStatusCode", { location: location, identifier: visit.identifier, statusCode: statusCode })
       } else {
         this.postMessage("visitRequestFailed", { location: location, identifier: visit.identifier, statusCode: statusCode })
       }
