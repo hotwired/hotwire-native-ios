@@ -23,6 +23,9 @@ public struct HotwireConfig {
     /// Sets the back button display mode of `HotwireWebViewController`.
     public var backButtonDisplayMode = UINavigationItem.BackButtonDisplayMode.default
 
+    /// Set to true to only show the tab bar on the root screens.
+    public var hidesTabBarWhenPushed = false
+
     /// Set to `true` to fade content when performing a `replace` visit.
     public var animateReplaceActions = false
 
