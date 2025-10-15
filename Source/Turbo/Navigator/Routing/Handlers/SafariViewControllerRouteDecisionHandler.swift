@@ -4,11 +4,15 @@ import SafariServices
 /// Opens external URLs via an embedded `SafariViewController` so the user stays in-app.
 public final class SafariViewControllerRouteDecisionHandler: RouteDecisionHandler {
     public let name: String = "safari"
+    private var openUniversalLinksInApp: Bool
 
-    public init() {}
+    public init(openUniversalLinksInApp: Bool = false) {
+        self.openUniversalLinksInApp = openUniversalLinksInApp
+    }
 
     public func matches(location: URL,
-                        configuration: Navigator.Configuration) -> Bool {
+                        configuration: Navigator.Configuration) -> Bool
+    {
         /// SFSafariViewController will crash if we pass along a URL that's not valid.
         guard location.scheme == "http" || location.scheme == "https" else {
             return false
@@ -22,16 +26,25 @@ public final class SafariViewControllerRouteDecisionHandler: RouteDecisionHandle
     }
 
     public func handle(location: URL,
-                       configuration: Navigator.Configuration,
-                       navigator: Navigator) -> Router.Decision {
-        open(externalURL: location,
-             viewController: navigator.activeNavigationController)
+                       configuration _: Navigator.Configuration,
+                       navigator: Navigator) -> Router.Decision
+    {
+        let openModal = { self.open(externalURL: location, viewController: navigator.activeNavigationController) }
+
+        if openUniversalLinksInApp {
+            UIApplication.shared.open(location, options: [.universalLinksOnly: true]) { success in
+                if !success { openModal() }
+            }
+        } else {
+            openModal()
+        }
 
         return .cancel
     }
 
     func open(externalURL: URL,
-              viewController: UIViewController) {
+              viewController: UIViewController)
+    {
         let safariViewController = SFSafariViewController(url: externalURL)
         safariViewController.modalPresentationStyle = .pageSheet
         if #available(iOS 15.0, *) {
