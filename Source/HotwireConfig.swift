@@ -29,6 +29,9 @@ public struct HotwireConfig {
     /// Set to `true` to fade content when performing a `replace` visit.
     public var animateReplaceActions = false
 
+    /// Set to `true` to load each tab after it is selected (instead of on app launch).
+    public var lazyLoadTabs = false
+
     /// Enable or disable debug logging for Turbo visits and bridge elements
     /// connecting, disconnecting, receiving/sending messages, and more.
     public var debugLoggingEnabled = false {

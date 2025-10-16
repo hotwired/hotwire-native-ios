@@ -37,7 +37,12 @@ open class HotwireTabBarController: UITabBarController, NavigationHandler {
     public func load(_ tabs: [HotwireTab]) {
         hotwireTabs = tabs
         setupTabs()
-        activeNavigator.start()
+
+        if Hotwire.config.lazyLoadTabs {
+            activeNavigator.start()
+        } else {
+            navigatorsByIdentifier.values.forEach { $0.start() }
+        }
     }
 
     /// Returns the navigator associated with the given tab.
