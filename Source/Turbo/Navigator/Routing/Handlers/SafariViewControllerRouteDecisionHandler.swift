@@ -8,8 +8,7 @@ public final class SafariViewControllerRouteDecisionHandler: RouteDecisionHandle
     public init() {}
 
     public func matches(location: URL,
-                        configuration: Navigator.Configuration) -> Bool
-    {
+                        configuration: Navigator.Configuration) -> Bool {
         /// SFSafariViewController will crash if we pass along a URL that's not valid.
         guard location.scheme == "http" || location.scheme == "https" else {
             return false
@@ -23,22 +22,47 @@ public final class SafariViewControllerRouteDecisionHandler: RouteDecisionHandle
     }
 
     public func handle(location: URL,
-                       configuration _: Navigator.Configuration,
-                       navigator: Navigator) -> Router.Decision
-    {
-        // Try to open the link as an 'universal link' first (which opens the native app if present),
-        // else fall back to opening in a model.
-        UIApplication.shared.open(location, options: [.universalLinksOnly: true]) { success in
-            if !success {
-                self.open(externalURL: location, viewController: navigator.activeNavigationController)
-            }
+                       configuration: Navigator.Configuration,
+                       navigator: Navigator) -> HotwireNative.Router.Decision {
+        Task { @MainActor in
+            await open(externalURL: location,
+                       viewController: navigator.activeNavigationController)
         }
 
         return .cancel
     }
 
+    @MainActor
     func open(externalURL: URL,
-              viewController: UIViewController) {
+              viewController: UIViewController) async {
+        let didOpenAsUniversalLink = await openAsUniversalLink(
+            externalURL: externalURL,
+            viewController: viewController
+        )
+
+        if didOpenAsUniversalLink {
+            return
+        }
+
+        openSafari(externalURL: externalURL, viewController: viewController)
+    }
+
+    @MainActor
+    func openAsUniversalLink(externalURL: URL,
+                             viewController: UIViewController) async -> Bool {
+        let options = UIScene.OpenExternalURLOptions()
+        options.universalLinksOnly = true
+
+        guard let windowScene = viewController.view.window?.windowScene else {
+            return false
+        }
+
+        return await windowScene.open(externalURL, options: options)
+    }
+
+    @MainActor
+    func openSafari(externalURL: URL,
+                    viewController: UIViewController) {
         let safariViewController = SFSafariViewController(url: externalURL)
         safariViewController.modalPresentationStyle = .pageSheet
         if #available(iOS 15.0, *) {
