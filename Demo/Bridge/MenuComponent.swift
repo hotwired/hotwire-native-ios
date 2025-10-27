@@ -1,6 +1,7 @@
 import Foundation
 import HotwireNative
 import UIKit
+import WebKit
 
 /// Bridge component to display a native bottom sheet menu,
 /// which will send the selected index of the tapped menu item back to the web.
@@ -26,10 +27,10 @@ final class MenuComponent: BridgeComponent {
 
     private func handleDisplayEvent(message: Message) {
         guard let data: MessageData = message.data() else { return }
-        showAlertSheet(with: data.title, items: data.items)
+        showAlertSheet(with: data.title, items: data.items, source: data.source)
     }
 
-    private func showAlertSheet(with title: String, items: [Item]) {
+    private func showAlertSheet(with title: String, items: [Item], source: Source) {
         let alertController = UIAlertController(
             title: title,
             message: nil,
@@ -42,19 +43,27 @@ final class MenuComponent: BridgeComponent {
             }
             alertController.addAction(action)
         }
-
+        
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        alertController.addAction(cancelAction)
+        alertController.addAction(cancelAction) 
 
-        // Set popoverController for iPads
-        if let popoverController = alertController.popoverPresentationController {
-            if let barButtonItem = viewController?.navigationItem.rightBarButtonItem {
-                popoverController.barButtonItem = barButtonItem
-            } else {
-                popoverController.sourceView = viewController?.view
-                popoverController.sourceRect = viewController?.view.bounds ?? .zero
-                popoverController.permittedArrowDirections = []
-            }
+        // Set popoverController for devices that support them (iPad, iOS 26+)
+        if let popoverController = alertController.popoverPresentationController,
+           let vc = viewController as? Visitable,
+           let sourceView = viewController?.view,
+           let webView = vc.visitableView.webView
+        {
+            popoverController.sourceView = sourceView
+
+            // The source coordinates come from the bridge component relative to the web page content.
+            // The web view's scroll view has content insets for the navigation bar,
+            // so we need to account for the inset at the top.
+            let contentInsetTop = webView.scrollView.adjustedContentInset.top
+            let y = source.y + Double(contentInsetTop)
+
+            popoverController.sourceRect = CGRect(
+                x: source.x, y: y, width: source.width, height: source.height
+            )
         }
 
         viewController?.present(alertController, animated: true)
@@ -79,9 +88,17 @@ private extension MenuComponent {
 // MARK: Message data
 
 private extension MenuComponent {
+    struct Source: Decodable {
+        let x: Double
+        let y: Double
+        let width: Double
+        let height: Double
+    }
+
     struct MessageData: Decodable {
         let title: String
         let items: [Item]
+        let source: Source
     }
 
     struct Item: Decodable {
