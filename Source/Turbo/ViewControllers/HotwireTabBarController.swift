@@ -32,21 +32,9 @@ open class HotwireTabBarController: UITabBarController, NavigationHandler {
     ///
     /// - Parameters:
     ///   - tabs: An array of `HotwireTab` instances representing the tabs to be loaded.
-    ///   - navigatorDelegate: An optional instance conforming to `NavigatorDelegate`
-    ///   used to handle `Navigator`'s requests and actions.
-    ///
-    /// This method assigns the provided tabs to the controller and sets up each tab's view controller.
     public func load(_ tabs: [HotwireTab]) {
         hotwireTabs = tabs
-        if #available(iOS 18.0, *) {
-            self.tabs = tabs.map {
-                tab(for: $0, navigatorDelegate: navigatorDelegate)
-            }
-        } else {
-            viewControllers = tabs.map {
-                setupViewControllerForTab($0, navigatorDelegate: navigatorDelegate)
-            }
-        }
+        setupTabs()
         activeNavigator.start()
     }
 
@@ -66,52 +54,36 @@ open class HotwireTabBarController: UITabBarController, NavigationHandler {
     private var navigatorsByTab: [HotwireTab: Navigator] = [:]
     private let navigatorDelegate: NavigatorDelegate?
 
-    /// Configures a navigator instance for the given tab and returns its root view controller.
-    ///
-    /// - Parameters:
-    ///   - tab: A `HotwireTab` instance representing the tab for which to configure a navigator.
-    ///   - navigatorDelegate: An optional instance conforming to `NavigatorDelegate`.
-    /// - Returns: The root view controller of the configured Navigator.
-    ///
-    /// This method sets the tab bar item of navigator's root view controller based on the tab's title and image,
-    /// stores the navigator in an internal dictionary, and routes the navigator to the tab's URL.
-    private func setupViewControllerForTab(_ tab: HotwireTab,
-                                           navigatorDelegate: NavigatorDelegate? = nil) -> UIViewController {
-        let navigator = self.navigator(for: tab)
+    /// Configures each tab for the appropriate platform API.
+    private func setupTabs() {
+        let contexts = hotwireTabs.map { tabContext(for: $0) }
 
-        navigator.rootViewController.tabBarItem = UITabBarItem(
-            title: tab.title,
-            image: tab.image,
-            selectedImage: tab.selectedImage
-        )
-
-        return navigator.rootViewController
+        if #available(iOS 18.0, *) {
+            tabs = contexts.map { makeTab(from: $0) }
+        } else {
+            viewControllers = contexts.map { makeViewController(from: $0) }
+        }
     }
 
-    /// Configures a navigator instance for the given tab and returns its tab.
-    ///
-    /// - Parameters:
-    ///   - tab: A `HotwireTab` instance representing the tab for which to configure a navigator.
-    ///   - navigatorDelegate: An optional instance conforming to `NavigatorDelegate`.
-    /// - Returns: The tab of the root view controller of the configured Navigator.
-    ///
-    /// This method sets the tab bar item of navigator's root view controller based on the tab's title and image,
-    /// stores the navigator in an internal dictionary, and routes the navigator to the tab's URL.
-    /// It returns an iOS 18+ `UISearchTab` if `HotwireTab.isSearchTab` is true.
-    @available(iOS 18.0, *)
-    private func tab(for tab: HotwireTab,
-                     navigatorDelegate: NavigatorDelegate? = nil) -> UITab {
-        let navigator = self.navigator(for: tab)
+    private func tabContext(for tab: HotwireTab) -> TabContext {
+        let navigator = navigator(for: tab)
 
-        if tab.isSearchTab {
-            return UISearchTab(title: tab.title, image: tab.image, identifier: tab.title) { _ in
-                navigator.rootViewController
-            }
-        } else {
-            return UITab(title: tab.title, image: tab.image, identifier: tab.title) { _ in
-                navigator.rootViewController
-            }
-        }
+        return TabContext(
+            tab: tab,
+            navigator: navigator,
+            viewController: navigator.rootViewController
+        )
+    }
+
+    private func makeViewController(from context: TabContext) -> UIViewController {
+        context.viewController.tabBarItem = context.tab.makeTabBarItem()
+
+        return context.viewController
+    }
+
+    @available(iOS 18.0, *)
+    private func makeTab(from context: TabContext) -> UITab {
+        return context.tab.makeTab(context.viewController)
     }
 
     private func navigator(for tab: HotwireTab) -> Navigator {
@@ -129,6 +101,14 @@ open class HotwireTabBarController: UITabBarController, NavigationHandler {
     }
 }
 
+private extension HotwireTabBarController {
+    struct TabContext {
+        let tab: HotwireTab
+        let navigator: Navigator
+        let viewController: UIViewController
+    }
+}
+
 extension HotwireTabBarController: UITabBarControllerDelegate {
     public func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         activeNavigator.start()
@@ -137,32 +117,5 @@ extension HotwireTabBarController: UITabBarControllerDelegate {
     @available(iOS 18.0, *)
     public func tabBarController(_ tabBarController: UITabBarController, didSelectTab selectedTab: UITab, previousTab: UITab?) {
         activeNavigator.start()
-    }
-}
-
-/// Represents a tab in the `HotwireTabBarController`.
-public struct HotwireTab: Hashable {
-    /// The title of the tab.
-    public let title: String
-    /// The image the tab item uses.
-    public let image: UIImage
-    ///The image the tab item uses when the user selects it.
-    ///If you don’t provide `selectedImage`, the `image` is used for both selection states.
-    public let selectedImage: UIImage?
-    /// The URL associated with the tab, used for routing.
-    public let url: URL
-
-    public let isSearchTab: Bool
-
-    public init(title: String,
-                image: UIImage,
-                selectedImage: UIImage? = nil,
-                url: URL,
-                isSearchTab: Bool = false) {
-        self.title = title
-        self.image = image
-        self.selectedImage = selectedImage
-        self.url = url
-        self.isSearchTab = isSearchTab
     }
 }
