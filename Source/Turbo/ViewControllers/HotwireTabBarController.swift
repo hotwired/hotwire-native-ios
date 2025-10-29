@@ -21,11 +21,13 @@ open class HotwireTabBarController: UITabBarController, NavigationHandler {
     /// - Returns: A `Navigator` instance for the currently selected tab.
     /// - Note: This property will call `fatalError` if there is no tab matching the selected index.
     public var activeNavigator: Navigator {
-        guard hotwireTabs.indices.contains(selectedIndex) else {
-            fatalError("No tab matching the selected index")
+        let selectedHotwireTab = currentHotwireTab()
+
+        guard let navigator = navigatorsByIdentifier[selectedHotwireTab.id] else {
+            fatalError("No navigator associated with tab \(selectedHotwireTab)")
         }
-        let selectedTab = hotwireTabs[selectedIndex]
-        return navigatorsByTab[selectedTab]!
+
+        return navigator
     }
 
     /// Loads the provided tabs and configures each one with its own navigator.
@@ -51,17 +53,27 @@ open class HotwireTabBarController: UITabBarController, NavigationHandler {
     // MARK: - Private
 
     private var hotwireTabs: [HotwireTab] = []
-    private var navigatorsByTab: [HotwireTab: Navigator] = [:]
+    private var navigatorsByIdentifier: [HotwireTab.ID: Navigator] = [:]
     private let navigatorDelegate: NavigatorDelegate?
 
     /// Configures each tab for the appropriate platform API.
     private func setupTabs() {
+        navigatorsByIdentifier.removeAll()
         let contexts = hotwireTabs.map { tabContext(for: $0) }
 
         if #available(iOS 18.0, *) {
             tabs = contexts.map { makeTab(from: $0) }
+
+            if selectedTab == nil, let firstTab = tabs.first {
+                selectedTab = firstTab
+            }
         } else {
             viewControllers = contexts.map { makeViewController(from: $0) }
+
+            if let viewControllers,
+                !viewControllers.indices.contains(selectedIndex) {
+                selectedIndex = 0
+            }
         }
     }
 
@@ -95,9 +107,23 @@ open class HotwireTabBarController: UITabBarController, NavigationHandler {
             delegate: navigatorDelegate
         )
 
-        navigatorsByTab[tab] = navigator
+        navigatorsByIdentifier[tab.id] = navigator
 
         return navigator
+    }
+
+    func currentHotwireTab() -> HotwireTab {
+        if #available(iOS 18.0, *),
+           let identifier = selectedTab?.identifier,
+           let match = hotwireTabs.first(where: { $0.id == identifier }) {
+            return match
+        }
+
+        guard hotwireTabs.indices.contains(selectedIndex) else {
+            fatalError("No tab matching the selected index")
+        }
+
+        return hotwireTabs[selectedIndex]
     }
 }
 
