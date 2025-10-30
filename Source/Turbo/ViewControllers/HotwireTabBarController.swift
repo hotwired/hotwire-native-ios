@@ -40,6 +40,15 @@ open class HotwireTabBarController: UITabBarController, NavigationHandler {
         activeNavigator.start()
     }
 
+    /// Returns the navigator associated with the given tab.
+    ///
+    /// - Parameter tab: The `HotwireTab` whose associated navigator to retrieve.
+    /// - Returns: The existing `Navigator` instance for `tab`, or `nil` if the tab is not part of
+    ///   the current configuration or the navigators have not been initialized yet (e.g., before `load(_:)`).
+    public func navigator(for tab: HotwireTab) -> Navigator? {
+        return navigatorsByIdentifier[tab.id]
+    }
+
     // MARK: NavigationHandler
 
     open func route(_ url: URL) {
@@ -78,7 +87,7 @@ open class HotwireTabBarController: UITabBarController, NavigationHandler {
     }
 
     private func tabContext(for tab: HotwireTab) -> TabContext {
-        let navigator = navigator(for: tab)
+        let navigator = makeNavigator(for: tab)
 
         return TabContext(
             tab: tab,
@@ -98,7 +107,7 @@ open class HotwireTabBarController: UITabBarController, NavigationHandler {
         return context.tab.makeTab(context.viewController)
     }
 
-    private func navigator(for tab: HotwireTab) -> Navigator {
+    private func makeNavigator(for tab: HotwireTab) -> Navigator {
         let navigator = Navigator(
             configuration: .init(
                 name: tab.title,
