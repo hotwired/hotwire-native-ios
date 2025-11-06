@@ -38,6 +38,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             OverflowMenuComponent.self,
         ])
 
+        // Use a custom navigation controller that prefers large titles.
+        Hotwire.config.defaultNavigationController = {
+            LargeTitleNavigationController()
+        }
+
         // Set configuration options
         Hotwire.config.backButtonDisplayMode = .minimal
         Hotwire.config.showDoneButtonOnModals = true

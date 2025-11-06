@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		844800002EBD003600ADCED9 /* LargeTitleNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8448FFFF2EBD003600ADCED9 /* LargeTitleNavigationController.swift */; };
 		844BA78B2B9A4843008F48DB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844BA78A2B9A4843008F48DB /* AppDelegate.swift */; };
 		844BA7942B9A4844008F48DB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 844BA7932B9A4844008F48DB /* Assets.xcassets */; };
 		844BA7972B9A4844008F48DB /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 844BA7962B9A4844008F48DB /* Base */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8448FFFF2EBD003600ADCED9 /* LargeTitleNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeTitleNavigationController.swift; sourceTree = "<group>"; };
 		844BA7872B9A4843008F48DB /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		844BA78A2B9A4843008F48DB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		844BA7932B9A4844008F48DB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -74,6 +76,7 @@
 				844BA7AD2B9A488A008F48DB /* Demo.swift */,
 				844BA7A22B9A4889008F48DB /* SceneController.swift */,
 				844BA78A2B9A4843008F48DB /* AppDelegate.swift */,
+				8448FFFF2EBD003600ADCED9 /* LargeTitleNavigationController.swift */,
 				84A617FE2D5AA88B00694AEE /* Tabs.swift */,
 				844BA7AC2B9A488A008F48DB /* NumbersViewController.swift */,
 				844BA7AE2B9A488A008F48DB /* path-configuration.json */,
@@ -180,6 +183,7 @@
 			files = (
 				844BA7B62B9A488A008F48DB /* MenuComponent.swift in Sources */,
 				844BA7B72B9A488A008F48DB /* NumbersViewController.swift in Sources */,
+				844800002EBD003600ADCED9 /* LargeTitleNavigationController.swift in Sources */,
 				844BA7B82B9A488A008F48DB /* Demo.swift in Sources */,
 				84A617FF2D5AA88B00694AEE /* Tabs.swift in Sources */,
 				844BA78B2B9A4843008F48DB /* AppDelegate.swift in Sources */,
