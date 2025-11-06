@@ -172,7 +172,8 @@ public class Navigator {
 
 extension Navigator: SessionDelegate {
     public func session(_ session: Session, didProposeVisit proposal: VisitProposal) {
-        if proposal.isRedirect {
+        // Pop the default context controller if we are redirecting in the modal session.
+        if proposal.isRedirect && session === modalSession {
             // Animate the pop only if we're in the active modal session
             // and the visit is proposed on the default context.
             let animatePop = session === modalSession && proposal.context == .default
