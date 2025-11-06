@@ -47,7 +47,9 @@ final class MenuComponent: BridgeComponent {
         alertController.addAction(cancelAction)
 
         // Set popoverController for iPads
-        if let popoverController = alertController.popoverPresentationController {
+        if UIDevice.current.userInterfaceIdiom == .pad,
+           let popoverController = alertController.popoverPresentationController
+        {
             if let barButtonItem = viewController?.navigationItem.rightBarButtonItem {
                 popoverController.barButtonItem = barButtonItem
             } else {
