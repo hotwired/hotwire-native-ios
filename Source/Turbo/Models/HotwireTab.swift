@@ -7,7 +7,7 @@ public struct HotwireTab: Identifiable, Hashable {
     /// The title of the tab.
     public let title: String
     /// The image the tab item uses.
-    public let image: UIImage
+    public let image: UIImage?
     ///The image the tab item uses when the user selects it.
     ///If you don’t provide `selectedImage`, the `image` is used for both selection states.
     public let selectedImage: UIImage?
@@ -18,7 +18,7 @@ public struct HotwireTab: Identifiable, Hashable {
 
     public init(id: String? = nil,
                 title: String,
-                image: UIImage,
+                image: UIImage?,
                 selectedImage: UIImage? = nil,
                 url: URL,
                 isSearchTab: Bool = false) {
