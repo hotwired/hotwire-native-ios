@@ -35,7 +35,7 @@ open class HotwireNavigationController: UINavigationController {
             topVisitableViewController.disappearReason = .coveredByPush
         }
 
-        if Hotwire.config.hidesTabBarWhenPushed {
+        if Hotwire.config.hideTabBarWhenPushed {
             viewController.hidesBottomBarWhenPushed = (viewControllers.count >= 1)
         }
 
@@ -56,7 +56,7 @@ open class HotwireNavigationController: UINavigationController {
     }
 
     open override func setViewControllers(_ viewControllers: [UIViewController], animated: Bool) {
-        if Hotwire.config.hidesTabBarWhenPushed {
+        if Hotwire.config.hideTabBarWhenPushed {
             for (index, viewController) in viewControllers.enumerated() {
                 viewController.hidesBottomBarWhenPushed = (index != 0)
             }

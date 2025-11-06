@@ -24,7 +24,7 @@ public struct HotwireConfig {
     public var backButtonDisplayMode = UINavigationItem.BackButtonDisplayMode.default
 
     /// Set to true to only show the tab bar on the root screens.
-    public var hidesTabBarWhenPushed = false
+    public var hideTabBarWhenPushed = false
 
     /// Set to `true` to fade content when performing a `replace` visit.
     public var animateReplaceActions = false
