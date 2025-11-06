@@ -24,7 +24,10 @@ open class VisitableView: UIView {
     open func activateWebView(_ webView: WKWebView, forVisitable visitable: Visitable) {
         self.webView = webView
         self.visitable = visitable
-        addSubview(webView)
+        // For behaviour like UINavigationBar.prefersLargeTitles or
+        // TabBarMinimize to work the scrollable view shoud be the
+        // first child in the hierarchy from the moment it is added.
+        insertSubview(webView, at: 0)
         addFillConstraints(for: webView)
         installRefreshControl()
         showOrHideWebView()
