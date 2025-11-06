@@ -23,15 +23,46 @@ public final class SafariViewControllerRouteDecisionHandler: RouteDecisionHandle
 
     public func handle(location: URL,
                        configuration: Navigator.Configuration,
-                       navigator: Navigator) -> Router.Decision {
-        open(externalURL: location,
-             viewController: navigator.activeNavigationController)
+                       navigator: Navigator) -> HotwireNative.Router.Decision {
+        Task { @MainActor in
+            await open(externalURL: location,
+                       viewController: navigator.activeNavigationController)
+        }
 
         return .cancel
     }
 
+    @MainActor
     func open(externalURL: URL,
-              viewController: UIViewController) {
+              viewController: UIViewController) async {
+        let didOpenAsUniversalLink = await openAsUniversalLink(
+            externalURL: externalURL,
+            viewController: viewController
+        )
+
+        if didOpenAsUniversalLink {
+            return
+        }
+
+        openSafari(externalURL: externalURL, viewController: viewController)
+    }
+
+    @MainActor
+    func openAsUniversalLink(externalURL: URL,
+                             viewController: UIViewController) async -> Bool {
+        let options = UIScene.OpenExternalURLOptions()
+        options.universalLinksOnly = true
+
+        guard let windowScene = viewController.view.window?.windowScene else {
+            return false
+        }
+
+        return await windowScene.open(externalURL, options: options)
+    }
+
+    @MainActor
+    func openSafari(externalURL: URL,
+                    viewController: UIViewController) {
         let safariViewController = SFSafariViewController(url: externalURL)
         safariViewController.modalPresentationStyle = .pageSheet
         if #available(iOS 15.0, *) {
