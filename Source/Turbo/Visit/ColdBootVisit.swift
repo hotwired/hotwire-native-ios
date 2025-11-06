@@ -112,7 +112,8 @@ extension ColdBootVisit: WKNavigationDelegate {
                 decisionHandler(.allow)
             } else {
                 decisionHandler(.cancel)
-                fail(with: TurboError.http(statusCode: 0))
+                logger.error("Content mismatch detected: \(navigationResponse).")
+                fail(with: TurboError.contentTypeMismatch)
             }
         }
     }
