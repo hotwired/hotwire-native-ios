@@ -12,7 +12,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: macos-13
+    runs-on: macos-15
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,4 +23,4 @@ jobs:
           xcode-version: latest-stable
 
       - name: Run Tests
-        run: xcodebuild test -scheme HotwireNative -destination "name=iPhone 15 Pro" | xcpretty && exit ${PIPESTATUS[0]}
+        run: xcodebuild test -scheme HotwireNative -destination "name=iPhone 17 Pro" | xcpretty && exit ${PIPESTATUS[0]}
