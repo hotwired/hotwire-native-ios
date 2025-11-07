@@ -1,12 +1,7 @@
 import XCTest
 @testable import HotwireNative
 
-final class HotwireConfigTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
-        Hotwire.config.logger = nil
-    }
-    
+final class HotwireConfigTests: XCTestCase {    
     func testUserAgent() {
         var config = HotwireConfig()
         config.applicationUserAgentPrefix = "TestApp/1.0"

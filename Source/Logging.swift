@@ -2,17 +2,16 @@ import Foundation
 import OSLog
 
 enum Logging {
-    static var customLogger: HotwireLogger?
-    
-    fileprivate static var currentLogger: HotwireLogger {
-        customLogger ?? OSLogHotwireLogger(logger: defaultLogger)
-    }
-
-    private static let defaultLogger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "Hotwire")
+    static let defaultLogger: HotwireLogger = OSLogHotwireLogger(
+        logger: Logger(
+            subsystem: Bundle.main.bundleIdentifier!,
+            category: "Hotwire"
+        )
+    )
 }
 
 var logger: HotwireLogger {
-    Logging.currentLogger
+    Hotwire.config.logger
 }
 
 public protocol HotwireLogger {
