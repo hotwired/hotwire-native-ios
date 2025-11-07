@@ -42,8 +42,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Hotwire.config.backButtonDisplayMode = .minimal
         Hotwire.config.showDoneButtonOnModals = true
         Hotwire.config.animateReplaceActions = true
-#if DEBUG
-        Hotwire.config.debugLoggingEnabled = true
-#endif
     }
 }

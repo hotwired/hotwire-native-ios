@@ -28,14 +28,13 @@ public struct HotwireConfig {
 
     /// Set to `true` to fade content when performing a `replace` visit.
     public var animateReplaceActions = false
-
-    /// Enable or disable debug logging for Turbo visits and bridge elements
-    /// connecting, disconnecting, receiving/sending messages, and more.
-    public var debugLoggingEnabled = false {
-        didSet {
-            HotwireLogger.debugLoggingEnabled = debugLoggingEnabled
-        }
-    }
+    
+    /// Provide a custom logger to receive all Hotwire log messages and customize logging
+    /// behaviour.
+    ///
+    /// If no custom logger is provided, Hotwire will use the system `OSLog` framework.
+    /// Log messages will stream to Xcode's console and the Console app.
+    public var logger: HotwireLogger = Logging.defaultLogger
     
     /// Gets the user agent that the library builds to identify the app
     /// and its registered bridge components.
