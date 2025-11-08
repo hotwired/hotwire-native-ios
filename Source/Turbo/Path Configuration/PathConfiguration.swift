@@ -60,9 +60,9 @@ public final class PathConfiguration {
     /// Returns a merged dictionary containing all the properties that match this URL.
     public func properties(for url: URL) -> PathProperties {
         if Hotwire.config.pathConfiguration.matchQueryStrings, let query = url.query {
-            return properties(for: "\(url.path)?\(query)")
+            return properties(for: "\(url.pathPreservingSlash)?\(query)")
         }
-        return properties(for: url.path)
+        return properties(for: url.pathPreservingSlash)
     }
 
     /// Returns a merged dictionary containing all the properties
