@@ -229,6 +229,11 @@ extension Navigator: SessionDelegate {
         guard let url = session.activeVisitable?.initialVisitableURL else { return }
 
         Task { @MainActor in
+            // To ensure deletions in the WebView are mirrored, first remove any shared cookies
+            // for this URL, then set the cookies read from WKWebView.
+            let storage = HTTPCookieStorage.shared
+            (storage.cookies(for: url) ?? []).forEach { storage.deleteCookie($0) }
+
             let cookies = await WKWebsiteDataStore.default().httpCookieStore.allCookies()
             HTTPCookieStorage.shared.setCookies(cookies, for: url, mainDocumentURL: url)
             delegate?.requestDidFinish(at: url)
