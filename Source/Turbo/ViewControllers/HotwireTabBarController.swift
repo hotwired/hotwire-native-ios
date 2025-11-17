@@ -40,13 +40,13 @@ open class HotwireTabBarController: UITabBarController, NavigationHandler {
         activeNavigator.start()
     }
 
-    /// Returns the navigator associated with the given tab.
+    /// Returns the navigator associated with the given tab's identifier.
     ///
-    /// - Parameter tab: The `HotwireTab` whose associated navigator to retrieve.
+    /// - Parameter identifier: The id of the `HotwireTab` whose associated navigator to retrieve.
     /// - Returns: The existing `Navigator` instance for `tab`, or `nil` if the tab is not part of
     ///   the current configuration or the navigators have not been initialized yet (e.g., before `load(_:)`).
-    public func navigator(for tab: HotwireTab) -> Navigator? {
-        return navigatorsByIdentifier[tab.id]
+    public func navigator(for id: String) -> Navigator? {
+        return navigatorsByIdentifier[id]
     }
 
     // MARK: NavigationHandler
