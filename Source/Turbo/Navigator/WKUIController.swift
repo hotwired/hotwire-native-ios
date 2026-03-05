@@ -13,14 +13,22 @@ open class WKUIController: NSObject, WKUIDelegate {
     }
 
     open func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void) {
+        guard let delegate else {
+            completionHandler()
+            return
+        }
         let alert = UIAlertController(title: message, message: nil, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Close", style: .default) { _ in
             completionHandler()
         })
-        delegate?.present(alert, animated: true)
+        delegate.present(alert, animated: true)
     }
 
     open func webView(_ webView: WKWebView, runJavaScriptConfirmPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (Bool) -> Void) {
+        guard let delegate else {
+            completionHandler(false)
+            return
+        }
         let alert = UIAlertController(title: message, message: nil, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
             completionHandler(true)
@@ -28,6 +36,6 @@ open class WKUIController: NSObject, WKUIDelegate {
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
             completionHandler(false)
         })
-        delegate?.present(alert, animated: true)
+        delegate.present(alert, animated: true)
     }
 }
