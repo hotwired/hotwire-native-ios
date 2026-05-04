@@ -10,11 +10,10 @@ public protocol VisitableDelegate: AnyObject {
     func visitableDidRequestRefresh(_ visitable: Visitable)
 }
 
-public protocol Visitable: AnyObject {
+public protocol Visitable: AnyObject, PathIdentifiable {
     var visitableViewController: UIViewController { get }
     var visitableDelegate: VisitableDelegate? { get set }
     var visitableView: VisitableView { get }
-    var initialVisitableURL: URL { get }
     var currentVisitableURL: URL { get }
 
     func visitableDidRender()
