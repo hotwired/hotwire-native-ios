@@ -253,9 +253,9 @@ extension Navigator: NavigationHierarchyControllerDelegate {
     func refreshVisitable(navigationStack: NavigationHierarchyController.NavigationStackType, newTopmostVisitable: any Visitable) {
         switch navigationStack {
         case .main:
-            session.visit(newTopmostVisitable, action: .restore)
+            session.visit(newTopmostVisitable, action: .replace)
         case .modal:
-            modalSession.visit(newTopmostVisitable, action: .restore)
+            modalSession.visit(newTopmostVisitable, action: .replace)
         }
     }
 }
