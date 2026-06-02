@@ -32,6 +32,22 @@ class VisitOptionsTests: XCTestCase {
     func test_Decodable_canBeInitializedWithResponse() throws {
         _ = try validVisitVisitOptions(responseHTMLString: "<html></html>")
     }
+
+    func test_Decodable_shouldCacheSnapshotDefaultsToNil() throws {
+        let json = "{}".data(using: .utf8)!
+
+        let options = try JSONDecoder().decode(VisitOptions.self, from: json)
+        XCTAssertNil(options.shouldCacheSnapshot)
+    }
+
+    func test_Decodable_decodesShouldCacheSnapshotFalse() throws {
+        let json = """
+        {"shouldCacheSnapshot": false}
+        """.data(using: .utf8)!
+
+        let options = try JSONDecoder().decode(VisitOptions.self, from: json)
+        XCTAssertEqual(options.shouldCacheSnapshot, false)
+    }
 }
 
 extension VisitOptionsTests {
