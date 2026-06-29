@@ -49,12 +49,26 @@ class WebViewNavigationSimulator: NSObject, WKNavigationDelegate {
                  decidePolicyFor navigationAction: WKNavigationAction,
                  decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         capturedNavigationAction = navigationAction
-        decisionHandler(.allow)
-        
+
         // When there is no simulated click, or after a simulated click is performed, resume the continuation.
-        if simulateLinkClickElementId == nil || didSimulateLinkClick {
+        let shouldResumeContinuation = simulateLinkClickElementId == nil || didSimulateLinkClick
+
+        if shouldResumeContinuation {
+            // Cancel the actual navigation — we only need the WKNavigationAction object.
+            // Allowing it would let WKWebView navigate to external URLs (e.g., https://example.com),
+            // blocking the shared WKProcessPool and stalling subsequent tests for minutes.
+            decisionHandler(.cancel)
             continuation?.resume(returning: navigationAction)
             continuation = nil
+        } else {
+            // Allow intermediate navigations (e.g., the initial loadHTMLString page load)
+            // so the page fully loads and didFinish can trigger the simulated click.
+            decisionHandler(.allow)
         }
+    }
+
+    func stopLoading() {
+        webView.stopLoading()
+        webView.navigationDelegate = nil
     }
 }
