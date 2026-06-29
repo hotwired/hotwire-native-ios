@@ -1,3 +1,4 @@
+import SwiftUI
 import UIKit
 import WebKit
 
@@ -21,6 +22,12 @@ public struct HotwireConfig {
 
     /// Sets the back button display mode of `HotwireWebViewController`.
     public var backButtonDisplayMode = UINavigationItem.BackButtonDisplayMode.default
+
+    /// Set to true to only show the tab bar on the root screens.
+    public var hideTabBarWhenPushed = false
+
+    /// Set to `true` to fade content when performing a `replace` visit.
+    public var animateReplaceActions = false
 
     /// Enable or disable debug logging for Turbo visits and bridge elements
     /// connecting, disconnecting, receiving/sending messages, and more.
@@ -67,6 +74,11 @@ public struct HotwireConfig {
     /// Ensure you return a new instance each time.
     public var makeCustomWebView: WebViewBlock = { (configuration: WKWebViewConfiguration) in
         WKWebView.debugInspectable(configuration: configuration)
+    }
+
+    /// Optionally customize the native view presented when an error occurs.
+    public var makeCustomErrorView: (Error, ErrorPresenter.Handler?) -> any ErrorPresentableView = { error, handler in
+        DefaultErrorView(error: error, handler: handler)
     }
 
     // MARK: Bridge

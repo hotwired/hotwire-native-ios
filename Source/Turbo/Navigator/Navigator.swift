@@ -172,6 +172,12 @@ public class Navigator {
 
 extension Navigator: SessionDelegate {
     public func session(_ session: Session, didProposeVisit proposal: VisitProposal) {
+        if proposal.isRedirect {
+            // Animate the pop only if we're in the active modal session
+            // and the visit is proposed on the default context.
+            let animatePop = session === modalSession && proposal.context == .default
+            pop(animated: animatePop)
+        }
         route(proposal)
     }
 
