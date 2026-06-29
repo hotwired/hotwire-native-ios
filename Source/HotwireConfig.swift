@@ -49,13 +49,6 @@ public struct HotwireConfig {
         }
     }
     
-    /// Provide a custom logger to receive all Hotwire log messages and customize logging
-    /// behaviour.
-    ///
-    /// If no custom logger is provided, Hotwire will use the system `OSLog` framework.
-    /// Log messages will stream to Xcode's console and the Console app.
-    public var logger: HotwireLogger = Logging.defaultLogger
-    
     /// Gets the user agent that the library builds to identify the app
     /// and its registered bridge components.
     ///
