@@ -32,10 +32,13 @@ struct RedirectHandler {
         case crossOriginRedirect(URL)
     }
 
-    func resolve(location: URL) async throws -> Result {
+    func resolve(
+        location: URL,
+        timeout: TimeInterval = Hotwire.config.redirectResolutionTimeout
+    ) async throws -> Result {
         do {
             var request = URLRequest(url: location)
-            request.timeoutInterval = 30
+            request.timeoutInterval = timeout
             let (_, response) = try await URLSession.shared.data(for: request)
             let httpResponse = try validateResponse(response)
 
