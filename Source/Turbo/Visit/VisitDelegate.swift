@@ -13,7 +13,7 @@ protocol VisitDelegate: AnyObject {
     func visitDidRender(_ visit: Visit)
     
     func visitRequestDidStart(_ visit: Visit)
-    func visit(_ visit: Visit, requestDidFailWithError error: Error)
+    func visit(_ visit: Visit, requestDidFailWithError error: HotwireNativeError)
     func visitRequestDidFinish(_ visit: Visit)
     func visitDidProposeVisitToLocation(_ location: URL)
 

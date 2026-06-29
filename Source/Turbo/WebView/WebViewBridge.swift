@@ -5,9 +5,9 @@ protocol WebViewDelegate: AnyObject {
     func webViewDidInvalidatePage(_ webView: WebViewBridge)
     func webView(_ webView: WebViewBridge, didStartFormSubmissionToLocation location: URL)
     func webView(_ webView: WebViewBridge, didFinishFormSubmissionToLocation location: URL)
-    func webView(_ webView: WebViewBridge, didFailInitialPageLoadWithError: Error)
+    func webView(_ webView: WebViewBridge, didFailInitialPageLoadWithError: HotwireNativeError)
     func webView(_ webView: WebViewBridge, didFailJavaScriptEvaluationWithError error: Error)
-    func webView(_ webView: WebViewBridge, didFailRequestWithNonHttpStatusToLocation location: URL, identifier: String)
+    func webView(_ webView: WebViewBridge, didFailRequestWithNonHttpStatusToLocation location: URL, identifier: String, statusCode: Int)
 }
 
 protocol WebViewPageLoadDelegate: AnyObject {
@@ -112,8 +112,12 @@ extension WebViewBridge: ScriptMessageHandlerDelegate {
         switch message.name {
         case .pageLoaded:
             pageLoadDelegate?.webView(self, didLoadPageWithRestorationIdentifier: message.restorationIdentifier!)
+        case .turboIsReady:
+            if !message.isReady {
+                delegate?.webView(self, didFailInitialPageLoadWithError: .load(.notReady))
+            }
         case .pageLoadFailed:
-            delegate?.webView(self, didFailInitialPageLoadWithError: TurboError.pageLoadFailure)
+            delegate?.webView(self, didFailInitialPageLoadWithError: .load(.notPresent))
         case .formSubmissionStarted:
             delegate?.webView(self, didStartFormSubmissionToLocation: message.location!)
         case .formSubmissionFinished:
@@ -123,7 +127,10 @@ extension WebViewBridge: ScriptMessageHandlerDelegate {
         case .visitProposed:
             delegate?.webView(self, didProposeVisitToLocation: message.location!, options: message.options!)
         case .visitRequestFailedWithNonHttpStatusCode:
-            delegate?.webView(self, didFailRequestWithNonHttpStatusToLocation: message.location!, identifier: message.identifier!)
+            guard let location = message.location,
+                  let identifier = message.identifier,
+                  let statusCode = message.statusCode else { return }
+            delegate?.webView(self, didFailRequestWithNonHttpStatusToLocation: location, identifier: identifier, statusCode: statusCode)
         case .visitProposalScrollingToAnchor:
             break
         case .visitProposalRefreshingPage:
@@ -135,7 +142,7 @@ extension WebViewBridge: ScriptMessageHandlerDelegate {
         case .visitRequestCompleted:
             visitDelegate?.webView(self, didCompleteRequestForVisitWithIdentifier: message.identifier!)
         case .visitRequestFailed:
-            visitDelegate?.webView(self, didFailRequestForVisitWithIdentifier: message.identifier!, statusCode: message.data["statusCode"] as! Int)
+            visitDelegate?.webView(self, didFailRequestForVisitWithIdentifier: message.identifier!, statusCode: message.statusCode!)
         case .visitRequestFinished:
             visitDelegate?.webView(self, didFinishRequestForVisitWithIdentifier: message.identifier!, date: message.date)
         case .visitRendered:

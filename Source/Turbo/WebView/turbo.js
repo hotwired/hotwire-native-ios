@@ -11,8 +11,10 @@
     registerAdapter() {
       if (window.Turbo) {
         Turbo.registerAdapter(this)
+        this.turboIsReady(true)
       } else if (window.Turbolinks) {
         Turbolinks.controller.adapter = this
+        this.turboIsReady(true)
       } else {
         throw new Error("Failed to register the TurboNative adapter")
       }
@@ -28,6 +30,10 @@
       }
 
        this.postMessageAfterNextRepaint("pageLoaded", { restorationIdentifier })
+    }
+
+    turboIsReady(isReady) {
+      this.postMessage("turboIsReady", { isReady: isReady })
     }
 
     pageLoadFailed() {
@@ -149,7 +155,7 @@
       // the native side to determine whether a cross-origin redirect visit should
       // be proposed.
       if (statusCode <= 0) {
-        this.postMessage("visitRequestFailedWithNonHttpStatusCode", { location: location, identifier: visit.identifier })
+        this.postMessage("visitRequestFailedWithNonHttpStatusCode", { location: location, identifier: visit.identifier, statusCode: statusCode })
       } else {
         this.postMessage("visitRequestFailed", { location: location, identifier: visit.identifier, statusCode: statusCode })
       }
@@ -231,6 +237,7 @@
 
     setTimeout(() => {
       if (!window.Turbo && !window.Turbolinks) {
+        window.turboNative.turboIsReady(false)
         window.turboNative.pageLoadFailed()
       }
     }, TURBO_LOAD_TIMEOUT)

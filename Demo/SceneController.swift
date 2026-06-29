@@ -47,17 +47,20 @@ extension SceneController: NavigatorDelegate {
         }
     }
 
-    func visitableDidFailRequest(_ visitable: any Visitable, error: any Error, retryHandler: RetryBlock?) {
-        if let turboError = error as? TurboError, case let .http(statusCode) = turboError, statusCode == 401 {
+    func visitableDidFailRequest(_ visitable: any Visitable, error: HotwireNativeError, retryHandler: RetryBlock?) {
+        switch error {
+        case .http(.client(.unauthorized)):
             promptForAuthentication()
-        } else if let errorPresenter = visitable as? ErrorPresenter {
-            errorPresenter.presentError(error) {
-                retryHandler?()
+        default:
+            if let errorPresenter = visitable as? ErrorPresenter {
+                errorPresenter.presentError(error) {
+                    retryHandler?()
+                }
+            } else {
+                let alert = UIAlertController(title: "Visit failed!", message: error.localizedDescription, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                tabBarController.activeNavigator.present(alert, animated: true)
             }
-        } else {
-            let alert = UIAlertController(title: "Visit failed!", message: error.localizedDescription, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            tabBarController.activeNavigator.present(alert, animated: true)
         }
     }
 }

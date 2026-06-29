@@ -203,10 +203,9 @@ extension Navigator: SessionDelegate {
         }
     }
 
-    public func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, error: Error) {
-        delegate?.visitableDidFailRequest(visitable, error: error) {
-            session.reload()
-        }
+    public func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, error: HotwireNativeError) {
+        let retryHandler: (() -> Void)? = error.isRetryable ? { session.reload() } : nil
+        delegate?.visitableDidFailRequest(visitable, error: error, retryHandler: retryHandler)
     }
 
     public func session(_ session: Session, decidePolicyFor navigationAction: WKNavigationAction) -> WebViewPolicyManager.Decision {
@@ -293,7 +292,9 @@ extension Navigator {
         // Instead, save the session in `backgroundTerminatedWebViewSessions`
         // and reload it when the app is back in foreground.
         if appLifecycleObserver.appState == .background {
-            backgroundTerminatedWebViewSessions.append(session)
+            if !backgroundTerminatedWebViewSessions.contains(where: { $0 === session }) {
+                backgroundTerminatedWebViewSessions.append(session)
+            }
             return
         }
 
