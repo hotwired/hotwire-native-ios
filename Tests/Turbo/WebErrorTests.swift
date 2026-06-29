@@ -28,13 +28,19 @@ final class WebErrorTests: XCTestCase {
     }
 
     func test_isTimeout_true_forTurboJSTimeoutCode() {
-        XCTAssertTrue(WebError(errorCode: -1, message: "Timeout").isTimeout)
+        XCTAssertTrue(WebError(turboError: .timeout).isTimeout)
     }
 
     func test_isTimeout_true_forRawTimedOutErrorCode() {
-        // URLError.Code.timedOut.rawValue is -1001. The isTimeout check uses errorCode directly,
-        // so a WebError constructed without a URLError but with -1001 should still be a timeout.
         XCTAssertTrue(WebError(errorCode: -1001, message: nil).isTimeout)
+    }
+
+    func test_isTimeout_false_forRawUnknownErrorCode() {
+        XCTAssertFalse(WebError(errorCode: -1, message: nil).isTimeout)
+    }
+
+    func test_isTimeout_false_forUnknownTurboStatusCodeMatchingRawTimedOutCode() {
+        XCTAssertFalse(WebError(turboError: .unknownStatusCode(-1001)).isTimeout)
     }
 
     func test_isTimeout_false_forNotConnectedToInternet() {
@@ -189,6 +195,16 @@ final class WebErrorTests: XCTestCase {
     func test_errorDescription_usesStoredDescription_whenNoURLError() {
         let error = WebError(errorCode: 0, message: "Network failure")
         XCTAssertEqual(error.errorDescription, "Network failure")
+    }
+
+    func test_errorDescription_forTurboNetworkFailure() {
+        let error = WebError(turboError: .networkFailure)
+        XCTAssertEqual(error.errorDescription, "Network failure")
+    }
+
+    func test_errorDescription_forTurboUnknownStatusCode() {
+        let error = WebError(turboError: .unknownStatusCode(-3))
+        XCTAssertEqual(error.errorDescription, "Network error")
     }
 
     func test_errorDescription_defaultsToNetworkError_whenDescriptionIsNil() {

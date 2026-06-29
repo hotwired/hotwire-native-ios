@@ -7,12 +7,12 @@ final class HotwireNativeErrorTests: XCTestCase {
 
     func test_turboJSStatusCode_0_createsWebError_networkFailure() {
         let error = HotwireNativeError(turboJSStatusCode: 0)
-        XCTAssertEqual(error, .web(WebError(errorCode: 0, message: "Network failure")))
+        XCTAssertEqual(error, .web(WebError(turboError: .networkFailure)))
     }
 
     func test_turboJSStatusCode_negative1_createsWebError_timeout() {
         let error = HotwireNativeError(turboJSStatusCode: -1)
-        XCTAssertEqual(error, .web(WebError(errorCode: -1, message: "Timeout")))
+        XCTAssertEqual(error, .web(WebError(turboError: .timeout)))
     }
 
     func test_turboJSStatusCode_negative1_webError_isTimeout() {
@@ -88,7 +88,7 @@ final class HotwireNativeErrorTests: XCTestCase {
 
     func test_turboJSStatusCode_negative3_createsWebError() {
         let error = HotwireNativeError(turboJSStatusCode: -3)
-        XCTAssertEqual(error, .web(WebError(errorCode: -3, message: "Network error")))
+        XCTAssertEqual(error, .web(WebError(turboError: .unknownStatusCode(-3))))
     }
 
     // MARK: - Unexpected Positive Non-HTTP Codes -> .web fallback
@@ -183,7 +183,7 @@ final class HotwireNativeErrorTests: XCTestCase {
     }
 
     func test_isRetryable_web_timeout_isFalse() {
-        XCTAssertFalse(HotwireNativeError.web(WebError(errorCode: -1, message: "Timeout")).isRetryable)
+        XCTAssertFalse(HotwireNativeError.web(WebError(turboError: .timeout)).isRetryable)
     }
 
     func test_isRetryable_load_isFalse() {
