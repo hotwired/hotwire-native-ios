@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 
 struct DefaultErrorView: ErrorPresentableView {
-    let error: Error
+    let error: HotwireNativeError
     let handler: ErrorPresenter.Handler?
 
     var body: some View {
@@ -31,10 +31,8 @@ struct DefaultErrorView: ErrorPresentableView {
 
 private struct DefaultErrorView_Previews: PreviewProvider {
     static var previews: some View {
-        return DefaultErrorView(error: NSError(
-            domain: "com.example.error",
-            code: 1001,
-            userInfo: [NSLocalizedDescriptionKey: "Could not connect to the server."]
-        )) {}
+        return DefaultErrorView(
+            error: .web(WebError(errorCode: 0, message: "Could not connect to the server."))
+        ) {}
     }
 }

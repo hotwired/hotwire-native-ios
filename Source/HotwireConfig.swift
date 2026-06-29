@@ -29,6 +29,9 @@ public struct HotwireConfig {
     /// Set to `true` to fade content when performing a `replace` visit.
     public var animateReplaceActions = false
 
+    /// Timeout (in seconds) for the request that resolves redirects before a visit.
+    public var redirectResolutionTimeout: TimeInterval = 30
+
     /// Enable or disable debug logging for Turbo visits and bridge elements
     /// connecting, disconnecting, receiving/sending messages, and more.
     public var debugLoggingEnabled = false {
@@ -77,7 +80,7 @@ public struct HotwireConfig {
     }
 
     /// Optionally customize the native view presented when an error occurs.
-    public var makeCustomErrorView: (Error, ErrorPresenter.Handler?) -> any ErrorPresentableView = { error, handler in
+    public var makeCustomErrorView: (HotwireNativeError, ErrorPresenter.Handler?) -> any ErrorPresentableView = { error, handler in
         DefaultErrorView(error: error, handler: handler)
     }
 

@@ -58,7 +58,7 @@ class Visit: NSObject {
         delegate?.visitDidFinish(self)
     }
 
-    func fail(with error: Error) {
+    func fail(with error: HotwireNativeError) {
         guard state == .started else { return }
 
         state = .failed

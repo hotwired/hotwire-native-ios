@@ -105,26 +105,31 @@ extension ColdBootVisit: WKNavigationDelegate {
                 decisionHandler(.allow)
             } else {
                 decisionHandler(.cancel)
-                fail(with: TurboError.http(statusCode: httpResponse.statusCode))
+                if let httpError = HTTPError(statusCode: httpResponse.statusCode) {
+                    fail(with: .http(httpError))
+                } else {
+                    fail(with: .load(.invalidResponse))
+                }
             }
         } else {
             if navigationResponse.response.url?.scheme == "blob" {
                 decisionHandler(.allow)
             } else {
                 decisionHandler(.cancel)
-                fail(with: TurboError.http(statusCode: 0))
+                logger.error("Content mismatch detected: \(navigationResponse).")
+                fail(with: .load(.contentTypeMismatch))
             }
         }
     }
 
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         guard navigation == self.navigation else { return }
-        fail(with: error)
+        fail(with: .web(WebError(error)))
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         guard navigation == self.navigation else { return }
-        fail(with: error)
+        fail(with: .web(WebError(error)))
     }
 
     func webView(_ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
