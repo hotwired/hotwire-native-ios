@@ -1,25 +1,36 @@
 @testable import HotwireNative
 import Foundation
+import UIKit
 
-final class NavigationSpy: Navigator {
+/// A lightweight `Navigating` test double that records navigation calls without
+/// instantiating real `Session` or `WKWebView` instances.
+final class NavigationSpy: Navigating {
     var routeWasCalled = false
     var routeURL: URL?
     var reloadWasCalled = false
 
-    init(configuration: Navigator.Configuration) {
-        super.init(
-            session: Session(webView: Hotwire.config.makeWebView()),
-            modalSession: Session(webView: Hotwire.config.makeWebView()),
-            configuration: configuration
-        )
+    /// Stub for the currently displayed URL, overriding the `Navigating` default.
+    var currentVisitableURL: URL?
+
+    lazy var rootViewController = UINavigationController()
+    lazy var modalRootViewController = UINavigationController()
+    lazy var activeNavigationController = UINavigationController()
+
+    func route(_ proposal: VisitProposal) {
+        routeWasCalled = true
+        routeURL = proposal.url
     }
 
-    override func route(_ url: URL, options: VisitOptions? = VisitOptions(action: .advance), parameters: [String : Any]? = nil) {
+    func route(_ url: URL, options: VisitOptions?, parameters: [String: Any]?) {
         routeWasCalled = true
         routeURL = url
     }
 
-    override func reload() {
+    func pop(animated: Bool) {}
+
+    func clearAll(animated: Bool) {}
+
+    func reload() {
         reloadWasCalled = true
     }
 }

@@ -6,12 +6,12 @@ final class SafariViewControllerRouteDecisionHandlerTests: XCTestCase {
         name: "test",
         startLocation: URL(string: "https://my.app.com")!
     )
-    var navigator: Navigator!
+    var navigator: NavigationSpy!
     var route: SafariViewControllerRouteDecisionHandler!
 
     override func setUp() {
         route = SafariViewControllerRouteDecisionHandler()
-        navigator = Navigator(configuration: navigatorConfiguration)
+        navigator = NavigationSpy()
     }
 
     func test_handling_matching_result_stops_navigation() {

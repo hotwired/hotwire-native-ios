@@ -12,7 +12,7 @@ class BaseWebViewPolicyDecisionHandlerTests: XCTestCase {
     )
 
     override func setUp() async throws {
-        navigatorSpy = NavigationSpy(configuration: navigatorConfiguration)
+        navigatorSpy = NavigationSpy()
         webNavigationSimulator = WebViewNavigationSimulator()
     }
 

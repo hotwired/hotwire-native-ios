@@ -12,7 +12,7 @@ public final class WebViewPolicyManager {
 
     func decidePolicy(for navigationAction: WKNavigationAction,
                       configuration: Navigator.Configuration,
-                      navigator: Navigator) -> WebViewPolicyManager.Decision {
+                      navigator: Navigating) -> WebViewPolicyManager.Decision {
         for handler in policyDecisionHandlers {
             if handler.matches(navigationAction: navigationAction, configuration: configuration) {
                 logger.debug("[WebViewPolicyManager] handler match found handler: \(handler.name) navigation action:\(navigationAction)")

@@ -8,10 +8,10 @@ final class RouterTests: XCTestCase {
     )
     let url = URL(string: "https://my.app.com/page")!
     var router: Router!
-    var navigator: Navigator!
+    var navigator: NavigationSpy!
 
     override func setUp() {
-        navigator = Navigator(configuration: navigatorConfiguration)
+        navigator = NavigationSpy()
     }
 
     func test_no_handlers_stops_navigation() {
@@ -89,7 +89,7 @@ final class NoMatchRouteDecisionHandlerSpy: RouteDecisionHandler {
         return false
     }
     
-    func handle(location: URL, configuration: HotwireNative.Navigator.Configuration, navigator: HotwireNative.Navigator) -> HotwireNative.Router.Decision {
+    func handle(location: URL, configuration: HotwireNative.Navigator.Configuration, navigator: HotwireNative.Navigating) -> HotwireNative.Router.Decision {
         handleWasCalled = true
         return .cancel
     }
@@ -105,7 +105,7 @@ final class MatchRouteDecisionHandlerSpy: RouteDecisionHandler {
         return true
     }
 
-    func handle(location: URL, configuration: HotwireNative.Navigator.Configuration, navigator: HotwireNative.Navigator) -> HotwireNative.Router.Decision {
+    func handle(location: URL, configuration: HotwireNative.Navigator.Configuration, navigator: HotwireNative.Navigating) -> HotwireNative.Router.Decision {
         handleWasCalled = true
         return .navigate
     }

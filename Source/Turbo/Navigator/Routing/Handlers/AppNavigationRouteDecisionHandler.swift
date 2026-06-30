@@ -16,7 +16,7 @@ public final class AppNavigationRouteDecisionHandler: RouteDecisionHandler {
 
     public func handle(location: URL,
                        configuration: Navigator.Configuration,
-                       navigator: Navigator) -> Router.Decision {
+                       navigator: Navigating) -> Router.Decision {
         return .navigate
     }
 }

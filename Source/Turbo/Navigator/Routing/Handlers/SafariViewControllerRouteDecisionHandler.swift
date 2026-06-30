@@ -23,7 +23,7 @@ public final class SafariViewControllerRouteDecisionHandler: RouteDecisionHandle
 
     public func handle(location: URL,
                        configuration: Navigator.Configuration,
-                       navigator: Navigator) -> HotwireNative.Router.Decision {
+                       navigator: Navigating) -> HotwireNative.Router.Decision {
         Task { @MainActor in
             await open(externalURL: location,
                        viewController: navigator.activeNavigationController)

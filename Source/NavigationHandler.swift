@@ -10,13 +10,21 @@ import Foundation
 ///
 /// - Note: See `NumbersViewController` in the demo app for an example.
 public protocol NavigationHandler: AnyObject {
-    func route(_ url: URL)
+    /// Routes to the given URL.
+    /// - Parameters:
+    ///   - url: the URL to visit.
+    ///   - options: passed options will override default `advance` visit options.
+    ///   - parameters: provide context relevant to `url`.
+    func route(_ url: URL, options: VisitOptions?, parameters: [String: Any]?)
 
     func route(_ proposal: VisitProposal)
 }
 
-extension Navigator: NavigationHandler {
-    public func route(_ url: URL) {
+public extension NavigationHandler {
+    /// Routes to the given URL using the default `advance` visit options.
+    func route(_ url: URL) {
         route(url, options: VisitOptions(action: .advance), parameters: nil)
     }
 }
+
+extension Navigator: NavigationHandler {}

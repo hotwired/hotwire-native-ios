@@ -56,8 +56,8 @@ open class HotwireTabBarController: UITabBarController, NavigationHandler {
 
     // MARK: NavigationHandler
 
-    open func route(_ url: URL) {
-        activeNavigator.route(url)
+    open func route(_ url: URL, options: VisitOptions?, parameters: [String: Any]?) {
+        activeNavigator.route(url, options: options, parameters: parameters)
     }
 
     open func route(_ proposal: VisitProposal) {

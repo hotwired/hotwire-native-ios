@@ -26,5 +26,5 @@ public protocol WebViewPolicyDecisionHandler {
     ///            whether to allow or cancel the WebView navigation.
     func handle(navigationAction: WKNavigationAction,
                 configuration: Navigator.Configuration,
-                navigator: Navigator) -> WebViewPolicyManager.Decision
+                navigator: Navigating) -> WebViewPolicyManager.Decision
 }

@@ -11,11 +11,11 @@ final class WebViewPolicyManagerTests: XCTestCase {
     let url = URL(string: "https://my.app.com/page")!
     var policyManager: WebViewPolicyManager!
     var webNavigationSimulator: WebViewNavigationSimulator!
-    var navigator: Navigator!
+    var navigator: NavigationSpy!
     static var navigationAction: WKNavigationAction!
 
     override func setUp() async throws {
-        navigator = Navigator(configuration: navigatorConfiguration)
+        navigator = NavigationSpy()
 
         // We can't instantiate a `WKNavigationAction`, so we load HTML and retrieve one.
         // In these tests, the navigation action is not actually evaluated, but we need it as an argument
@@ -112,7 +112,7 @@ final class NoMatchWebViewPolicyDecisionHandler: WebViewPolicyDecisionHandler {
 
     func handle(navigationAction: WKNavigationAction,
                 configuration: Navigator.Configuration,
-                navigator: Navigator) -> WebViewPolicyManager.Decision {
+                navigator: Navigating) -> WebViewPolicyManager.Decision {
         handleWasCalled = true
         return .cancel
     }
@@ -131,7 +131,7 @@ final class MatchWebViewPolicyDecisionHandler: WebViewPolicyDecisionHandler {
 
     func handle(navigationAction: WKNavigationAction,
                 configuration: Navigator.Configuration,
-                navigator: Navigator) -> WebViewPolicyManager.Decision {
+                navigator: Navigating) -> WebViewPolicyManager.Decision {
         handleWasCalled = true
         return .cancel
     }
