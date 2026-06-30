@@ -29,6 +29,16 @@ public struct HotwireConfig {
     /// Set to `true` to fade content when performing a `replace` visit.
     public var animateReplaceActions = false
 
+    /// Controls when tab navigators perform their initial visit in `HotwireTabBarController`.
+    ///
+    /// When `true`, only the initially selected tab starts when tabs are loaded; each
+    /// remaining tab starts the first time the user selects it. When `false`, every
+    /// tab starts immediately when `HotwireTabBarController.load(_:)` is called.
+    ///
+    /// This affects when each tab's content is loaded, not whether the tab's
+    /// navigator is created.
+    public var lazyLoadTabs = true
+
     /// Timeout (in seconds) for the request that resolves redirects before a visit.
     public var redirectResolutionTimeout: TimeInterval = 30
 
