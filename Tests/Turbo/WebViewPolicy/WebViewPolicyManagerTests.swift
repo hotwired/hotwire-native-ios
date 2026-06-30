@@ -112,7 +112,7 @@ final class NoMatchWebViewPolicyDecisionHandler: WebViewPolicyDecisionHandler {
 
     func handle(navigationAction: WKNavigationAction,
                 configuration: Navigator.Configuration,
-                navigator: Navigator) -> WebViewPolicyManager.Decision {
+                navigator: Navigating) -> WebViewPolicyManager.Decision {
         handleWasCalled = true
         return .cancel
     }
@@ -131,7 +131,7 @@ final class MatchWebViewPolicyDecisionHandler: WebViewPolicyDecisionHandler {
 
     func handle(navigationAction: WKNavigationAction,
                 configuration: Navigator.Configuration,
-                navigator: Navigator) -> WebViewPolicyManager.Decision {
+                navigator: Navigating) -> WebViewPolicyManager.Decision {
         handleWasCalled = true
         return .cancel
     }

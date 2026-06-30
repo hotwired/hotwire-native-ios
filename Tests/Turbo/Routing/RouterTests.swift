@@ -89,7 +89,7 @@ final class NoMatchRouteDecisionHandlerSpy: RouteDecisionHandler {
         return false
     }
     
-    func handle(location: URL, configuration: HotwireNative.Navigator.Configuration, navigator: HotwireNative.Navigator) -> HotwireNative.Router.Decision {
+    func handle(location: URL, configuration: HotwireNative.Navigator.Configuration, navigator: HotwireNative.Navigating) -> HotwireNative.Router.Decision {
         handleWasCalled = true
         return .cancel
     }
@@ -105,7 +105,7 @@ final class MatchRouteDecisionHandlerSpy: RouteDecisionHandler {
         return true
     }
 
-    func handle(location: URL, configuration: HotwireNative.Navigator.Configuration, navigator: HotwireNative.Navigator) -> HotwireNative.Router.Decision {
+    func handle(location: URL, configuration: HotwireNative.Navigator.Configuration, navigator: HotwireNative.Navigating) -> HotwireNative.Router.Decision {
         handleWasCalled = true
         return .navigate
     }
