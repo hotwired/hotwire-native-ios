@@ -7,11 +7,11 @@ final class AppNavigationRouteDecisionHandlerTest: XCTestCase {
         startLocation: URL(string: "https://my.app.com")!
     )
     var route: AppNavigationRouteDecisionHandler!
-    var navigator: Navigator!
+    var navigator: NavigationSpy!
 
     override func setUp() {
         route = AppNavigationRouteDecisionHandler()
-        navigator = Navigator(configuration: navigatorConfiguration)
+        navigator = NavigationSpy()
     }
 
     func test_handling_matching_result_navigates() {

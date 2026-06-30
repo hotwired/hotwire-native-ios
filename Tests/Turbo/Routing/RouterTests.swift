@@ -8,10 +8,10 @@ final class RouterTests: XCTestCase {
     )
     let url = URL(string: "https://my.app.com/page")!
     var router: Router!
-    var navigator: Navigator!
+    var navigator: NavigationSpy!
 
     override func setUp() {
-        navigator = Navigator(configuration: navigatorConfiguration)
+        navigator = NavigationSpy()
     }
 
     func test_no_handlers_stops_navigation() {

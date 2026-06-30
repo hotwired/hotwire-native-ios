@@ -6,12 +6,12 @@ final class SystemNavigationRouteDecisionHandlerTests: XCTestCase {
         name: "test",
         startLocation: URL(string: "https://my.app.com")!
     )
-    var navigator: Navigator!
+    var navigator: NavigationSpy!
     var route: SystemNavigationRouteDecisionHandler!
 
     override func setUp() {
         route = SystemNavigationRouteDecisionHandler()
-        navigator = Navigator(configuration: navigatorConfiguration)
+        navigator = NavigationSpy()
     }
 
     func test_handling_matching_result_stops_navigation() {
