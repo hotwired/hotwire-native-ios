@@ -18,7 +18,7 @@ public final class SystemNavigationRouteDecisionHandler: RouteDecisionHandler {
 
     public func handle(location: URL,
                        configuration: Navigator.Configuration,
-                       navigator: Navigator) -> Router.Decision {
+                       navigator: Navigating) -> Router.Decision {
         UIApplication.shared.open(location)
 
         return .cancel

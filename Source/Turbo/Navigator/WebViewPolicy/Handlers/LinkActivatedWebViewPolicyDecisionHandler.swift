@@ -19,7 +19,7 @@ public struct LinkActivatedWebViewPolicyDecisionHandler: WebViewPolicyDecisionHa
 
     public func handle(navigationAction: WKNavigationAction,
                        configuration: Navigator.Configuration,
-                       navigator: Navigator) -> WebViewPolicyManager.Decision {
+                       navigator: Navigating) -> WebViewPolicyManager.Decision {
         return .cancel
     }
 }

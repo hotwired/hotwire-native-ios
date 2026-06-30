@@ -24,5 +24,5 @@ public protocol RouteDecisionHandler {
     ///     - navigator: The navigator instance responsible for the navigation.
     func handle(location: URL,
                 configuration: Navigator.Configuration,
-                navigator: Navigator) -> Router.Decision
+                navigator: Navigating) -> Router.Decision
 }

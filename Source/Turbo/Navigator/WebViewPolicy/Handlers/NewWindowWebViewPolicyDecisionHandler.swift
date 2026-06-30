@@ -19,7 +19,7 @@ public struct NewWindowWebViewPolicyDecisionHandler: WebViewPolicyDecisionHandle
 
     public func handle(navigationAction: WKNavigationAction,
                        configuration: Navigator.Configuration,
-                       navigator: Navigator) -> WebViewPolicyManager.Decision {
+                       navigator: Navigating) -> WebViewPolicyManager.Decision {
         if let url = navigationAction.request.url {
             navigator.route(url)
         }

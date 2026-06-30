@@ -11,7 +11,7 @@ public final class Router {
 
     func decideRoute(for location: URL,
                      configuration: Navigator.Configuration,
-                     navigator: Navigator) -> Router.Decision {
+                     navigator: Navigating) -> Router.Decision {
         for handler in decisionHandlers {
             if handler.matches(location: location, configuration: configuration) {
                 logger.debug("[Router] handler match found handler: \(handler.name) location: \(location)")
