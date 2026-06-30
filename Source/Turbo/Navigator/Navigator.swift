@@ -296,9 +296,9 @@ extension Navigator {
             logger.info("Skipping session reload: no visitableViewController found")
             return
         }
-        
+
         guard viewController.parent != nil else {
-            logger.info("Skipping session reload: no visitableViewControlle parent found")
+            logger.info("Skipping session reload: visitableViewController has no parent")
             return
         }
 
@@ -343,7 +343,7 @@ extension Navigator {
 
         session.webView.queryWebContentProcessState { [weak self] state in
             guard case .terminated = state else {
-                logger.debug("Skipping webview recreation: no topmostVisitable found")
+                logger.debug("Skipping web view recreation: process not terminated")
                 return
             }
             self?.recreateWebView(for: session)
