@@ -105,6 +105,7 @@ extension ColdBootVisit: WKNavigationDelegate {
                 decisionHandler(.allow)
             } else {
                 decisionHandler(.cancel)
+                logger.warning("[ColdBootVisit] request failed with status \(httpResponse.statusCode) for \(self.location.absoluteString)")
                 if let httpError = HTTPError(statusCode: httpResponse.statusCode) {
                     fail(with: .http(httpError))
                 } else {

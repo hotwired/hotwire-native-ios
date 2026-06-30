@@ -144,52 +144,6 @@ final class HotwireNativeErrorTests: XCTestCase {
         XCTAssertNil(HotwireNativeError.load(.notPresent).urlError)
     }
 
-    // MARK: - isRetryable
-
-    func test_isRetryable_http_requestTimeout_isTrue() {
-        XCTAssertTrue(HotwireNativeError.http(.client(.requestTimeout)).isRetryable)
-    }
-
-    func test_isRetryable_http_tooManyRequests_isTrue() {
-        XCTAssertTrue(HotwireNativeError.http(.client(.tooManyRequests)).isRetryable)
-    }
-
-    func test_isRetryable_http_notFound_isFalse() {
-        XCTAssertFalse(HotwireNativeError.http(.client(.notFound)).isRetryable)
-    }
-
-    func test_isRetryable_http_unauthorized_isFalse() {
-        XCTAssertFalse(HotwireNativeError.http(.client(.unauthorized)).isRetryable)
-    }
-
-    func test_isRetryable_http_internalServerError_isFalse() {
-        XCTAssertFalse(HotwireNativeError.http(.server(.internalServerError)).isRetryable)
-    }
-
-    func test_isRetryable_http_serviceUnavailable_isTrue() {
-        XCTAssertTrue(HotwireNativeError.http(.server(.serviceUnavailable)).isRetryable)
-    }
-
-    func test_isRetryable_http_gatewayTimeout_isTrue() {
-        XCTAssertTrue(HotwireNativeError.http(.server(.gatewayTimeout)).isRetryable)
-    }
-
-    func test_isRetryable_web_networkFailure_isTrue() {
-        XCTAssertTrue(HotwireNativeError.web(WebError(errorCode: 0, message: nil)).isRetryable)
-    }
-
-    func test_isRetryable_web_offline_isFalse() {
-        XCTAssertFalse(HotwireNativeError.web(WebError(urlError: URLError(.notConnectedToInternet))).isRetryable)
-    }
-
-    func test_isRetryable_web_timeout_isFalse() {
-        XCTAssertFalse(HotwireNativeError.web(WebError(turboError: .timeout)).isRetryable)
-    }
-
-    func test_isRetryable_load_isFalse() {
-        XCTAssertFalse(HotwireNativeError.load(.contentTypeMismatch).isRetryable)
-    }
-
     // MARK: - errorDescription
 
     func test_errorDescription_forHttpError() {

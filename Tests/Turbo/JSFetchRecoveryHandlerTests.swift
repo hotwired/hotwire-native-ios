@@ -3,8 +3,8 @@ import OHHTTPStubs
 import OHHTTPStubsSwift
 import XCTest
 
-final class RedirectHandlerTests: XCTestCase {
-    private let handler = RedirectHandler()
+final class JSFetchRecoveryHandlerTests: XCTestCase {
+    private let handler = JSFetchRecoveryHandler()
     private let testURL = URL(string: "https://example.com/page")!
 
     override func tearDown() {
@@ -72,7 +72,7 @@ final class RedirectHandlerTests: XCTestCase {
         do {
             _ = try await handler.resolve(location: testURL)
             XCTFail("Expected requestFailed error")
-        } catch let error as RedirectHandlerError {
+        } catch let error as JSFetchRecoveryError {
             guard case .requestFailed = error else {
                 return XCTFail("Expected .requestFailed, got \(error)")
             }
@@ -123,8 +123,8 @@ final class RedirectHandlerTests: XCTestCase {
 
 // MARK: - Equatable for test assertions
 
-extension RedirectHandler.Result: @retroactive Equatable {
-    public static func == (lhs: RedirectHandler.Result, rhs: RedirectHandler.Result) -> Bool {
+extension JSFetchRecoveryHandler.Result: Equatable {
+    public static func == (lhs: JSFetchRecoveryHandler.Result, rhs: JSFetchRecoveryHandler.Result) -> Bool {
         switch (lhs, rhs) {
         case (.noRedirect, .noRedirect):
             return true

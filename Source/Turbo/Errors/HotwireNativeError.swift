@@ -38,20 +38,6 @@ public enum HotwireNativeError: LocalizedError, Equatable, Sendable {
         return nil
     }
 
-    /// Whether the error is recoverable by retrying the request.
-    /// HTTP 408/429 and 503/504 are retryable. Network-level timeouts,
-    /// offline errors, and configuration errors are not.
-    public var isRetryable: Bool {
-        switch self {
-        case .http(let error):
-            return error.isRetryable
-        case .web(let error):
-            return !error.isOffline && !error.isTimeout
-        case .load:
-            return false
-        }
-    }
-
     /// Creates an error from a Turbo.js status code.
     /// - Positive status codes are HTTP errors
     /// - 0 = network failure, -1 = timeout, -2 = content type mismatch

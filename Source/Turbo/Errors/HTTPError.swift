@@ -24,14 +24,6 @@ public enum HTTPError: LocalizedError, Equatable, Sendable {
         }
     }
 
-    /// Whether the HTTP error is transient and worth retrying.
-    public var isRetryable: Bool {
-        switch self {
-        case .client(let error): return error.isRetryable
-        case .server(let error): return error.isRetryable
-        }
-    }
-
     /// Creates an HTTPError from an HTTP status code.
     /// Returns `nil` for status codes outside the 400-599 error range.
     public init?(statusCode: Int) {
@@ -106,13 +98,6 @@ extension HTTPError {
             }
         }
 
-        public var isRetryable: Bool {
-            switch self {
-            case .requestTimeout, .tooManyRequests: return true
-            default: return false
-            }
-        }
-
         public init(statusCode: Int) {
             switch statusCode {
             case 400: self = .badRequest
@@ -169,13 +154,6 @@ extension HTTPError {
             case .gatewayTimeout: return "Gateway Timeout"
             case .httpVersionNotSupported: return "HTTP Version Not Supported"
             case .other(let code): return "Server Error (\(code))"
-            }
-        }
-
-        public var isRetryable: Bool {
-            switch self {
-            case .serviceUnavailable, .gatewayTimeout: return true
-            default: return false
             }
         }
 
