@@ -3,17 +3,10 @@ import UIKit
 
 /// A testable abstraction over `Navigator`.
 ///
-/// Refines `NavigationHandler` (which provides `route(_:)` / `route(_ proposal:)`)
-/// with the navigation operations and view controller accessors that
+/// Refines `NavigationHandler` (which provides the `route` overloads) with the
+/// navigation operations and view controller accessors that
 /// `RouteDecisionHandler` and `WebViewPolicyDecisionHandler` implementations rely on.
 public protocol Navigating: NavigationHandler {
-    /// Routes to the given URL.
-    /// - Parameters:
-    ///   - url: the URL to visit.
-    ///   - options: passed options will override default `advance` visit options.
-    ///   - parameters: provide context relevant to `url`.
-    func route(_ url: URL, options: VisitOptions?, parameters: [String: Any]?)
-
     /// Pops the top controller on the presented navigation stack.
     func pop(animated: Bool)
 

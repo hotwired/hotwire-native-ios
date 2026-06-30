@@ -16,11 +16,6 @@ final class NavigationSpy: Navigating {
     lazy var modalRootViewController = UINavigationController()
     lazy var activeNavigationController = UINavigationController()
 
-    func route(_ url: URL) {
-        routeWasCalled = true
-        routeURL = url
-    }
-
     func route(_ proposal: VisitProposal) {
         routeWasCalled = true
         routeURL = proposal.url
