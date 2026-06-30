@@ -48,3 +48,5 @@ public extension Navigating {
         (activeNavigationController.topViewController as? VisitableViewController)?.currentVisitableURL
     }
 }
+
+extension Navigator: Navigating {}
