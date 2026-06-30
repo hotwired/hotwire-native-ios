@@ -113,8 +113,7 @@ extension WebViewBridge: ScriptMessageHandlerDelegate {
         case .pageLoaded:
             pageLoadDelegate?.webView(self, didLoadPageWithRestorationIdentifier: message.restorationIdentifier!)
         case .turboIsReady:
-            let isReady = message.data["isReady"] as? Bool ?? false
-            if !isReady {
+            if !message.isReady {
                 delegate?.webView(self, didFailInitialPageLoadWithError: .load(.notReady))
             }
         case .pageLoadFailed:

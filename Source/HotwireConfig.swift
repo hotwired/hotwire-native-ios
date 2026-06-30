@@ -1,3 +1,4 @@
+import SwiftUI
 import UIKit
 import WebKit
 
@@ -21,6 +22,25 @@ public struct HotwireConfig {
 
     /// Sets the back button display mode of `HotwireWebViewController`.
     public var backButtonDisplayMode = UINavigationItem.BackButtonDisplayMode.default
+
+    /// Set to true to only show the tab bar on the root screens.
+    public var hideTabBarWhenPushed = false
+
+    /// Set to `true` to fade content when performing a `replace` visit.
+    public var animateReplaceActions = false
+
+    /// Controls when tab navigators perform their initial visit in `HotwireTabBarController`.
+    ///
+    /// When `true`, only the initially selected tab starts when tabs are loaded; each
+    /// remaining tab starts the first time the user selects it. When `false`, every
+    /// tab starts immediately when `HotwireTabBarController.load(_:)` is called.
+    ///
+    /// This affects when each tab's content is loaded, not whether the tab's
+    /// navigator is created.
+    public var lazyLoadTabs = true
+
+    /// Timeout (in seconds) for the request that resolves redirects before a visit.
+    public var redirectResolutionTimeout: TimeInterval = 30
 
     /// Enable or disable debug logging for Turbo visits and bridge elements
     /// connecting, disconnecting, receiving/sending messages, and more.
@@ -76,6 +96,11 @@ public struct HotwireConfig {
     /// Ensure you return a new instance each time.
     public var makeCustomWebView: WebViewBlock = { (configuration: WKWebViewConfiguration) in
         WKWebView.debugInspectable(configuration: configuration)
+    }
+
+    /// Optionally customize the native view presented when an error occurs.
+    public var makeCustomErrorView: (HotwireNativeError, ErrorPresenter.Handler?) -> any ErrorPresentableView = { error, handler in
+        DefaultErrorView(error: error, handler: handler)
     }
 
     // MARK: Bridge

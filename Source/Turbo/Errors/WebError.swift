@@ -3,15 +3,46 @@ import Foundation
 /// Errors representing network/connection errors received when attempting to load a page.
 /// Wraps URLError to provide full access to iOS error
 public struct WebError: LocalizedError, Equatable, Sendable {
+    enum Source: Equatable, Sendable {
+        case urlError(URLError)
+        case turboError(TurboError)
+        case raw(errorCode: Int, message: String)
+    }
+
+    let source: Source
+
     /// The underlying URLError, if available.
     /// This is nil when the error originates from Turbo.js status codes rather than iOS networking.
-    public let urlError: URLError?
+    public var urlError: URLError? {
+        if case .urlError(let urlError) = source {
+            return urlError
+        }
+        return nil
+    }
 
-    /// The error code (from URLError or Turbo.js status code).
-    public let errorCode: Int
+    /// The error code (from URLError, Turbo.js status code, or raw network error code).
+    public var errorCode: Int {
+        switch source {
+        case .urlError(let urlError):
+            return urlError.code.rawValue
+        case .turboError(let error):
+            return error.statusCode
+        case .raw(let errorCode, _):
+            return errorCode
+        }
+    }
 
     /// A description of the error.
-    public let message: String
+    public var message: String {
+        switch source {
+        case .urlError(let urlError):
+            return urlError.localizedDescription
+        case .turboError(let error):
+            return error.localizedDescription
+        case .raw(_, let message):
+            return message
+        }
+    }
 
     // MARK: - Helper Properties
 
@@ -23,11 +54,16 @@ public struct WebError: LocalizedError, Equatable, Sendable {
 
     /// Whether the request timed out.
     public var isTimeout: Bool {
-        if let urlError {
+        switch source {
+        case .urlError(let urlError):
             return urlError.code == .timedOut
+        case .turboError(.timeout):
+            return true
+        case .turboError:
+            return false
+        case .raw:
+            return errorCode == URLError.Code.timedOut.rawValue
         }
-        // Turbo.js status code -1 = timeout
-        return errorCode == -1
     }
 
     /// Whether the server could not be reached.
@@ -75,15 +111,15 @@ public struct WebError: LocalizedError, Equatable, Sendable {
     // MARK: - Initializers
 
     public init(urlError: URLError) {
-        self.urlError = urlError
-        self.errorCode = urlError.code.rawValue
-        self.message = urlError.localizedDescription
+        source = .urlError(urlError)
     }
 
     public init(errorCode: Int, message: String?) {
-        self.urlError = nil
-        self.errorCode = errorCode
-        self.message = message ?? "Network Error"
+        source = .raw(errorCode: errorCode, message: message ?? "Network Error")
+    }
+
+    init(turboError: TurboError) {
+        source = .turboError(turboError)
     }
 
     // MARK: - Factory Methods
@@ -95,24 +131,5 @@ public struct WebError: LocalizedError, Equatable, Sendable {
         } else {
             self.init(errorCode: (error as NSError).code, message: error.localizedDescription)
         }
-    }
-
-    /// Internal-only: creates a WebError from a Turbo.js status code.
-    /// Public callers should use `init(urlError:)` or `init(errorCode:message:)`.
-    ///
-    /// These are non-HTTP status codes used by Turbo.js to indicate network-level failures:
-    /// - 0 = network failure (fetch failed)
-    /// - -1 = timeout
-    init(turboStatusCode: Int) {
-        let message: String
-        switch turboStatusCode {
-        case 0:
-            message = "Network failure"
-        case -1:
-            message = "Timeout"
-        default:
-            message = "Network error"
-        }
-        self.init(errorCode: turboStatusCode, message: message)
     }
 }

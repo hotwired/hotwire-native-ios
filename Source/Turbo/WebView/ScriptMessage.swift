@@ -34,6 +34,10 @@ struct ScriptMessage {
     var statusCode: Int? {
         data["statusCode"] as? Int
     }
+
+    var isReady: Bool {
+        data["isReady"] as? Bool ?? false
+    }
 }
 
 extension ScriptMessage {

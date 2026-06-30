@@ -42,17 +42,17 @@ public enum HotwireNativeError: LocalizedError, Equatable, Sendable {
     /// - Positive status codes are HTTP errors
     /// - 0 = network failure, -1 = timeout, -2 = content type mismatch
     init(turboJSStatusCode statusCode: Int) {
-        switch statusCode {
-        case -2:
-            self = .load(.contentTypeMismatch)
-        case ...0:
-            self = .web(WebError(turboStatusCode: statusCode))
-        default:
-            if let httpError = HTTPError(statusCode: statusCode) {
-                self = .http(httpError)
-            } else {
-                self = .web(WebError(errorCode: statusCode, message: "Unexpected status code"))
+        if let turboError = TurboError(statusCode: statusCode) {
+            switch turboError {
+            case .networkFailure, .timeout, .unknownStatusCode:
+                self = .web(WebError(turboError: turboError))
+            case .contentTypeMismatch:
+                self = .load(.contentTypeMismatch)
             }
+        } else if let httpError = HTTPError(statusCode: statusCode) {
+            self = .http(httpError)
+        } else {
+            self = .web(WebError(errorCode: statusCode, message: "Unexpected status code"))
         }
     }
 }
