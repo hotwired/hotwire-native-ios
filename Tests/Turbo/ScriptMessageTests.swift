@@ -37,6 +37,24 @@ class ScriptMessageTests: XCTestCase {
         let message = ScriptMessage(message: script)
         XCTAssertNil(message)
     }
+
+    func test_parse_turboIsReady_withFalse_returnsMessage() throws {
+        let data: [String: Any] = ["isReady": false, "timestamp": 0]
+        let script = FakeScriptMessage(body: ["name": "turboIsReady", "data": data] as [String: Any])
+
+        let message = try XCTUnwrap(ScriptMessage(message: script))
+        XCTAssertEqual(message.name, .turboIsReady)
+        XCTAssertEqual(message.data["isReady"] as? Bool, false)
+    }
+
+    func test_parse_turboIsReady_withTrue_returnsMessage() throws {
+        let data: [String: Any] = ["isReady": true, "timestamp": 0]
+        let script = FakeScriptMessage(body: ["name": "turboIsReady", "data": data] as [String: Any])
+
+        let message = try XCTUnwrap(ScriptMessage(message: script))
+        XCTAssertEqual(message.name, .turboIsReady)
+        XCTAssertEqual(message.data["isReady"] as? Bool, true)
+    }
 }
 
 // Can't instantiate a WKScriptMessage directly

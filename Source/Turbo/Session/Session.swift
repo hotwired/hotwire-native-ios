@@ -17,6 +17,7 @@ public class Session: NSObject {
 
     private var isShowingStaleContent = false
     private var isSnapshotCacheStale = false
+    private var retriedVisitIdentifiers: Set<String> = []
 
     /// Automatically creates a web view with the passed-in configuration
     public convenience init(webViewConfiguration: WKWebViewConfiguration? = nil) {
@@ -166,7 +167,7 @@ extension Session: VisitDelegate {
         delegate?.sessionDidFinishRequest(self)
     }
 
-    func visit(_ visit: Visit, requestDidFailWithError error: Error) {
+    func visit(_ visit: Visit, requestDidFailWithError error: HotwireNativeError) {
         delegate?.session(self, didFailRequestForVisitable: visit.visitable, error: error)
     }
 
@@ -201,6 +202,7 @@ extension Session: VisitDelegate {
     }
 
     func visitDidComplete(_ visit: Visit) {
+        retriedVisitIdentifiers.removeAll()
         guard let restorationIdentifier = visit.restorationIdentifier else { return }
         storeRestorationIdentifier(restorationIdentifier, forVisitable: visit.visitable)
     }
@@ -349,7 +351,7 @@ extension Session: WebViewDelegate {
     }
 
     /// Initial page load failed, this will happen when we couldn't find Turbo JS on the page
-    func webView(_ webView: WebViewBridge, didFailInitialPageLoadWithError error: Error) {
+    func webView(_ webView: WebViewBridge, didFailInitialPageLoadWithError error: HotwireNativeError) {
         guard let currentVisit = currentVisit, !initialized else { return }
 
         initialized = false
@@ -378,28 +380,34 @@ extension Session: WebViewDelegate {
     ///   - webView: The web view bridge.
     ///   - location: The original visit location requested.
     ///   - identifier: A unique identifier for the visit.
-    func webView(_ webView: WebViewBridge, didFailRequestWithNonHttpStatusToLocation location: URL, identifier: String) {
+    func webView(_ webView: WebViewBridge, didFailRequestWithNonHttpStatusToLocation location: URL, identifier: String, statusCode: Int) {
         log("didFailRequestWithNonHttpStatusToLocation",
-            ["location": location,
-             "visitIdentifier": identifier]
+            [
+                "location": location,
+                "visitIdentifier": identifier,
+                "statusCode": statusCode
+            ]
         )
 
-        Task {
-            await resolveRedirect(to: location, identifier: identifier)
+        Task { [weak self] in
+            await self?.resolveRedirect(to: location, identifier: identifier, statusCode: statusCode)
         }
     }
 
-    private func resolveRedirect(to location: URL, identifier: String) async {
+    private func resolveRedirect(to location: URL, identifier: String, statusCode: Int) async {
         do {
             let result = try await RedirectHandler().resolve(location: location)
             switch result {
             case .noRedirect:
-                log("resolveRedirect: no redirect",
+                // The server is reachable (RedirectHandler confirmed an HTTP response
+                // with no redirect). The Turbo.js fetch failure was transient —
+                // retry with a cold boot visit before showing an error.
+                log("resolveRedirect: no redirect, retrying",
                     ["location": location,
                      "visitIdentifier": identifier]
                 )
-                await failCurrentVisit(
-                    with: TurboError.http(statusCode: 0),
+                await retryOrFailCurrentVisit(
+                    with: HotwireNativeError(turboJSStatusCode: statusCode),
                     visitIdentifier: identifier
                 )
             case .sameOriginRedirect(let url):
@@ -411,7 +419,7 @@ extension Session: WebViewDelegate {
                      "visitIdentifier": identifier]
                 )
                 await failCurrentVisit(
-                    with: TurboError.http(statusCode: 0),
+                    with: HotwireNativeError(turboJSStatusCode: statusCode),
                     visitIdentifier: identifier
                 )
             case .crossOriginRedirect(let url):
@@ -421,22 +429,49 @@ extension Session: WebViewDelegate {
                     visitIdentifier: identifier
                 )
             }
+        } catch let error as RedirectHandlerError {
+            let visitError: HotwireNativeError
+            switch error {
+            case .responseValidationFailed(reason: .missingURL),
+                 .responseValidationFailed(reason: .invalidResponse):
+                visitError = .load(.invalidResponse)
+            case .requestFailed(let underlyingError):
+                visitError = .web(WebError(underlyingError))
+            }
+            await retryOrFailCurrentVisit(with: visitError, visitIdentifier: identifier)
         } catch {
-            await failCurrentVisit(
-                with: error,
+            await retryOrFailCurrentVisit(
+                with: .web(WebError(error)),
                 visitIdentifier: identifier
             )
         }
     }
 
     @MainActor
-    private func failCurrentVisit(with error: Error, visitIdentifier: String) {
+    private func failCurrentVisit(with error: HotwireNativeError, visitIdentifier: String) {
         // This is only relevant to `JavaScriptVisit`, as `ColdBootVisit` currently
         // doesn't go through the same flow.
         guard let visit = currentVisit as? JavaScriptVisit,
               visit.identifier == visitIdentifier else { return }
 
+        retriedVisitIdentifiers.remove(visitIdentifier)
         visit.fail(with: error)
+    }
+
+    @MainActor
+    private func retryOrFailCurrentVisit(with error: HotwireNativeError, visitIdentifier: String) {
+        guard let visit = currentVisit as? JavaScriptVisit,
+              visit.identifier == visitIdentifier else { return }
+
+        // Only retry once per visit to prevent infinite loops.
+        guard !retriedVisitIdentifiers.contains(visitIdentifier) else {
+            retriedVisitIdentifiers.remove(visitIdentifier)
+            visit.fail(with: error)
+            return
+        }
+
+        retriedVisitIdentifiers.insert(visitIdentifier)
+        reload()
     }
 
     @MainActor

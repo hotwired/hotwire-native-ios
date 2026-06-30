@@ -54,7 +54,8 @@ class TestSessionDelegate: NSObject, SessionDelegate {
     var sessionDidLoadWebViewCalled = false { didSet { didChange?() }}
     var sessionDidStartRequestCalled = false
     var sessionDidFinishRequestCalled = false
-    var failedRequestError: Error? = nil
+    var failedRequestError: HotwireNativeError? = nil
+    var allFailedRequestErrors: [HotwireNativeError] = []
     var sessionDidFailRequestCalled = false { didSet { didChange?() }}
     var sessionDidProposeVisitCalled = false
     var sessionDidProposeVisitToCrossOriginRedirectWasCalled = false
@@ -80,9 +81,10 @@ class TestSessionDelegate: NSObject, SessionDelegate {
 
     func sessionWebViewProcessDidTerminate(_ session: Session) {}
 
-    func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, error: Error) {
+    func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, error: HotwireNativeError) {
         sessionDidFailRequestCalled = true
         failedRequestError = error
+        allFailedRequestErrors.append(error)
     }
 
     func session(_ session: Session, didProposeVisit proposal: VisitProposal) {
@@ -152,7 +154,7 @@ extension TestVisitDelegate: VisitDelegate {
         record()
     }
 
-    func visit(_ visit: Visit, requestDidFailWithError error: Error) {
+    func visit(_ visit: Visit, requestDidFailWithError error: HotwireNativeError) {
         record()
     }
 
