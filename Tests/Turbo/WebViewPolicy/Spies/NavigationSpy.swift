@@ -1,7 +1,6 @@
 @testable import HotwireNative
 import Foundation
 import UIKit
-import WebKit
 
 /// A lightweight `Navigating` test double that records navigation calls without
 /// instantiating real `Session` or `WKWebView` instances.
@@ -16,7 +15,6 @@ final class NavigationSpy: Navigating {
     lazy var rootViewController = UINavigationController()
     lazy var modalRootViewController = UINavigationController()
     lazy var activeNavigationController = UINavigationController()
-    lazy var activeWebView = WKWebView()
 
     func route(_ url: URL) {
         routeWasCalled = true

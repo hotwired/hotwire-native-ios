@@ -1,15 +1,11 @@
 import Foundation
 import UIKit
-import WebKit
 
 /// A testable abstraction over `Navigator`.
 ///
 /// Refines `NavigationHandler` (which provides `route(_:)` / `route(_ proposal:)`)
-/// with the navigation operations and view controller/web view accessors that
+/// with the navigation operations and view controller accessors that
 /// `RouteDecisionHandler` and `WebViewPolicyDecisionHandler` implementations rely on.
-///
-/// Conform a lightweight fake to `Navigating` to unit test custom decision handlers
-/// without instantiating real `Session` or `WKWebView` instances.
 public protocol Navigating: NavigationHandler {
     /// Routes to the given URL.
     /// - Parameters:
@@ -35,9 +31,6 @@ public protocol Navigating: NavigationHandler {
 
     /// The navigation controller currently presented to the user.
     var activeNavigationController: UINavigationController { get }
-
-    /// The web view backing the active navigation stack.
-    var activeWebView: WKWebView { get }
 
     /// The URL currently displayed by the top visitable on the active navigation stack, if any.
     var currentVisitableURL: URL? { get }
