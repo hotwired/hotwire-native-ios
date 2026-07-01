@@ -14,7 +14,7 @@ final class LinkActivatedWebViewPolicyDecisionHandlerTests: BaseWebViewPolicyDec
     func test_link_activated_matches() async throws {
         guard let action = try await webNavigationSimulator.simulateNavigation(
             withHTML: .simpleLink,
-            simulateLinkClickElementId: "link") else {
+            simulateAction: .click("link")) else {
             XCTFail("No navigation action captured")
             return
         }
@@ -30,7 +30,7 @@ final class LinkActivatedWebViewPolicyDecisionHandlerTests: BaseWebViewPolicyDec
     func test_handling_matching_result_cancels_web_navigation() async throws {
         guard let action = try await webNavigationSimulator.simulateNavigation(
             withHTML: .simpleLink,
-            simulateLinkClickElementId: "link") else {
+            simulateAction: .click("link")) else {
             XCTFail("No navigation action captured")
             return
         }

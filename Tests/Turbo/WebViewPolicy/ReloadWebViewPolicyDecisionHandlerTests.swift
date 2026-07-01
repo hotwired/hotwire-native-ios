@@ -14,7 +14,7 @@ final class ReloadWebViewPolicyDecisionHandlerTests: BaseWebViewPolicyDecisionHa
     func test_reload_matches() async throws {
         guard let action = try await webNavigationSimulator.simulateNavigation(
             withHTML: .reload,
-            simulateLinkClickElementId: "reloadButton") else {
+            simulateAction: .click("reloadButton")) else {
             XCTFail("No navigation action captured")
             return
         }
@@ -30,7 +30,7 @@ final class ReloadWebViewPolicyDecisionHandlerTests: BaseWebViewPolicyDecisionHa
     func test_handling_matching_result_cancels_web_navigation_and_reloads() async throws {
         guard let action = try await webNavigationSimulator.simulateNavigation(
             withHTML: .reload,
-            simulateLinkClickElementId: "reloadButton") else {
+            simulateAction: .click("reloadButton")) else {
             XCTFail("No navigation action captured")
             return
         }

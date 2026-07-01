@@ -14,7 +14,7 @@ final class NewWindowWebViewPolicyDecisionHandlerTests: BaseWebViewPolicyDecisio
     func test_target_blank_matches() async throws {
         guard let action = try await webNavigationSimulator.simulateNavigation(
             withHTML: .targetBlank,
-            simulateLinkClickElementId: "externalLink") else {
+            simulateAction: .click("externalLink")) else {
             XCTFail("No navigation action captured")
             return
         }
@@ -30,7 +30,7 @@ final class NewWindowWebViewPolicyDecisionHandlerTests: BaseWebViewPolicyDecisio
     func test_handling_matching_result_cancels_web_navigation_and_routes_internally() async throws {
         guard let action = try await webNavigationSimulator.simulateNavigation(
             withHTML: .targetBlank,
-            simulateLinkClickElementId: "externalLink") else {
+            simulateAction: .click("externalLink")) else {
             XCTFail("No navigation action captured")
             return
         }

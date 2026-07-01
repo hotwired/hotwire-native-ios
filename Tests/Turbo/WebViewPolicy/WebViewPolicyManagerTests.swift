@@ -10,7 +10,7 @@ final class WebViewPolicyManagerTests: XCTestCase {
     )
     let url = URL(string: "https://my.app.com/page")!
     var policyManager: WebViewPolicyManager!
-    var webNavigationSimulator: WebViewNavigationSimulator!
+    var webNavigationSimulator: WebViewPolicyNavigationSimulator!
     var navigator: Navigator!
     static var navigationAction: WKNavigationAction!
 
@@ -21,10 +21,10 @@ final class WebViewPolicyManagerTests: XCTestCase {
         // In these tests, the navigation action is not actually evaluated, but we need it as an argument
         // when calling `decidePolicy` on the handlers.
         if Self.navigationAction == nil {
-            webNavigationSimulator = WebViewNavigationSimulator()
+            webNavigationSimulator = WebViewPolicyNavigationSimulator()
             Self.navigationAction = try await webNavigationSimulator.simulateNavigation(
                 withHTML: .simpleLink,
-                simulateLinkClickElementId: "link"
+                simulateAction: .click("link")
             )!
         }
     }
