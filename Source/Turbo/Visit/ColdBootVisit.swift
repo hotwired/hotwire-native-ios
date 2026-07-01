@@ -134,7 +134,11 @@ extension ColdBootVisit: WKNavigationDelegate {
     }
 
     func webView(_ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        delegate?.visit(self, didReceiveAuthenticationChallenge: challenge, completionHandler: completionHandler)
+        guard let delegate else {
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+        delegate.visit(self, didReceiveAuthenticationChallenge: challenge, completionHandler: completionHandler)
     }
 }
 
