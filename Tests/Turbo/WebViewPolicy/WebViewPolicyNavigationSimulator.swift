@@ -75,23 +75,37 @@ class WebViewPolicyNavigationSimulator: NSObject, WKNavigationDelegate {
         decidePolicyFor navigationAction: WKNavigationAction,
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
     ) {
-        decisionHandler(.allow)
-
         // When awaiting a navigation initiated by the page itself (no simulated interaction),
-        // ignore the initial about:blank document load produced by `loadHTMLString(_:baseURL:)`
-        // and wait for the page-initiated navigation.
+        // allow the initial about:blank document load produced by `loadHTMLString(_:baseURL:)`
+        // so the page can load and run its script, then wait for the page-initiated navigation.
         if simulateAction.elementId == nil,
            navigationAction.navigationType == .other,
            navigationAction.request.url?.absoluteString == "about:blank" {
+            decisionHandler(.allow)
             return
         }
 
         capturedNavigationAction = navigationAction
 
         // When there is no simulated interaction, or after one is performed, resume the continuation.
-        if simulateAction.elementId == nil || didSimulateInteraction {
+        let shouldResumeContinuation = simulateAction.elementId == nil || didSimulateInteraction
+
+        if shouldResumeContinuation {
+            // Cancel the actual navigation — we only need the `WKNavigationAction` object.
+            // Allowing it would let WKWebView navigate to external URLs (e.g., https://example.com),
+            // blocking the shared WKProcessPool and stalling subsequent tests for minutes.
+            decisionHandler(.cancel)
             continuation?.resume(returning: navigationAction)
             continuation = nil
+        } else {
+            // Allow intermediate navigations (e.g., the initial loadHTMLString page load)
+            // so the page fully loads and didFinish can trigger the simulated interaction.
+            decisionHandler(.allow)
         }
+    }
+
+    func stopLoading() {
+        webView.stopLoading()
+        webView.navigationDelegate = nil
     }
 }
