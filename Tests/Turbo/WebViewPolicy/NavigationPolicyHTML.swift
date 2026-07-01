@@ -31,6 +31,35 @@ extension String {
     </html>
     """
 
+    /// A link to an `about:` URL, which should never be routed externally.
+    static var aboutLink = """
+    <html>
+      <body>
+        <a id="link" href="about:blank">About Link</a>
+      </body>
+    </html>
+    """
+
+    /// A link to a `data:` URL, which should never be routed externally.
+    static var dataLink = """
+    <html>
+      <body>
+        <a id="link" href="data:text/plain,hello">Data Link</a>
+      </body>
+    </html>
+    """
+
+    /// A form that submits to an external URL.
+    static var externalForm = """
+    <html>
+      <body>
+        <form id="form" action="https://example.com/submit" method="POST">
+          <input type="hidden" name="x" value="1" />
+        </form>
+      </body>
+    </html>
+    """
+
     /// A JavaScript-initiated reload via a button click.
     static var reload = """
     <html>

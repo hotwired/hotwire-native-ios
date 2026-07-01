@@ -30,4 +30,24 @@ open class WKUIController: NSObject, WKUIDelegate {
         })
         delegate?.present(alert, animated: true)
     }
+
+    /// Ensures that taps inside an embed that should route out of the iframe are handled.
+    open func webView(
+        _ webView: WKWebView,
+        createWebViewWith configuration: WKWebViewConfiguration,
+        for navigationAction: WKNavigationAction,
+        windowFeatures: WKWindowFeatures
+    ) -> WKWebView? {
+        guard navigationAction.request.url != nil else {
+            return nil
+        }
+
+        if let targetFrame = navigationAction.targetFrame,
+           targetFrame.isMainFrame {
+            return nil
+        }
+
+        webView.load(navigationAction.request)
+        return nil
+    }
 }
