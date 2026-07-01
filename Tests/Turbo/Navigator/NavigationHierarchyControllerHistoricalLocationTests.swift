@@ -87,7 +87,7 @@ final class NavigationHierarchyControllerHistoricalLocationTests: XCTestCase {
         XCTAssertEqual(navigationController.viewControllers.count, 1)
         XCTAssertEqual(navigator.session.activeVisitable?.initialVisitableURL, defaultOne.url)
         XCTAssertTrue(session.visitWasCalled)
-        XCTAssertEqual(session.visitAction, .restore)
+        XCTAssertEqual(session.visitAction, .replace)
     }
 
     // Recede behaviour:

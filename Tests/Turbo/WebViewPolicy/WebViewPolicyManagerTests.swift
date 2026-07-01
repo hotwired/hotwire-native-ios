@@ -30,6 +30,7 @@ final class WebViewPolicyManagerTests: XCTestCase {
     }
 
     override func tearDown() async throws {
+        webNavigationSimulator?.stopLoading()
         webNavigationSimulator = nil
     }
 

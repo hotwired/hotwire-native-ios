@@ -85,7 +85,7 @@ class SessionTests: XCTestCase {
 
         XCTAssertNotNil(sessionDelegate.failedRequestError)
         let error = try XCTUnwrap(sessionDelegate.failedRequestError)
-        XCTAssertEqual(error as? TurboError, TurboError.http(statusCode: 404))
+        XCTAssertEqual(error, .http(.client(.notFound)))
     }
 
     func test_coldBootVisit_whenVisitFailsFromHTTPError_callsSessionDidFinishRequestDelegateMethod() async {
@@ -95,15 +95,19 @@ class SessionTests: XCTestCase {
     }
 
     @MainActor
-    func test_coldBootVisit_whenVisitFailsFromMissingLibrary_providesAnPageLoadError() async throws {
-        await visit("/missing-library", timeout: turboTimeout + defaultTimeout)
+    func test_coldBootVisit_whenVisitFailsFromMissingLibrary_providesNotReadyAndNotPresentErrors() async throws {
+        let expectation = self.expectation(description: "Wait for both load errors.")
+        expectation.expectedFulfillmentCount = 2
+        sessionDelegate.didChange = { expectation.fulfill() }
+
+        let visitable = TestVisitable(url: url("/missing-library"))
+        session.visit(visitable)
+        await fulfillment(of: [expectation], timeout: turboTimeout + defaultTimeout)
 
         XCTAssertTrue(sessionDelegate.sessionDidFailRequestCalled)
-        XCTAssertTrue(sessionDelegate.sessionDidFinishRequestCalled)
-
-        XCTAssertNotNil(sessionDelegate.failedRequestError)
-        let error = try XCTUnwrap(sessionDelegate.failedRequestError)
-        XCTAssertEqual(error as? TurboError, TurboError.pageLoadFailure)
+        XCTAssertEqual(sessionDelegate.allFailedRequestErrors.count, 2)
+        XCTAssertEqual(sessionDelegate.allFailedRequestErrors[0], .load(.notReady))
+        XCTAssertEqual(sessionDelegate.allFailedRequestErrors[1], .load(.notPresent))
     }
 
     // MARK: - Server

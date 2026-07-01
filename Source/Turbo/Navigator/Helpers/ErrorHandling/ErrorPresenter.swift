@@ -3,7 +3,7 @@ import SwiftUI
 public protocol ErrorPresenter: UIViewController {
     typealias Handler = () -> Void
 
-    func presentError(_ error: Error, retryHandler: Handler?)
+    func presentError(_ error: HotwireNativeError, retryHandler: Handler?)
 }
 
 public extension ErrorPresenter {
@@ -15,7 +15,7 @@ public extension ErrorPresenter {
     ///   - error: presents the data in this error
     ///   - retryHandler: a user-triggered action to perform in case the error is recoverable
     ///
-    func presentError(_ error: Error, retryHandler: Handler?) {
+    func presentError(_ error: HotwireNativeError, retryHandler: Handler?) {
         let view = Hotwire.config.makeCustomErrorView(error) { [weak self] in
             retryHandler?()
             self?.removeErrorViewController()

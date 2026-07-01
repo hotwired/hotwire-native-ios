@@ -19,7 +19,7 @@ public protocol NavigatorDelegate: AnyObject {
     /// An error occurred loading the request, present it to the user.
     /// Retry the request by executing the closure.
     /// - Important: If not implemented, will present the error's localized description and a Retry button.
-    func visitableDidFailRequest(_ visitable: Visitable, error: Error, retryHandler: RetryBlock?)
+    func visitableDidFailRequest(_ visitable: Visitable, error: HotwireNativeError, retryHandler: RetryBlock?)
 
     /// Respond to authentication challenge presented by web servers behind basic auth.
     /// If not implemented, default handling will be performed.
@@ -43,7 +43,7 @@ public extension NavigatorDelegate {
         .accept
     }
 
-    func visitableDidFailRequest(_ visitable: Visitable, error: Error, retryHandler: RetryBlock?) {
+    func visitableDidFailRequest(_ visitable: Visitable, error: HotwireNativeError, retryHandler: RetryBlock?) {
         if let errorPresenter = visitable as? ErrorPresenter {
             errorPresenter.presentError(error, retryHandler: retryHandler)
         }
