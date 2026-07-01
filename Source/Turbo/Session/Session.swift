@@ -74,7 +74,7 @@ public class Session: NSObject {
 
     private func makeVisit(for visitable: Visitable, options: VisitOptions) -> Visit {
         if initialized {
-            return JavaScriptVisit(visitable: visitable, options: options, bridge: bridge, restorationIdentifier: restorationIdentifier(for: visitable))
+            return JavaScriptVisit(visitable: visitable, options: options, bridge: bridge, restorationIdentifier: restorationState(for: visitable).identifier)
         } else {
             return ColdBootVisit(visitable: visitable, options: options, bridge: bridge)
         }
@@ -112,15 +112,21 @@ public class Session: NSObject {
 
     private var activatedVisitable: Visitable?
 
-    private func activateVisitable(_ visitable: Visitable) {
+    internal func activateVisitable(_ visitable: Visitable) {
         guard !isActivatedVisitable(visitable) else { return }
 
         deactivateActivatedVisitable()
         visitable.activateVisitableWebView(webView)
         activatedVisitable = visitable
+
+        if isRevealedByPop(visitable), let position = restorationState(for: visitable).scrollPosition {
+            webView.scrollView.contentOffset = position
+        } else {
+            webView.scrollView.contentOffset = CGPoint(x: 0, y: -webView.scrollView.adjustedContentInset.top)
+        }
     }
 
-    private func deactivateActivatedVisitable() {
+    internal func deactivateActivatedVisitable() {
         guard let visitable = activatedVisitable else { return }
         deactivateVisitable(visitable, showScreenshot: true)
     }
@@ -133,6 +139,10 @@ public class Session: NSObject {
             visitable.showVisitableScreenshot()
         }
 
+        if !visitable.visitableViewController.isMovingFromParent {
+            restorationState(for: visitable).scrollPosition = webView.scrollView.contentOffset
+        }
+
         visitable.deactivateVisitableWebView()
         activatedVisitable = nil
     }
@@ -141,16 +151,24 @@ public class Session: NSObject {
         return visitable === activatedVisitable
     }
 
-    // MARK: Restoration Identifiers
+    // MARK: Restoration state management
 
-    private var visitableRestorationIdentifiers = NSMapTable<UIViewController, NSString>(keyOptions: NSPointerFunctions.Options.weakMemory, valueOptions: [])
+    private var visitableRestorationStates = NSMapTable<UIViewController, RestorationState>(keyOptions: .weakMemory, valueOptions: .strongMemory)
 
-    private func restorationIdentifier(for visitable: Visitable) -> String? {
-        return visitableRestorationIdentifiers.object(forKey: visitable.visitableViewController) as String?
+    private func isRevealedByPop(_ visitable: Visitable?) -> Bool {
+        (visitable?.visitableViewController as? VisitableViewController)?.appearReason == .revealedByPop
     }
 
-    private func storeRestorationIdentifier(_ restorationIdentifier: String, forVisitable visitable: Visitable) {
-        visitableRestorationIdentifiers.setObject(restorationIdentifier as NSString, forKey: visitable.visitableViewController)
+    private func restorationState(for visitable: Visitable) -> RestorationState {
+        let viewController = visitable.visitableViewController
+
+        if let existingState = visitableRestorationStates.object(forKey: viewController) {
+            return existingState
+        }
+
+        let newState = RestorationState()
+        visitableRestorationStates.setObject(newState, forKey: viewController)
+        return newState
     }
 
     // MARK: - Navigation
@@ -159,6 +177,12 @@ public class Session: NSObject {
         guard let visit = currentVisit else { return }
 
         topmostVisit = visit
+    }
+
+    private func restoreScrollPosition(for visitable: Visitable) {
+        if visitable === activatedVisitable, let position = restorationState(for: visitable).scrollPosition {
+            webView.scrollView.contentOffset = position
+        }
     }
 }
 
@@ -200,15 +224,17 @@ extension Session: VisitDelegate {
     }
 
     func visitDidRender(_ visit: Visit) {
-        visit.visitable.hideVisitableScreenshot()
+        if !isRevealedByPop(visit.visitable) {
+            visit.visitable.hideVisitableScreenshot()
+            visit.visitable.visitableDidRender()
+        }
         visit.visitable.hideVisitableActivityIndicator()
-        visit.visitable.visitableDidRender()
     }
 
     func visitDidComplete(_ visit: Visit) {
         retriedVisitIdentifiers.removeAll()
         guard let restorationIdentifier = visit.restorationIdentifier else { return }
-        storeRestorationIdentifier(restorationIdentifier, forVisitable: visit.visitable)
+        restorationState(for: visit.visitable).identifier = restorationIdentifier
     }
 
     func visitDidFail(_ visit: Visit) {
@@ -288,13 +314,27 @@ extension Session: VisitableDelegate {
             return
         }
 
-        // Navigating backward from a native to a web view screen.
         if visitable === previousVisit?.visitable {
             visit(visitable, action: .restore)
         }
     }
 
     public func visitableViewDidAppear(_ visitable: Visitable) {
+        if isRevealedByPop(visitable) {
+            // Appearing after back navigation
+            if let coordinator = visitable.visitableViewController.transitionCoordinator {
+                coordinator.animate(alongsideTransition: nil) { [weak self] _ in
+                    self?.restoreScrollPosition(for: visitable)
+                    visitable.hideVisitableScreenshot()
+                    visitable.visitableDidRender()
+                }
+            } else {
+                restoreScrollPosition(for: visitable)
+                visitable.hideVisitableScreenshot()
+                visitable.visitableDidRender()
+            }
+        }
+
         if let currentVisit = currentVisit, visitable === currentVisit.visitable {
             // Appearing after successful navigation
             completeNavigationForCurrentVisit()
@@ -309,6 +349,8 @@ extension Session: VisitableDelegate {
 
     public func visitableViewWillDisappear(_ visitable: Visitable) {
         previousVisit = topmostVisit
+        visitable.updateVisitableScreenshot()
+        visitable.showVisitableScreenshot()
     }
 
     public func visitableViewDidDisappear(_ visitable: Visitable) {
