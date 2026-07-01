@@ -19,6 +19,17 @@
 		844BA7B92B9A488A008F48DB /* path-configuration.json in Resources */ = {isa = PBXBuildFile; fileRef = 844BA7AE2B9A488A008F48DB /* path-configuration.json */; };
 		848E12212BD813CA009BB0A4 /* HotwireNative in Frameworks */ = {isa = PBXBuildFile; productRef = 848E12202BD813CA009BB0A4 /* HotwireNative */; };
 		84A617FF2D5AA88B00694AEE /* Tabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A617FE2D5AA88B00694AEE /* Tabs.swift */; };
+		84SWUI0012D5BB00100000001 /* SwiftUIDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84SWUI0012D5BB00100000005 /* SwiftUIDemoApp.swift */; };
+		84SWUI0012D5BB00100000002 /* Tabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84SWUI0012D5BB00100000006 /* Tabs.swift */; };
+		84SWUI0012D5BB00100000003 /* AppNavigatorDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84SWUI0012D5BB00100000007 /* AppNavigatorDelegate.swift */; };
+		84SWUI0012D5BB00100000004 /* path-configuration.json in Resources */ = {isa = PBXBuildFile; fileRef = 84SWUI0012D5BB00100000008 /* path-configuration.json */; };
+		84SWUI0012D5BB0010000000A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 844BA7932B9A4844008F48DB /* Assets.xcassets */; };
+		84SWUI0012D5BB0010000000B /* HotwireNative in Frameworks */ = {isa = PBXBuildFile; productRef = 84SWUI0012D5BB0010000000C /* HotwireNative */; };
+		84SWUI0012D5BB0010000000D /* Demo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84SWUI0012D5BB0010000000E /* Demo.swift */; };
+		84SWUI0012D5BB0010000000F /* NumbersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84SWUI0012D5BB00100000011 /* NumbersView.swift */; };
+		84SWUI0012D5BB00100000012 /* FormComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84SWUI0012D5BB00100000013 /* FormComponent.swift */; };
+		84SWUI0012D5BB00100000014 /* MenuComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84SWUI0012D5BB00100000015 /* MenuComponent.swift */; };
+		84SWUI0012D5BB00100000016 /* OverflowMenuComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84SWUI0012D5BB00100000017 /* OverflowMenuComponent.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +47,16 @@
 		844BA7AE2B9A488A008F48DB /* path-configuration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "path-configuration.json"; sourceTree = "<group>"; };
 		8458F3EF2BD8139400867B66 /* hotwire-native-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "hotwire-native-ios"; path = ..; sourceTree = "<group>"; };
 		84A617FE2D5AA88B00694AEE /* Tabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tabs.swift; sourceTree = "<group>"; };
+		84SWUI0012D5BB00100000005 /* SwiftUIDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIDemoApp.swift; sourceTree = "<group>"; };
+		84SWUI0012D5BB00100000006 /* Tabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tabs.swift; sourceTree = "<group>"; };
+		84SWUI0012D5BB00100000007 /* AppNavigatorDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNavigatorDelegate.swift; sourceTree = "<group>"; };
+		84SWUI0012D5BB00100000008 /* path-configuration.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "path-configuration.json"; sourceTree = "<group>"; };
+		84SWUI0012D5BB00100000009 /* SwiftUIDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUIDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		84SWUI0012D5BB0010000000E /* Demo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Demo.swift; sourceTree = "<group>"; };
+		84SWUI0012D5BB00100000011 /* NumbersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumbersView.swift; sourceTree = "<group>"; };
+		84SWUI0012D5BB00100000013 /* FormComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormComponent.swift; sourceTree = "<group>"; };
+		84SWUI0012D5BB00100000015 /* MenuComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuComponent.swift; sourceTree = "<group>"; };
+		84SWUI0012D5BB00100000017 /* OverflowMenuComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverflowMenuComponent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +68,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		84SWUI0012D5BB00100000020 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84SWUI0012D5BB0010000000B /* HotwireNative in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -54,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				844BA7892B9A4843008F48DB /* Demo */,
+				84SWUI0012D5BB00100000010 /* SwiftUIDemo */,
 				844BA7882B9A4843008F48DB /* Products */,
 				8458F3EC2BD8135600867B66 /* Frameworks */,
 			);
@@ -63,6 +93,7 @@
 			isa = PBXGroup;
 			children = (
 				844BA7872B9A4843008F48DB /* Demo.app */,
+				84SWUI0012D5BB00100000009 /* SwiftUIDemo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -102,6 +133,30 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		84SWUI0012D5BB00100000010 /* SwiftUIDemo */ = {
+			isa = PBXGroup;
+			children = (
+				84SWUI0012D5BB00100000018 /* Bridge */,
+				84SWUI0012D5BB00100000005 /* SwiftUIDemoApp.swift */,
+				84SWUI0012D5BB0010000000E /* Demo.swift */,
+				84SWUI0012D5BB00100000006 /* Tabs.swift */,
+				84SWUI0012D5BB00100000007 /* AppNavigatorDelegate.swift */,
+				84SWUI0012D5BB00100000011 /* NumbersView.swift */,
+				84SWUI0012D5BB00100000008 /* path-configuration.json */,
+			);
+			path = SwiftUIDemo;
+			sourceTree = "<group>";
+		};
+		84SWUI0012D5BB00100000018 /* Bridge */ = {
+			isa = PBXGroup;
+			children = (
+				84SWUI0012D5BB00100000013 /* FormComponent.swift */,
+				84SWUI0012D5BB00100000015 /* MenuComponent.swift */,
+				84SWUI0012D5BB00100000017 /* OverflowMenuComponent.swift */,
+			);
+			path = Bridge;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -125,6 +180,26 @@
 			productReference = 844BA7872B9A4843008F48DB /* Demo.app */;
 			productType = "com.apple.product-type.application";
 		};
+		84SWUI0012D5BB00100000030 /* SwiftUIDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 84SWUI0012D5BB00100000040 /* Build configuration list for PBXNativeTarget "SwiftUIDemo" */;
+			buildPhases = (
+				84SWUI0012D5BB00100000021 /* Sources */,
+				84SWUI0012D5BB00100000020 /* Frameworks */,
+				84SWUI0012D5BB00100000022 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SwiftUIDemo;
+			packageProductDependencies = (
+				84SWUI0012D5BB0010000000C /* HotwireNative */,
+			);
+			productName = SwiftUIDemo;
+			productReference = 84SWUI0012D5BB00100000009 /* SwiftUIDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -136,6 +211,9 @@
 				LastUpgradeCheck = 1530;
 				TargetAttributes = {
 					844BA7862B9A4843008F48DB = {
+						CreatedOnToolsVersion = 15.3;
+					};
+					84SWUI0012D5BB00100000030 = {
 						CreatedOnToolsVersion = 15.3;
 					};
 				};
@@ -156,6 +234,7 @@
 			projectRoot = "";
 			targets = (
 				844BA7862B9A4843008F48DB /* Demo */,
+				84SWUI0012D5BB00100000030 /* SwiftUIDemo */,
 			);
 		};
 /* End PBXProject section */
@@ -168,6 +247,15 @@
 				844BA7942B9A4844008F48DB /* Assets.xcassets in Resources */,
 				844BA7B92B9A488A008F48DB /* path-configuration.json in Resources */,
 				844BA7972B9A4844008F48DB /* Base in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		84SWUI0012D5BB00100000022 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84SWUI0012D5BB0010000000A /* Assets.xcassets in Resources */,
+				84SWUI0012D5BB00100000004 /* path-configuration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -186,6 +274,21 @@
 				844BA7B02B9A488A008F48DB /* SceneController.swift in Sources */,
 				844BA7B12B9A488A008F48DB /* FormComponent.swift in Sources */,
 				844BA7B52B9A488A008F48DB /* OverflowMenuComponent.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		84SWUI0012D5BB00100000021 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84SWUI0012D5BB00100000001 /* SwiftUIDemoApp.swift in Sources */,
+				84SWUI0012D5BB0010000000D /* Demo.swift in Sources */,
+				84SWUI0012D5BB00100000002 /* Tabs.swift in Sources */,
+				84SWUI0012D5BB00100000003 /* AppNavigatorDelegate.swift in Sources */,
+				84SWUI0012D5BB0010000000F /* NumbersView.swift in Sources */,
+				84SWUI0012D5BB00100000012 /* FormComponent.swift in Sources */,
+				84SWUI0012D5BB00100000014 /* MenuComponent.swift in Sources */,
+				84SWUI0012D5BB00100000016 /* OverflowMenuComponent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -376,6 +479,60 @@
 			};
 			name = Release;
 		};
+		84SWUI0012D5BB00100000050 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.SwiftUIDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		84SWUI0012D5BB00100000051 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.SwiftUIDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -397,10 +554,23 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		84SWUI0012D5BB00100000040 /* Build configuration list for PBXNativeTarget "SwiftUIDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				84SWUI0012D5BB00100000050 /* Debug */,
+				84SWUI0012D5BB00100000051 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		848E12202BD813CA009BB0A4 /* HotwireNative */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HotwireNative;
+		};
+		84SWUI0012D5BB0010000000C /* HotwireNative */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = HotwireNative;
 		};
