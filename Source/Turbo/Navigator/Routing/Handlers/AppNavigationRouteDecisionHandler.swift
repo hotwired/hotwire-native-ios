@@ -8,6 +8,14 @@ public final class AppNavigationRouteDecisionHandler: RouteDecisionHandler {
     public func matches(proposal: VisitProposal,
                         configuration: Navigator.Configuration) -> Bool {
         let location = proposal.url
+
+        /// Only HTTP(S) URLs can be routed in-app. A same-host URL with a custom
+        /// scheme (e.g. `webcal://my.app.com/calendar.ics`) must fall through to
+        /// `SystemNavigationRouteDecisionHandler` so the system can open it.
+        guard location.scheme == "http" || location.scheme == "https" else {
+            return false
+        }
+
         if #available(iOS 16, *) {
             return configuration.startLocation.host() == location.host()
         }

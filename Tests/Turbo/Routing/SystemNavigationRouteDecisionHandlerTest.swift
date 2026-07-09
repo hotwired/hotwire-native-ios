@@ -52,6 +52,13 @@ final class SystemNavigationRouteDecisionHandlerTests: XCTestCase {
         XCTAssertTrue(result)
     }
 
+    func test_non_http_scheme_on_app_domain_matches() {
+        let url = URL(string: "webcal://my.app.com/calendars/subscribe.ics?token=123")!
+        let result = route.matches(proposal: proposal(for: url), configuration: navigatorConfiguration)
+
+        XCTAssertTrue(result)
+    }
+
     func test_sms_urls_match() {
         let url = URL(string: "sms:1-408-555-1212")!
         let result = route.matches(proposal: proposal(for: url), configuration: navigatorConfiguration)

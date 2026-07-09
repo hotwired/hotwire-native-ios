@@ -38,6 +38,13 @@ final class AppNavigationRouteDecisionHandlerTest: XCTestCase {
         XCTAssertFalse(result)
     }
 
+    func test_non_http_scheme_on_app_domain_does_not_match() {
+        let url = URL(string: "webcal://my.app.com/calendars/subscribe.ics?token=123")!
+        let result = route.matches(proposal: proposal(for: url), configuration: navigatorConfiguration)
+
+        XCTAssertFalse(result)
+    }
+
     func test_masqueraded_url_does_not_match() {
         let url = URL(string: "https://app.my.com@fake.domain")!
         let result = route.matches(proposal: proposal(for: url), configuration: navigatorConfiguration)
