@@ -36,6 +36,7 @@ open class VisitableViewController: UIViewController, Visitable {
 
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        syncLargeTitlePresentationAfterTransition()
         if appearReason == .tabSelected { return }
         visitableDelegate?.visitableViewDidAppear(self)
     }
@@ -57,27 +58,66 @@ open class VisitableViewController: UIViewController, Visitable {
     open func visitableDidRender() {
         navigationItem.title = visitableView.webView?.title
         visitableLocationState = .resolved
-        restoreExpandedLargeTitleIfNeeded()
+        syncLargeTitlePresentationAfterTransition()
     }
 
-    /// Turbo scrolls to the top after rendering a visit, which WKWebView applies
-    /// against the collapsed-bar geometry. UIKit interprets that as an upward
-    /// scroll and collapses a large title — and a collapsed bar resting at the
-    /// top never re-expands without a user drag. Once the pending layout pass
-    /// has produced the final insets, re-align the offset and re-measure the
-    /// bar so screens configured for large titles render them expanded. A page
-    /// scrolled below the top (e.g. a restored scroll position) is left alone.
-    private func restoreExpandedLargeTitleIfNeeded() {
-        guard let navigationBar = navigationController?.navigationBar,
-              navigationBar.prefersLargeTitles,
+    /// Adjusted top content inset sampled while a large-title bar is expanded,
+    /// used to recognise (and repair) a bar that is stuck collapsed.
+    private static var expandedTopContentInset: CGFloat?
+
+    /// The web view activates before its view controller is pushed, and Turbo
+    /// scrolls it during visits — including cache-restore renders that happen
+    /// mid-transition against the outgoing page's geometry. UIKit derives the
+    /// navigation bar's large-title state from that stale offset and locks the
+    /// title collapsed; a collapsed bar resting at the top never re-expands
+    /// without scrolling. Once any transition has settled, re-align the offset
+    /// and, if the bar is stuck collapsed, drive the tracked offset to the
+    /// sampled expanded top so the bar reopens. Real scroll positions (below
+    /// the top) are left untouched.
+    private func syncLargeTitlePresentationAfterTransition() {
+        guard navigationController?.navigationBar.prefersLargeTitles == true,
+              navigationItem.largeTitleDisplayMode != .never else { return }
+        if let coordinator = transitionCoordinator {
+            coordinator.animate(alongsideTransition: nil) { [weak self] _ in
+                self?.syncLargeTitlePresentation()
+            }
+        } else {
+            DispatchQueue.main.async { [weak self] in
+                self?.syncLargeTitlePresentation()
+            }
+        }
+    }
+
+    private func syncLargeTitlePresentation() {
+        // Only the settled, topmost controller may adjust the bar — an async
+        // continuation from a page that was popped or covered must not restyle
+        // the bar the next page now owns.
+        guard navigationController?.topViewController == self,
+              transitionCoordinator == nil,
+              viewIfLoaded?.window != nil,
+              navigationController?.navigationBar.prefersLargeTitles == true,
               navigationItem.largeTitleDisplayMode != .never,
               let scrollView = visitableView.webView?.scrollView else { return }
-        DispatchQueue.main.async {
-            let top = -scrollView.adjustedContentInset.top
-            if scrollView.contentOffset.y <= top + 1 {
-                scrollView.setContentOffset(CGPoint(x: 0, y: top), animated: false)
-                navigationBar.sizeToFit()
+
+        let adjustedTop = scrollView.adjustedContentInset.top
+        let top = -adjustedTop
+        let atTop = scrollView.contentOffset.y <= top + 1
+
+        if navigationItem.largeTitleDisplayMode == .always {
+            if let expanded = Self.expandedTopContentInset, expanded > adjustedTop + 1, atTop {
+                // Stuck collapsed at the top: UIKit only re-expands in response
+                // to scrolling, so drive the tracked offset to the expanded
+                // top; the bar and insets follow.
+                scrollView.setContentOffset(CGPoint(x: 0, y: -expanded), animated: false)
+                return
             }
+            Self.expandedTopContentInset = max(Self.expandedTopContentInset ?? 0, adjustedTop)
+        }
+
+        // Align a web view resting between the raw and adjusted top (fresh
+        // attach or post-render scroll reset).
+        if scrollView.contentOffset.y > top, scrollView.contentOffset.y <= 0 {
+            scrollView.setContentOffset(CGPoint(x: 0, y: top), animated: false)
         }
     }
 
