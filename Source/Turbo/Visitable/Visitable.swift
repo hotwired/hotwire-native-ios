@@ -57,7 +57,26 @@ extension Visitable {
         if #available(iOS 15.0, *) {
             visitableViewController.setContentScrollView(webView.scrollView, for: .all)
         }
+        alignWebViewScrollOffsetToAdjustedTop(webView)
         visitableDidActivateWebView(webView)
+    }
+
+    /// The web view attaches after its view controller is already on screen, so
+    /// it misses UIKit's automatic initial content-offset adjustment and sits at
+    /// contentOffset 0 instead of -adjustedContentInset.top. The navigation bar
+    /// then treats the page as scrolled down and renders a large title
+    /// (`prefersLargeTitles`) collapsed until the user scrolls to the top.
+    /// Align the offset once the pending layout pass has produced the final
+    /// adjusted insets, and only when the web view is at its unadjusted top —
+    /// a restored scroll position is left untouched.
+    private func alignWebViewScrollOffsetToAdjustedTop(_ webView: WKWebView) {
+        let scrollView = webView.scrollView
+        DispatchQueue.main.async {
+            let top = -scrollView.adjustedContentInset.top
+            if scrollView.contentOffset.y > top, scrollView.contentOffset.y <= 0 {
+                scrollView.setContentOffset(CGPoint(x: 0, y: top), animated: false)
+            }
+        }
     }
 
     func deactivateVisitableWebView() {
