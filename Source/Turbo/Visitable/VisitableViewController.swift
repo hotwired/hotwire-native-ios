@@ -57,6 +57,28 @@ open class VisitableViewController: UIViewController, Visitable {
     open func visitableDidRender() {
         navigationItem.title = visitableView.webView?.title
         visitableLocationState = .resolved
+        restoreExpandedLargeTitleIfNeeded()
+    }
+
+    /// Turbo scrolls to the top after rendering a visit, which WKWebView applies
+    /// against the collapsed-bar geometry. UIKit interprets that as an upward
+    /// scroll and collapses a large title — and a collapsed bar resting at the
+    /// top never re-expands without a user drag. Once the pending layout pass
+    /// has produced the final insets, re-align the offset and re-measure the
+    /// bar so screens configured for large titles render them expanded. A page
+    /// scrolled below the top (e.g. a restored scroll position) is left alone.
+    private func restoreExpandedLargeTitleIfNeeded() {
+        guard let navigationBar = navigationController?.navigationBar,
+              navigationBar.prefersLargeTitles,
+              navigationItem.largeTitleDisplayMode != .never,
+              let scrollView = visitableView.webView?.scrollView else { return }
+        DispatchQueue.main.async {
+            let top = -scrollView.adjustedContentInset.top
+            if scrollView.contentOffset.y <= top + 1 {
+                scrollView.setContentOffset(CGPoint(x: 0, y: top), animated: false)
+                navigationBar.sizeToFit()
+            }
+        }
     }
 
     open func showVisitableActivityIndicator() {
