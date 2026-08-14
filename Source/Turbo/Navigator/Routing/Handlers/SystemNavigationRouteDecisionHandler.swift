@@ -10,6 +10,13 @@ public final class SystemNavigationRouteDecisionHandler: RouteDecisionHandler {
     public func matches(proposal: VisitProposal,
                         configuration: Navigator.Configuration) -> Bool {
         let location = proposal.url
+
+        /// Non-HTTP(S) URLs (webcal:, mailto:, sms:, ...) are always opened via
+        /// the system, even when they point at the app's own host.
+        guard location.scheme == "http" || location.scheme == "https" else {
+            return true
+        }
+
         if #available(iOS 16, *) {
             return configuration.startLocation.host() != location.host()
         }
