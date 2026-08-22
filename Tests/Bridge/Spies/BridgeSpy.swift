@@ -6,6 +6,8 @@ final class BridgeSpy: Bridgable {
     var delegate: BridgeDelegate? = nil
     var webView: WKWebView? = nil
     
+    func notifyDelegateOfDocumentAnnouncementIfNeeded() {}
+
     var registerComponentWasCalled = false
     var registerComponentArg: String? = nil
     
