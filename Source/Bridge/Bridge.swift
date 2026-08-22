@@ -9,6 +9,8 @@ protocol Bridgable: AnyObject {
     var delegate: BridgeDelegate? { get set }
     var webView: WKWebView? { get }
 
+    @MainActor func notifyDelegateOfDocumentAnnouncementIfNeeded()
+
     func register(component: String) async throws
     func register(components: [String]) async throws
     func unregister(component: String) async throws
@@ -31,6 +33,20 @@ public final class Bridge: Bridgable {
     init(webView: WKWebView) {
         self.webView = webView
         loadIntoWebView()
+    }
+
+    /// A document announces itself once, at document start. A destination that attaches
+    /// after that announcement never hears it, so the components it owns are never
+    /// registered and every message the page has queued for them stays queued. Deliver the
+    /// announcement to a destination that attached late, once per destination per document.
+    @MainActor
+    func notifyDelegateOfDocumentAnnouncementIfNeeded() {
+        guard documentDidAnnounceItself,
+              let delegate,
+              delegate !== delegateNotifiedOfCurrentDocument else { return }
+
+        delegateNotifiedOfCurrentDocument = delegate
+        delegate.bridgeDidInitialize()
     }
 
     // MARK: - Internal API
@@ -108,6 +124,9 @@ public final class Bridge: Bridgable {
     // MARK: Private
 
     private static var instances: [Bridge] = []
+    private var documentDidAnnounceItself = false
+    private weak var delegateNotifiedOfCurrentDocument: BridgeDelegate?
+
     /// This needs to match whatever the JavaScript file uses
     private let bridgeGlobal = "window.nativeBridge"
 
@@ -175,7 +194,8 @@ extension Bridge: ScriptMessageHandlerDelegate {
     @MainActor
     func scriptMessageHandlerDidReceiveMessage(_ scriptMessage: WKScriptMessage) {
         if let event = scriptMessage.body as? String, event == "ready" {
-            delegate?.bridgeDidInitialize()
+            documentDidAnnounceItself = true
+            notifyDelegateOfDocumentAnnouncementIfNeeded()
             return
         }
 

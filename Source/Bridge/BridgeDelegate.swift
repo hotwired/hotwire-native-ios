@@ -56,6 +56,8 @@ public final class BridgeDelegate: BridgingDelegate {
         if bridge == nil {
             logger.warning("bridgeNotInitializedForWebView")
         }
+
+        bridge?.notifyDelegateOfDocumentAnnouncementIfNeeded()
     }
     
     public func webViewDidBecomeDeactivated() {
