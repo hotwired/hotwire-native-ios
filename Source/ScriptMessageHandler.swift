@@ -13,6 +13,12 @@ final class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
     }
 
     func userContentController(_ userContentController: WKUserContentController, didReceive scriptMessage: WKScriptMessage) {
+        guard scriptMessage.frameInfo.isMainFrame else {
+            let origin = scriptMessage.frameInfo.securityOrigin
+            logger.warning("scriptMessageRefusedForSubframeOrigin: \(origin.protocol)://\(origin.host):\(origin.port)")
+            return
+        }
+
         delegate?.scriptMessageHandlerDidReceiveMessage(scriptMessage)
     }
 }
