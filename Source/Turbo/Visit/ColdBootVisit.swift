@@ -100,6 +100,13 @@ extension ColdBootVisit: WKNavigationDelegate {
     }
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+        // Allow responses for iframes (sub-frames), whatever their status.
+        // An iframe that fails to load shouldn't fail the cold boot of the page embedding it.
+        guard navigationResponse.isForMainFrame else {
+            decisionHandler(.allow)
+            return
+        }
+
         if let httpResponse = navigationResponse.response as? HTTPURLResponse {
             if httpResponse.statusCode >= 200 && httpResponse.statusCode < 300 {
                 decisionHandler(.allow)

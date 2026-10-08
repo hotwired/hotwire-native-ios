@@ -33,6 +33,13 @@ extension DefaultHTTPServer {
                 startResponse("200 OK", [("Content-Type", "text/html")])
                 sendBody("<html></html>".data(using: .utf8)!)
                 sendBody(Data())
+            case "/failing-iframe":
+                startResponse("200 OK", [("Content-Type", "text/html")])
+                sendBody("<html><body><iframe src=\"/unauthorized\"></iframe></body></html>".data(using: .utf8)!)
+                sendBody(Data())
+            case "/unauthorized":
+                startResponse("401 Unauthorized", [("Content-Type", "text/html")])
+                sendBody(Data())
             default:
                 startResponse("404 Not Found", [("Content-Type", "text/plain")])
                 sendBody(Data())
