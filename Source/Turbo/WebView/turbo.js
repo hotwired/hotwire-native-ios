@@ -133,9 +133,9 @@
     visitStarted(visit) {
       this.currentVisit = visit
       this.postMessage("visitStarted", { identifier: visit.identifier, hasCachedSnapshot: visit.hasCachedSnapshot(), isPageRefresh: visit.isPageRefresh || false })
+      this.loadCachedSnapshotForVisitWithIdentifier(visit.identifier)
       this.issueRequestForVisitWithIdentifier(visit.identifier)
       this.changeHistoryForVisitWithIdentifier(visit.identifier)
-      this.loadCachedSnapshotForVisitWithIdentifier(visit.identifier)
     }
 
     visitRequestStarted(visit) {
