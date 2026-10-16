@@ -258,7 +258,7 @@ extension Navigator: SessionDelegate {
 
         Task { @MainActor in
             let cookies = await WKWebsiteDataStore.default().httpCookieStore.allCookies()
-            HTTPCookieStorage.shared.setCookies(cookies, for: url, mainDocumentURL: url)
+            HTTPCookieStorage.shared.replaceCookies(for: url, with: cookies)
             delegate?.requestDidFinish(at: url)
         }
     }
