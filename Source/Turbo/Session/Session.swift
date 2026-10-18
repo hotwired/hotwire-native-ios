@@ -86,6 +86,10 @@ public class Session: NSObject {
             return
         }
 
+        reload(visitable)
+    }
+
+    private func reload(_ visitable: Visitable) {
         log("Reloading session with visitable: \(visitable)")
         initialized = false
         visit(visitable)
@@ -350,12 +354,12 @@ extension Session: WebViewDelegate {
     }
 
     func webViewDidInvalidatePage(_ bridge: WebViewBridge) {
-        guard let visitable = topmostVisitable else { return }
+        guard let visitable = currentVisit?.visitable else { return }
 
         visitable.updateVisitableScreenshot()
         visitable.showVisitableScreenshot()
         visitable.showVisitableActivityIndicator()
-        reload()
+        reload(visitable)
     }
 
     /// Initial page load failed, this will happen when we couldn't find Turbo JS on the page
