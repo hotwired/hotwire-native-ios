@@ -110,16 +110,35 @@ class SessionTests: XCTestCase {
         XCTAssertEqual(sessionDelegate.allFailedRequestErrors[1], .load(.notPresent))
     }
 
+    @MainActor
+    func test_pageInvalidated_whileGoingBack_reloadsTheRevealedVisitable() async {
+        let leaving = TestVisitable(url: url("/"))
+        await visit(leaving)
+        session.visitableViewDidAppear(leaving)
+
+        let revealed = TestVisitable(url: url("/"))
+        session.visit(revealed, action: .restore)
+        session.webViewDidInvalidatePage(WebViewBridge(webView: WKWebView()))
+
+        XCTAssertIdentical(session.activeVisitable, revealed)
+        XCTAssertIdentical(session.topmostVisitable, revealed)
+    }
+
     // MARK: - Server
 
     @MainActor
     private func visit(_ path: String, timeout: TimeInterval = defaultTimeout) async {
+        await visit(TestVisitable(url: url(path)), timeout: timeout)
+    }
+
+    @MainActor
+    private func visit(_ visitable: TestVisitable, timeout: TimeInterval = defaultTimeout) async {
         let expectation = self.expectation(description: "Wait for request to load.")
         sessionDelegate.didChange = { expectation.fulfill() }
 
-        let visitable = TestVisitable(url: url(path))
         session.visit(visitable)
         await fulfillment(of: [expectation], timeout: timeout)
+        sessionDelegate.didChange = nil
     }
 
     private func url(_ path: String) -> URL {
