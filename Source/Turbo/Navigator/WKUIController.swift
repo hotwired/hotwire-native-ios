@@ -17,9 +17,10 @@ open class WKUIController: NSObject, WKUIDelegate {
             completionHandler()
             return
         }
+        let completion = DialogCompletion(defaultResult: ()) { completionHandler() }
         let alert = UIAlertController(title: message, message: nil, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Close", style: .default) { _ in
-            completionHandler()
+            completion.complete(with: ())
         })
         delegate.present(alert, animated: true)
     }
@@ -29,12 +30,13 @@ open class WKUIController: NSObject, WKUIDelegate {
             completionHandler(false)
             return
         }
+        let completion = DialogCompletion(defaultResult: false, completionHandler: completionHandler)
         let alert = UIAlertController(title: message, message: nil, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
-            completionHandler(true)
+            completion.complete(with: true)
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
-            completionHandler(false)
+            completion.complete(with: false)
         })
         delegate.present(alert, animated: true)
     }
@@ -57,5 +59,28 @@ open class WKUIController: NSObject, WKUIDelegate {
 
         webView.load(navigationAction.request)
         return nil
+    }
+}
+
+/// Calls a JavaScript dialog's completion handler exactly once: with the user's answer, or
+/// with `defaultResult` if the alert goes away unanswered, for example when UIKit tears down
+/// the alert because its tab was removed. WebKit raises an exception if the handler is
+/// never called.
+final class DialogCompletion<Result> {
+    private var completionHandler: ((Result) -> Void)?
+    private let defaultResult: Result
+
+    init(defaultResult: Result, completionHandler: @escaping (Result) -> Void) {
+        self.defaultResult = defaultResult
+        self.completionHandler = completionHandler
+    }
+
+    func complete(with result: Result) {
+        completionHandler?(result)
+        completionHandler = nil
+    }
+
+    deinit {
+        completionHandler?(defaultResult)
     }
 }
