@@ -585,6 +585,58 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         XCTAssertNil(navigationController.presentedViewController)
     }
 
+    func test_redirect_modalToMain_advance_fromModalMarkedAsReplacingPresentingPage_replacesPageBeneathModal() {
+        modalSession.pathConfiguration = replacingPresentingPageConfiguration
+        navigator.route(oneURL)
+        navigator.route(twoURL)
+        navigator.route(VisitProposal(path: "/two/moves/new", context: .modal))
+
+        let redirect = VisitProposal(path: "/three", action: .advance, context: .default, redirected: true)
+        navigator.session(modalSession, didProposeVisit: redirect)
+
+        XCTAssertNil(navigationController.presentedViewController)
+        XCTAssertEqual(navigationController.viewControllers.compactMap { ($0 as? Visitable)?.initialVisitableURL }, [oneURL, redirect.url])
+        assertVisited(url: redirect.url, on: .main)
+    }
+
+    func test_redirect_modalToMain_advance_fromModalNotMarkedAsReplacingPresentingPage_pushesOnTopOfPageBeneathModal() {
+        modalSession.pathConfiguration = replacingPresentingPageConfiguration
+        navigator.route(oneURL)
+        navigator.route(twoURL)
+        navigator.route(VisitProposal(path: "/two/copies/new", context: .modal))
+
+        let redirect = VisitProposal(path: "/three", action: .advance, context: .default, redirected: true)
+        navigator.session(modalSession, didProposeVisit: redirect)
+
+        XCTAssertNil(navigationController.presentedViewController)
+        XCTAssertEqual(navigationController.viewControllers.compactMap { ($0 as? Visitable)?.initialVisitableURL }, [oneURL, twoURL, redirect.url])
+    }
+
+    func test_redirect_modalToMain_advance_fromModalMarkedAsReplacingPresentingPage_toPageBeforeThePresentingPage_popsBackToIt() {
+        modalSession.pathConfiguration = replacingPresentingPageConfiguration
+        navigator.route(oneURL)
+        navigator.route(twoURL)
+        navigator.route(VisitProposal(path: "/two/moves/new", context: .modal))
+
+        let redirect = VisitProposal(path: "/one", action: .advance, context: .default, redirected: true)
+        navigator.session(modalSession, didProposeVisit: redirect)
+
+        XCTAssertNil(navigationController.presentedViewController)
+        XCTAssertEqual(navigationController.viewControllers.compactMap { ($0 as? Visitable)?.initialVisitableURL }, [oneURL])
+    }
+
+    func test_redirect_modalToMain_advance_fromModalMarkedAsReplacingPresentingPage_keepsProposalResponse() {
+        modalSession.pathConfiguration = replacingPresentingPageConfiguration
+        navigator.route(oneURL)
+        navigator.route(VisitProposal(path: "/one/moves/new", context: .modal))
+
+        let redirect = VisitProposal(path: "/three", action: .advance, context: .default, redirected: true)
+        navigator.session(modalSession, didProposeVisit: redirect)
+
+        XCTAssertEqual(navigator.session.activeVisitable?.initialVisitableURL, redirect.url)
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+    }
+
     func test_redirect_modalToMain_singleControllerModal_routesAfterModalDismissalCompletes() {
         assertModalToMainRedirectWaitsForDismissal(
             modalProposals: [VisitProposal(path: "/modal-one", context: .modal)]
@@ -646,6 +698,14 @@ final class NavigationHierarchyControllerTests: XCTestCase {
 
     private enum Context {
         case main, modal
+    }
+
+    private var replacingPresentingPageConfiguration: PathConfiguration {
+        let json = """
+        {"rules": [{"patterns": ["/moves/new"], "properties": {"context": "modal", "replaces_presenting_page_on_redirect": true}},
+                   {"patterns": ["/copies/new"], "properties": {"context": "modal"}}]}
+        """
+        return PathConfiguration(sources: [.data(Data(json.utf8))])
     }
 
     private let baseURL = URL(string: "https://example.com")!
