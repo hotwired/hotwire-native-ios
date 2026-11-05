@@ -85,4 +85,8 @@ public extension PathProperties {
 
         return presentation
     }
+
+    var replacesPresentingPageOnRedirect: Bool {
+        self["replaces_presenting_page_on_redirect"] as? Bool ?? false
+    }
 }

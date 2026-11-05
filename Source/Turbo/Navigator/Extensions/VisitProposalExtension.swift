@@ -36,4 +36,13 @@ public extension VisitProposal {
     internal var isHistoricalLocation: Bool {
         properties.historicalLocation
     }
+
+    internal func replacingCurrentPage() -> VisitProposal {
+        VisitProposal(
+            url: url,
+            options: VisitOptions(action: .replace, response: options.response),
+            properties: properties,
+            parameters: parameters
+        )
+    }
 }

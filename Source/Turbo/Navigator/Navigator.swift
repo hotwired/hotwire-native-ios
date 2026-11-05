@@ -161,6 +161,11 @@ public class Navigator {
         }
     }
 
+    private func replacesPresentingPage(for modalSession: Session) -> Bool {
+        guard let url = modalSession.activeVisitable?.initialVisitableURL else { return false }
+        return modalSession.pathConfiguration?.properties(for: url).replacesPresentingPageOnRedirect ?? false
+    }
+
     private func routeDecision(for proposal: VisitProposal) -> Router.Decision {
         return Hotwire.config.router.decideRoute(
             for: proposal,
@@ -186,8 +191,9 @@ extension Navigator: SessionDelegate {
 
             switch (sessionIsModal, proposalIsModal) {
             case (true, false):
+                let routedProposal = replacesPresentingPage(for: session) ? proposal.replacingCurrentPage() : proposal
                 hierarchyController.dismissModal(animated: true) { [weak self] in
-                    self?.route(proposal)
+                    self?.route(routedProposal)
                 }
                 return
             case (false, true):
