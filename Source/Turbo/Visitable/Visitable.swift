@@ -57,6 +57,9 @@ extension Visitable {
         if #available(iOS 15.0, *) {
             visitableViewController.setContentScrollView(webView.scrollView, for: .all)
         }
+        if let style = Hotwire.config.webViewTopEdgeEffectStyle {
+            webView.scrollView.setTopEdgeEffectStyle(style)
+        }
         visitableDidActivateWebView(webView)
     }
 

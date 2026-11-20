@@ -91,6 +91,28 @@ class VisitableViewControllerTests: XCTestCase {
 
         XCTAssertNil(viewController.contentScrollView(for: .top))
     }
+
+    #if compiler(>=6.2)
+    @available(iOS 26.0, *)
+    func test_activating_webview_applies_the_configured_top_edge_effect_style() {
+        Hotwire.config.webViewTopEdgeEffectStyle = .soft
+        defer { Hotwire.config.webViewTopEdgeEffectStyle = nil }
+        webView.scrollView.topEdgeEffect.style = .hard
+
+        viewController.activateVisitableWebView(webView)
+
+        XCTAssertEqual(webView.scrollView.topEdgeEffect.style, .soft)
+    }
+
+    @available(iOS 26.0, *)
+    func test_activating_webview_keeps_the_top_edge_effect_style_when_not_configured() {
+        webView.scrollView.topEdgeEffect.style = .hard
+
+        viewController.activateVisitableWebView(webView)
+
+        XCTAssertEqual(webView.scrollView.topEdgeEffect.style, .hard)
+    }
+    #endif
 }
 
 final class WebViewSpy: WKWebView {

@@ -29,6 +29,12 @@ public struct HotwireConfig {
     /// Set to `true` to fade content when performing a `replace` visit.
     public var animateReplaceActions = false
 
+    /// The style of the edge effect at the top of each web view, under the
+    /// navigation bar. The system may pick a hard edge for some pages; set
+    /// `.soft` to always blend the bar into the page. Leave `nil` to keep
+    /// whatever the web view already uses. Only applies on iOS 26 and later.
+    public var webViewTopEdgeEffectStyle: ScrollEdgeEffectStyle? = nil
+
     /// Timeout (in seconds) for the request that resolves redirects before a visit.
     public var redirectResolutionTimeout: TimeInterval = 30
 
