@@ -599,6 +599,74 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         assertVisited(url: redirect.url, on: .main)
     }
 
+    func test_redirect_modalToMain_afterDirectPush_replacesOriginalPresentingPage() throws {
+        let handler = recordRedirectRoutes()
+        modalSession.pathConfiguration = replacingPresentingPageConfiguration
+        navigator.route(oneURL)
+        let presentingPage = try XCTUnwrap(navigationController.topViewController)
+        let modal = VisitProposal(path: "/one/moves/new", context: .modal)
+        navigator.route(modal)
+        XCTAssertIdentical(navigationController.presentedViewController, modalNavigationController)
+
+        let pushedPage = UIViewController()
+        navigationController.pushViewController(pushedPage, animated: false)
+
+        let redirect = VisitProposal(path: "/three", action: .advance, context: .default, redirected: true)
+        navigator.session(modalSession, didProposeVisit: redirect)
+
+        XCTAssertEqual(handler.handledProposal?.modalRedirect?.modalURL, modal.url)
+        XCTAssertEqual(handler.handledProposal?.modalRedirect?.presentingPageURL, oneURL)
+        XCTAssertEqual(handler.handledProposal?.options.action, .replace)
+        XCTAssertNil(navigationController.presentedViewController)
+        XCTAssertEqual(navigationController.viewControllers.count, 2)
+        XCTAssertIdentical(navigationController.viewControllers.first, pushedPage)
+        XCTAssertFalse(navigationController.viewControllers.contains { $0 === presentingPage })
+        XCTAssertEqual(navigationController.topViewController?.routedLocation, redirect.url)
+        assertVisited(url: redirect.url, on: .main)
+    }
+
+    func test_redirect_modalToMain_whenOriginalPresentingPageWasRemoved_routesOriginalProposal() throws {
+        let handler = recordRedirectRoutes()
+        modalSession.pathConfiguration = replacingPresentingPageConfiguration
+        navigator.route(oneURL)
+        let presentingPage = try XCTUnwrap(navigationController.topViewController)
+        navigator.route(VisitProposal(path: "/one/moves/new", context: .modal, presentation: .replace))
+        XCTAssertIdentical(navigationController.presentedViewController, modalNavigationController)
+
+        let replacementPage = UIViewController()
+        navigationController.setViewControllers([replacementPage], animated: false)
+
+        let redirect = VisitProposal(path: "/three", action: .advance, context: .default, redirected: true)
+        withExtendedLifetime(presentingPage) {
+            navigator.session(modalSession, didProposeVisit: redirect)
+        }
+
+        XCTAssertEqual(handler.handledProposal?.options.action, .advance)
+        XCTAssertNil(handler.handledProposal?.modalRedirect)
+        XCTAssertEqual(navigationController.viewControllers.count, 2)
+        XCTAssertIdentical(navigationController.viewControllers.first, replacementPage)
+        XCTAssertEqual(navigationController.topViewController?.routedLocation, redirect.url)
+    }
+
+    func test_redirect_modalToMain_advance_fromDismissedModalMarkedAsReplacingPresentingPage_pushesOnMainStack() {
+        let handler = recordRedirectRoutes()
+        modalSession.pathConfiguration = replacingPresentingPageConfiguration
+        navigator.route(oneURL)
+        navigator.route(twoURL)
+        let modal = VisitProposal(path: "/two/moves/new", context: .modal)
+        navigator.route(modal)
+
+        navigationController.presentedViewController = nil
+        XCTAssertEqual(modalSession.activeVisitable?.initialVisitableURL, modal.url)
+
+        let redirect = VisitProposal(path: "/three", action: .advance, context: .default, redirected: true)
+        navigator.session(modalSession, didProposeVisit: redirect)
+
+        XCTAssertEqual(navigationController.viewControllers.compactMap { ($0 as? Visitable)?.initialVisitableURL }, [oneURL, twoURL, redirect.url])
+        XCTAssertEqual(handler.handledProposal?.url, redirect.url)
+        XCTAssertNil(handler.handledProposal?.modalRedirect)
+    }
+
     func test_redirect_modalToMain_advance_fromModalNotMarkedAsReplacingPresentingPage_pushesOnTopOfPageBeneathModal() {
         modalSession.pathConfiguration = replacingPresentingPageConfiguration
         navigator.route(oneURL)
@@ -652,14 +720,114 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         )
     }
 
+    func test_redirect_modalToMain_multipleControllerModalMarkedAsReplacingPresentingPage_routesAfterModalDismissalCompletes() {
+        let redirect = VisitProposal(
+            url: baseURL.appendingPathComponent("/three"),
+            options: VisitOptions(response: VisitResponse(statusCode: 201, redirected: true)),
+            properties: ["custom_property": "value"],
+            parameters: ["custom_parameter": "value"]
+        )
+        assertModalToMainRedirectWaitsForDismissal(
+            modalProposals: [
+                VisitProposal(path: "/modal-one", context: .modal),
+                VisitProposal(path: "/modal-two/moves/new", context: .modal)
+            ],
+            redirect: redirect,
+            expectedAction: .replace
+        )
+    }
+
+    func test_redirect_modalToMain_advance_whenPresentingPageChangesDuringDismissal_pushesOnMainStack() {
+        let handler = recordRedirectRoutes()
+        let delayedNavigationController = DelayedDismissalNavigationController()
+        let redirectDelegate = RedirectProposalRecordingDelegate()
+        navigator.delegate = redirectDelegate
+        navigator.hierarchyController = NavigationHierarchyController(
+            delegate: navigator,
+            navigationController: delayedNavigationController,
+            modalNavigationController: modalNavigationController
+        )
+        loadNavigationControllerInWindow(delayedNavigationController)
+        modalSession.pathConfiguration = replacingPresentingPageConfiguration
+        navigator.route(oneURL)
+        let modal = VisitProposal(path: "/one/moves/new", context: .modal)
+        navigator.route(modal)
+        XCTAssertEqual(modalSession.activeVisitable?.initialVisitableURL, modal.url)
+        XCTAssertIdentical(delayedNavigationController.presentedViewController, modalNavigationController)
+
+        let redirect = VisitProposal(path: "/three", action: .advance, context: .default, redirected: true)
+        navigator.session(modalSession, didProposeVisit: redirect)
+        XCTAssertNil(handler.handledProposal)
+
+        let interveningController = UIViewController()
+        delayedNavigationController.pushViewController(interveningController, animated: false)
+        if let visitable = modalSession.activeVisitable {
+            modalSession.visitableViewDidDisappear(visitable)
+        }
+        delayedNavigationController.completeDismissal()
+
+        XCTAssertEqual(delayedNavigationController.viewControllers.count, 3)
+        XCTAssertIdentical(delayedNavigationController.viewControllers.dropLast().last, interveningController)
+        XCTAssertEqual(delayedNavigationController.topViewController?.routedLocation, redirect.url)
+        XCTAssertEqual(redirectDelegate.redirectProposals.first?.options.action, .advance)
+        XCTAssertEqual(handler.handledProposal?.url, redirect.url)
+        XCTAssertNil(handler.handledProposal?.modalRedirect)
+    }
+
+    func test_redirect_modalToMain_exposesRoutedURLOfNativePresentingPage() {
+        let handler = recordRedirectRoutes()
+        let customNavigator = makeCustomViewControllerNavigator()
+        customNavigator.route(oneURL)
+        let modal = VisitProposal(path: "/modal", context: .modal)
+        navigator.route(modal)
+
+        let redirect = VisitProposal(path: "/three", redirected: true)
+        navigator.session(modalSession, didProposeVisit: redirect)
+
+        XCTAssertEqual(handler.handledProposal?.modalRedirect?.modalURL, modal.url)
+        XCTAssertEqual(handler.handledProposal?.modalRedirect?.presentingPageURL, oneURL)
+    }
+
+    func test_redirectContext_isAbsentOnDirectVisitsAndRedirectsThatDoNotDismissAModal() {
+        let handler = recordRedirectRoutes()
+        navigator.route(oneURL)
+        XCTAssertEqual(handler.matchedProposal?.url, oneURL)
+        XCTAssertNil(handler.matchedProposal?.modalRedirect)
+
+        let mainRedirect = VisitProposal(path: "/two", redirected: true)
+        navigator.session(session, didProposeVisit: mainRedirect)
+        XCTAssertEqual(handler.handledProposal?.url, mainRedirect.url)
+        XCTAssertNil(handler.handledProposal?.modalRedirect)
+
+        navigator.route(VisitProposal(path: "/modal-one", context: .modal))
+        let modalRedirect = VisitProposal(path: "/modal-two", context: .modal, redirected: true)
+        navigator.session(modalSession, didProposeVisit: modalRedirect)
+        XCTAssertEqual(handler.handledProposal?.url, modalRedirect.url)
+        XCTAssertNil(handler.handledProposal?.modalRedirect)
+    }
+
     // MARK: Private
 
-    private func assertModalToMainRedirectWaitsForDismissal(modalProposals: [VisitProposal]) {
+    private func recordRedirectRoutes() -> ModalRedirectRouteDecisionHandler {
+        let handler = ModalRedirectRouteDecisionHandler()
+        let originalRouter = Hotwire.config.router
+        addTeardownBlock { Hotwire.config.router = originalRouter }
+        Hotwire.registerRouteDecisionHandlers([handler, AppNavigationRouteDecisionHandler()])
+        return handler
+    }
+
+    private func assertModalToMainRedirectWaitsForDismissal(
+        modalProposals: [VisitProposal],
+        redirect: VisitProposal = VisitProposal(path: "/three", action: .replace, context: .default, redirected: true),
+        expectedAction: VisitAction? = nil
+    ) {
+        let handler = recordRedirectRoutes()
         let delayedNavigationController = DelayedDismissalNavigationController()
         let testModalNavigationController = TestableNavigationController()
         let redirectDelegate = RedirectProposalRecordingDelegate()
         let testSession = Session(webView: Hotwire.config.makeWebView())
         let testModalSession = Session(webView: Hotwire.config.makeWebView())
+        testModalSession.pathConfiguration = replacingPresentingPageConfiguration
         let testNavigator = Navigator(
             session: testSession,
             modalSession: testModalSession,
@@ -678,20 +846,31 @@ final class NavigationHierarchyControllerTests: XCTestCase {
             testNavigator.route(proposal)
         }
 
-        let redirect = VisitProposal(path: "/three", action: .replace, context: .default, redirected: true)
         testNavigator.session(testModalSession, didProposeVisit: redirect)
 
+        XCTAssertNotEqual(handler.matchedProposal?.url, redirect.url)
+        XCTAssertNil(handler.handledProposal)
         XCTAssertTrue(redirectDelegate.redirectProposals.isEmpty)
         XCTAssertIdentical(delayedNavigationController.presentedViewController, testModalNavigationController)
 
+        if let visitable = testModalSession.activeVisitable {
+            testModalSession.visitableViewDidDisappear(visitable)
+        }
         delayedNavigationController.completeDismissal()
 
+        XCTAssertEqual(handler.matchedProposal?.modalRedirect?.modalURL, modalProposals.last?.url)
+        XCTAssertEqual(handler.matchedProposal?.modalRedirect?.presentingPageURL, oneURL)
+        XCTAssertEqual(handler.handledProposal?.modalRedirect?.modalURL, modalProposals.last?.url)
+        XCTAssertEqual(handler.handledProposal?.modalRedirect?.presentingPageURL, oneURL)
         XCTAssertEqual(redirectDelegate.redirectProposals.count, 1)
-        let receivedProposal = redirectDelegate.redirectProposals[0]
-        XCTAssertEqual(receivedProposal.url, redirect.url)
-        XCTAssertEqual(receivedProposal.options.action, redirect.options.action)
-        XCTAssertEqual(receivedProposal.context, redirect.context)
-        XCTAssertEqual(receivedProposal.isRedirect, redirect.isRedirect)
+        let receivedProposal = redirectDelegate.redirectProposals.first
+        XCTAssertEqual(receivedProposal?.url, redirect.url)
+        XCTAssertEqual(receivedProposal?.options.action, expectedAction ?? redirect.options.action)
+        XCTAssertEqual(receivedProposal?.options.response?.statusCode, redirect.options.response?.statusCode)
+        XCTAssertEqual(receivedProposal?.context, redirect.context)
+        XCTAssertEqual(receivedProposal?.properties, redirect.properties)
+        XCTAssertEqual(receivedProposal?.parameters?["custom_parameter"] as? String, redirect.parameters?["custom_parameter"] as? String)
+        XCTAssertEqual(receivedProposal?.isRedirect, redirect.isRedirect)
         XCTAssertNil(delayedNavigationController.presentedViewController)
         XCTAssertEqual(testNavigator.session.activeVisitable?.initialVisitableURL, redirect.url)
     }
@@ -832,6 +1011,22 @@ private final class RedirectProposalRecordingDelegate: NavigatorDelegate {
         }
 
         return .accept
+    }
+}
+
+private final class ModalRedirectRouteDecisionHandler: RouteDecisionHandler {
+    let name = "modal-redirect-recorder"
+    private(set) var matchedProposal: VisitProposal?
+    private(set) var handledProposal: VisitProposal?
+
+    func matches(proposal: VisitProposal, configuration: Navigator.Configuration) -> Bool {
+        matchedProposal = proposal
+        return proposal.isRedirect
+    }
+
+    func handle(proposal: VisitProposal, configuration: Navigator.Configuration, navigator: Navigating) -> Router.Decision {
+        handledProposal = proposal
+        return .navigate
     }
 }
 

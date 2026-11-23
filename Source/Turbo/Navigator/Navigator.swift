@@ -74,13 +74,17 @@ public class Navigator {
     ///
     /// - Parameter proposal: the proposal to visit
     public func route(_ proposal: VisitProposal) {
+        route(proposal, replacingPresentingPage: nil)
+    }
+
+    private func route(_ proposal: VisitProposal, replacingPresentingPage presentingPage: UIViewController?) {
         if routeDecision(for: proposal) == .cancel {
             return
         }
 
         guard let controller = controller(for: proposal) else { return }
         logger.info("Routing \(proposal.url.absoluteString)")
-        hierarchyController.route(controller: controller, proposal: proposal)
+        hierarchyController.route(controller: controller, proposal: proposal, replacingPresentingPage: presentingPage)
     }
 
     /// Pops the top controller on the presented navigation stack.
@@ -161,9 +165,44 @@ public class Navigator {
         }
     }
 
-    private func replacesPresentingPage(for modalSession: Session) -> Bool {
-        guard let url = modalSession.activeVisitable?.initialVisitableURL else { return false }
-        return modalSession.pathConfiguration?.properties(for: url).replacesPresentingPageOnRedirect ?? false
+    private func routeAfterDismissingModal(_ proposal: VisitProposal) {
+        let modalURL = modalSession.activeVisitable?.initialVisitableURL
+        let presentingPage = hierarchyController.modalPresentingPage
+        let topBeforeDismissal = rootViewController.topViewController
+        let modalRedirect: VisitProposal.ModalRedirect?
+        if let modalURL, let presentingPage,
+           rootViewController.presentedViewController === modalRootViewController,
+           rootViewController.viewControllers.contains(where: { $0 === presentingPage }) {
+            let presentingPageURL = presentingPage.routedLocation ?? (presentingPage as? Visitable)?.initialVisitableURL
+            modalRedirect = .init(modalURL: modalURL, presentingPageURL: presentingPageURL)
+        } else {
+            modalRedirect = nil
+        }
+
+        let modalProperties = modalRedirect.flatMap { modalSession.pathConfiguration?.properties(for: $0.modalURL) }
+        let replacesPresentingPage = modalProperties?.replacesPresentingPageOnRedirect == true
+        let options = replacesPresentingPage
+            ? VisitOptions(action: .replace, response: proposal.options.response)
+            : proposal.options
+
+        let routedProposal = VisitProposal(
+            url: proposal.url,
+            options: options,
+            properties: proposal.properties,
+            parameters: proposal.parameters,
+            modalRedirect: modalRedirect
+        )
+        hierarchyController.dismissModal(animated: true) { [weak self, weak presentingPage, weak topBeforeDismissal] in
+            guard let self else { return }
+
+            if modalRedirect != nil, let presentingPage, let topBeforeDismissal,
+               rootViewController.topViewController === topBeforeDismissal,
+               rootViewController.viewControllers.contains(where: { $0 === presentingPage }) {
+                route(routedProposal, replacingPresentingPage: replacesPresentingPage ? presentingPage : nil)
+            } else {
+                route(proposal)
+            }
+        }
     }
 
     private func routeDecision(for proposal: VisitProposal) -> Router.Decision {
@@ -191,10 +230,7 @@ extension Navigator: SessionDelegate {
 
             switch (sessionIsModal, proposalIsModal) {
             case (true, false):
-                let routedProposal = replacesPresentingPage(for: session) ? proposal.replacingCurrentPage() : proposal
-                hierarchyController.dismissModal(animated: true) { [weak self] in
-                    self?.route(routedProposal)
-                }
+                routeAfterDismissingModal(proposal)
                 return
             case (false, true):
                 pop(animated: false)
