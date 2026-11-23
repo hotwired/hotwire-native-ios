@@ -163,9 +163,9 @@ public class Navigator {
 
     private func routeAfterDismissingModal(_ proposal: VisitProposal) {
         let modalURL = modalSession.activeVisitable?.initialVisitableURL
+        let presentingPage = rootViewController.topViewController
         let modalRedirect: VisitProposal.ModalRedirect?
         if let modalURL, rootViewController.presentedViewController === modalRootViewController {
-            let presentingPage = rootViewController.topViewController
             let presentingPageURL = presentingPage?.routedLocation ?? (presentingPage as? Visitable)?.initialVisitableURL
             modalRedirect = .init(modalURL: modalURL, presentingPageURL: presentingPageURL)
         } else {
@@ -184,8 +184,14 @@ public class Navigator {
             parameters: proposal.parameters,
             modalRedirect: modalRedirect
         )
-        hierarchyController.dismissModal(animated: true) { [weak self] in
-            self?.route(routedProposal)
+        hierarchyController.dismissModal(animated: true) { [weak self, weak presentingPage] in
+            guard let self else { return }
+
+            if let presentingPage, rootViewController.topViewController === presentingPage {
+                route(routedProposal)
+            } else {
+                route(proposal)
+            }
         }
     }
 
