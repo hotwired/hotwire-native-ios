@@ -161,9 +161,32 @@ public class Navigator {
         }
     }
 
-    private func replacesPresentingPage(for modalSession: Session) -> Bool {
-        guard let url = modalSession.activeVisitable?.initialVisitableURL else { return false }
-        return modalSession.pathConfiguration?.properties(for: url).replacesPresentingPageOnRedirect ?? false
+    private func routeAfterDismissingModal(_ proposal: VisitProposal) {
+        let modalURL = modalSession.activeVisitable?.initialVisitableURL
+        let modalProperties = modalURL.flatMap { modalSession.pathConfiguration?.properties(for: $0) }
+        let options = modalProperties?.replacesPresentingPageOnRedirect == true
+            ? VisitOptions(action: .replace, response: proposal.options.response)
+            : proposal.options
+
+        let modalRedirect: VisitProposal.ModalRedirect?
+        if let modalURL, rootViewController.presentedViewController === modalRootViewController {
+            let presentingPage = rootViewController.topViewController
+            let presentingPageURL = presentingPage?.routedLocation ?? (presentingPage as? Visitable)?.initialVisitableURL
+            modalRedirect = .init(modalURL: modalURL, presentingPageURL: presentingPageURL)
+        } else {
+            modalRedirect = nil
+        }
+
+        let routedProposal = VisitProposal(
+            url: proposal.url,
+            options: options,
+            properties: proposal.properties,
+            parameters: proposal.parameters,
+            modalRedirect: modalRedirect
+        )
+        hierarchyController.dismissModal(animated: true) { [weak self] in
+            self?.route(routedProposal)
+        }
     }
 
     private func routeDecision(for proposal: VisitProposal) -> Router.Decision {
@@ -191,10 +214,7 @@ extension Navigator: SessionDelegate {
 
             switch (sessionIsModal, proposalIsModal) {
             case (true, false):
-                let routedProposal = replacesPresentingPage(for: session) ? proposal.replacingCurrentPage() : proposal
-                hierarchyController.dismissModal(animated: true) { [weak self] in
-                    self?.route(routedProposal)
-                }
+                routeAfterDismissingModal(proposal)
                 return
             case (false, true):
                 pop(animated: false)
