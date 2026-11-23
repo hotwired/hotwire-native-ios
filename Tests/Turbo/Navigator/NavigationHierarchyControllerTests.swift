@@ -688,6 +688,43 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         )
     }
 
+    func test_redirect_modalToMain_advance_whenPresentingPageChangesDuringDismissal_pushesOnMainStack() {
+        let handler = recordRedirectRoutes()
+        let delayedNavigationController = DelayedDismissalNavigationController()
+        let redirectDelegate = RedirectProposalRecordingDelegate()
+        navigator.delegate = redirectDelegate
+        navigator.hierarchyController = NavigationHierarchyController(
+            delegate: navigator,
+            navigationController: delayedNavigationController,
+            modalNavigationController: modalNavigationController
+        )
+        loadNavigationControllerInWindow(delayedNavigationController)
+        modalSession.pathConfiguration = replacingPresentingPageConfiguration
+        navigator.route(oneURL)
+        let modal = VisitProposal(path: "/one/moves/new", context: .modal)
+        navigator.route(modal)
+        XCTAssertEqual(modalSession.activeVisitable?.initialVisitableURL, modal.url)
+        XCTAssertIdentical(delayedNavigationController.presentedViewController, modalNavigationController)
+
+        let redirect = VisitProposal(path: "/three", action: .advance, context: .default, redirected: true)
+        navigator.session(modalSession, didProposeVisit: redirect)
+        XCTAssertNil(handler.handledProposal)
+
+        let interveningController = UIViewController()
+        delayedNavigationController.pushViewController(interveningController, animated: false)
+        if let visitable = modalSession.activeVisitable {
+            modalSession.visitableViewDidDisappear(visitable)
+        }
+        delayedNavigationController.completeDismissal()
+
+        XCTAssertEqual(delayedNavigationController.viewControllers.count, 3)
+        XCTAssertIdentical(delayedNavigationController.viewControllers.dropLast().last, interveningController)
+        XCTAssertEqual(delayedNavigationController.topViewController?.routedLocation, redirect.url)
+        XCTAssertEqual(redirectDelegate.redirectProposals.first?.options.action, .advance)
+        XCTAssertEqual(handler.handledProposal?.url, redirect.url)
+        XCTAssertNil(handler.handledProposal?.modalRedirect)
+    }
+
     func test_redirect_modalToMain_exposesRoutedURLOfNativePresentingPage() {
         let handler = recordRedirectRoutes()
         let customNavigator = makeCustomViewControllerNavigator()
