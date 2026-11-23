@@ -163,11 +163,6 @@ public class Navigator {
 
     private func routeAfterDismissingModal(_ proposal: VisitProposal) {
         let modalURL = modalSession.activeVisitable?.initialVisitableURL
-        let modalProperties = modalURL.flatMap { modalSession.pathConfiguration?.properties(for: $0) }
-        let options = modalProperties?.replacesPresentingPageOnRedirect == true
-            ? VisitOptions(action: .replace, response: proposal.options.response)
-            : proposal.options
-
         let modalRedirect: VisitProposal.ModalRedirect?
         if let modalURL, rootViewController.presentedViewController === modalRootViewController {
             let presentingPage = rootViewController.topViewController
@@ -176,6 +171,11 @@ public class Navigator {
         } else {
             modalRedirect = nil
         }
+
+        let modalProperties = modalRedirect.flatMap { modalSession.pathConfiguration?.properties(for: $0.modalURL) }
+        let options = modalProperties?.replacesPresentingPageOnRedirect == true
+            ? VisitOptions(action: .replace, response: proposal.options.response)
+            : proposal.options
 
         let routedProposal = VisitProposal(
             url: proposal.url,
