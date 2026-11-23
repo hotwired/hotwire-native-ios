@@ -5,6 +5,7 @@ import WebKit
 class NavigationHierarchyController {
     let navigationController: UINavigationController
     let modalNavigationController: UINavigationController
+    private(set) weak var modalPresentingPage: UIViewController?
 
     var rootViewController: UIViewController { navigationController }
     var activeNavigationController: UINavigationController {
@@ -33,7 +34,7 @@ class NavigationHierarchyController {
         self.modalNavigationController = modalNavigationController
     }
 
-    func route(controller: UIViewController, proposal: VisitProposal) {
+    func route(controller: UIViewController, proposal: VisitProposal, replacingPresentingPage presentingPage: UIViewController? = nil) {
         if let alert = controller as? UIAlertController {
             presentAlert(alert, via: proposal)
         } else {
@@ -44,6 +45,14 @@ class NavigationHierarchyController {
             }
 
             dismissModalIfNeeded(for: proposal)
+
+            if let presentingPage,
+               navigationController.topViewController !== presentingPage,
+               navigationController.viewControllers.contains(where: { $0 === presentingPage }),
+               proposal.presentation == .default || proposal.presentation == .replace {
+                replacePresentingPageBelowTop(presentingPage, with: controller, via: proposal)
+                return
+            }
 
             switch proposal.presentation {
             case .default:
@@ -134,9 +143,7 @@ class NavigationHierarchyController {
             if isInModalContext {
                 pushOrReplace(on: modalNavigationController, with: controller, via: proposal)
             } else {
-                modalNavigationController.setViewControllers([controller], animated: proposal.animated)
-                modalNavigationController.setModalPresentationStyle(via: proposal)
-                navigationController.present(modalNavigationController, animated: proposal.animated)
+                presentModal(with: controller, via: proposal, animatingStack: proposal.animated)
             }
         }
     }
@@ -210,11 +217,25 @@ class NavigationHierarchyController {
             if navigationController.presentedViewController != nil {
                 modalNavigationController.replaceLastViewController(with: controller)
             } else {
-                modalNavigationController.setViewControllers([controller], animated: false)
-                modalNavigationController.setModalPresentationStyle(via: proposal)
-                navigationController.present(modalNavigationController, animated: proposal.animated)
+                presentModal(with: controller, via: proposal, animatingStack: false)
             }
         }
+    }
+
+    private func presentModal(with controller: UIViewController, via proposal: VisitProposal, animatingStack: Bool) {
+        modalNavigationController.setViewControllers([controller], animated: animatingStack)
+        modalNavigationController.setModalPresentationStyle(via: proposal)
+        modalPresentingPage = navigationController.topViewController
+        navigationController.present(modalNavigationController, animated: proposal.animated)
+    }
+
+    private func replacePresentingPageBelowTop(_ presentingPage: UIViewController, with controller: UIViewController, via proposal: VisitProposal) {
+        if let visitable = controller as? Visitable {
+            delegate.visit(visitable, on: .main, with: proposal.options)
+        }
+
+        let remainingPages = navigationController.viewControllers.filter { $0 !== presentingPage && $0 !== controller }
+        navigationController.setViewControllers(remainingPages + [controller], animated: proposal.animated)
     }
 
     private func refresh(via proposal: VisitProposal) {
