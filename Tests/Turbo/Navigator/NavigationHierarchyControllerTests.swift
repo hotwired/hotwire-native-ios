@@ -599,6 +599,25 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         assertVisited(url: redirect.url, on: .main)
     }
 
+    func test_redirect_modalToMain_advance_fromDismissedModalMarkedAsReplacingPresentingPage_pushesOnMainStack() {
+        let handler = recordRedirectRoutes()
+        modalSession.pathConfiguration = replacingPresentingPageConfiguration
+        navigator.route(oneURL)
+        navigator.route(twoURL)
+        let modal = VisitProposal(path: "/two/moves/new", context: .modal)
+        navigator.route(modal)
+
+        navigationController.presentedViewController = nil
+        XCTAssertEqual(modalSession.activeVisitable?.initialVisitableURL, modal.url)
+
+        let redirect = VisitProposal(path: "/three", action: .advance, context: .default, redirected: true)
+        navigator.session(modalSession, didProposeVisit: redirect)
+
+        XCTAssertEqual(navigationController.viewControllers.compactMap { ($0 as? Visitable)?.initialVisitableURL }, [oneURL, twoURL, redirect.url])
+        XCTAssertEqual(handler.handledProposal?.url, redirect.url)
+        XCTAssertNil(handler.handledProposal?.modalRedirect)
+    }
+
     func test_redirect_modalToMain_advance_fromModalNotMarkedAsReplacingPresentingPage_pushesOnTopOfPageBeneathModal() {
         modalSession.pathConfiguration = replacingPresentingPageConfiguration
         navigator.route(oneURL)
@@ -639,8 +658,7 @@ final class NavigationHierarchyControllerTests: XCTestCase {
 
     func test_redirect_modalToMain_singleControllerModal_routesAfterModalDismissalCompletes() {
         assertModalToMainRedirectWaitsForDismissal(
-            modalProposals: [VisitProposal(path: "/modal-one", context: .modal)],
-            expectedAction: .advance
+            modalProposals: [VisitProposal(path: "/modal-one", context: .modal)]
         )
     }
 
@@ -648,8 +666,24 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         assertModalToMainRedirectWaitsForDismissal(
             modalProposals: [
                 VisitProposal(path: "/modal-one", context: .modal),
+                VisitProposal(path: "/modal-two", context: .modal)
+            ]
+        )
+    }
+
+    func test_redirect_modalToMain_multipleControllerModalMarkedAsReplacingPresentingPage_routesAfterModalDismissalCompletes() {
+        let redirect = VisitProposal(
+            url: baseURL.appendingPathComponent("/three"),
+            options: VisitOptions(response: VisitResponse(statusCode: 201, redirected: true)),
+            properties: ["custom_property": "value"],
+            parameters: ["custom_parameter": "value"]
+        )
+        assertModalToMainRedirectWaitsForDismissal(
+            modalProposals: [
+                VisitProposal(path: "/modal-one", context: .modal),
                 VisitProposal(path: "/modal-two/moves/new", context: .modal)
             ],
+            redirect: redirect,
             expectedAction: .replace
         )
     }
@@ -696,7 +730,11 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         return handler
     }
 
-    private func assertModalToMainRedirectWaitsForDismissal(modalProposals: [VisitProposal], expectedAction: VisitAction) {
+    private func assertModalToMainRedirectWaitsForDismissal(
+        modalProposals: [VisitProposal],
+        redirect: VisitProposal = VisitProposal(path: "/three", action: .replace, context: .default, redirected: true),
+        expectedAction: VisitAction? = nil
+    ) {
         let handler = recordRedirectRoutes()
         let delayedNavigationController = DelayedDismissalNavigationController()
         let testModalNavigationController = TestableNavigationController()
@@ -722,12 +760,6 @@ final class NavigationHierarchyControllerTests: XCTestCase {
             testNavigator.route(proposal)
         }
 
-        let redirect = VisitProposal(
-            url: baseURL.appendingPathComponent("/three"),
-            options: VisitOptions(response: VisitResponse(statusCode: 201, redirected: true)),
-            properties: ["custom_property": "value"],
-            parameters: ["custom_parameter": "value"]
-        )
         testNavigator.session(testModalSession, didProposeVisit: redirect)
 
         XCTAssertNotEqual(handler.matchedProposal?.url, redirect.url)
@@ -747,11 +779,12 @@ final class NavigationHierarchyControllerTests: XCTestCase {
         XCTAssertEqual(redirectDelegate.redirectProposals.count, 1)
         let receivedProposal = redirectDelegate.redirectProposals.first
         XCTAssertEqual(receivedProposal?.url, redirect.url)
-        XCTAssertEqual(receivedProposal?.options.action, expectedAction)
-        XCTAssertEqual(receivedProposal?.options.response?.statusCode, 201)
+        XCTAssertEqual(receivedProposal?.options.action, expectedAction ?? redirect.options.action)
+        XCTAssertEqual(receivedProposal?.options.response?.statusCode, redirect.options.response?.statusCode)
+        XCTAssertEqual(receivedProposal?.context, redirect.context)
         XCTAssertEqual(receivedProposal?.properties, redirect.properties)
-        XCTAssertEqual(receivedProposal?.parameters?["custom_parameter"] as? String, "value")
-        XCTAssertEqual(receivedProposal?.isRedirect, true)
+        XCTAssertEqual(receivedProposal?.parameters?["custom_parameter"] as? String, redirect.parameters?["custom_parameter"] as? String)
+        XCTAssertEqual(receivedProposal?.isRedirect, redirect.isRedirect)
         XCTAssertNil(delayedNavigationController.presentedViewController)
         XCTAssertEqual(testNavigator.session.activeVisitable?.initialVisitableURL, redirect.url)
     }
